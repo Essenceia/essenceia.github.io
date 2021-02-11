@@ -1,0 +1,240 @@
+html{
+  font-family: helvetica, sans-serif;
+text-rendering: optimizelegibility;
+  background-color: rgba(255, 255, 218, 0.8);
+}
+.wrapper-intro{
+    width: 100vw;
+    min-height: 100vh;
+  text-transform: uppercase;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: auto auto auto auto;
+}
+
+.wrapper-body{
+    width: 100vw;
+    height: auto;
+  text-transform: uppercase;
+    display: grid;
+    grid-template-columns: 70% 30%;
+    grid-template-rows: [article1] auto;
+}
+
+.small-txt{
+  font-size : 1.5rem;
+  color : red;
+  font-weight: bold;
+}
+.line{
+  grid-column: 2;
+  grid-row: 1/-1;
+  border-left: 15px solid darkred;
+  color-interpolation-filters:  revert;
+}
+
+/* header */
+#na-img{
+  grid-column: 1;
+  grid-row : 1/3;
+  height 8vw;
+   width:  8vw;
+    display: block;
+  margin: auto;
+/*! filter : none; */
+  
+}
+#na-circle{
+  grid-column: 1;
+  grid-row: 1/3;
+ width : 30vw;
+  height: 30vw;
+  margin: auto;
+  filter : contrast(200%);
+}
+#na-txt{
+  grid-column: 1/3;
+  grid-row : 2/4;
+  font-size : 10vw;
+  margin: auto;
+  transform: rotate(-25deg);
+  color : #5ab5ec;
+  font-weight: 800;
+}
+#arrow-down{
+  grid-column: 1;
+  grid-row:4;
+  justify-self: end;
+  font-size: 10vw;
+  color : darkred;
+  font-weight : 900;
+}
+
+#bottom-txt{
+  grid-column: 2;
+  grid-row: 4;
+  margin-left : 20px;
+  /*! margin-right : 20px; */
+  color : coral;
+}
+#bottom-line-header{
+  font-size: 3vw;
+}
+#bottom-line{
+  font-size: 2vw;
+    border-top: 5px solid lightcoral;
+   border-bottom: 5px solid lightcoral;
+}
+
+/* body */
+.article-wrapper{
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows:  5vh repeat(4,auto) 5vh;
+  margin-left: 5vw;
+}
+.title-wrapper{
+  grid-column: 1;
+  grid-row : 2;
+  display: grid;
+  grid-template-columns: repeat(2,50%);
+  grid-template-rows: repeat(2,auto);
+}
+.title{
+  font-size: 4vw;
+  font-weight: 600;
+}
+.title-wrapper .title{
+  grid-column: 1;
+  grid-row : 1;
+}
+.vbar{
+   height: 100%;
+  width: 100%;
+  background-color:  salmon;
+}
+.title-wrapper .vbar{
+  grid-column: 1;
+  grid-row: 2;
+ 
+}
+.sub-title{
+  margin: auto;
+  font-size : 2vw;
+}
+.title-wrapper .sub-title{
+  grid-column: 2;
+  grid-row: 2;
+}
+/* main body  */
+.par{
+   text-transform: none;
+  margin-top : 2vh;
+   margin-bottom : 2vh;
+  margin-left : 1vw;
+  margin-right: 1vw;
+  font-family: courier, monospace;
+  font-size: 2.5vw;
+word-break: break-word;
+
+}
+.article-wrapper .big-para{
+  grid-column: 1;
+  grid-row : 3;
+}
+.cite-wrapper{
+  grid-column: 1;
+  grid-row : 4;
+  display: grid;
+  grid-template-columns: 5vw 1fr 5vw;
+  grid-template-rows: 5vw auto 5vw;
+}
+.pink-ball{
+  width: 80%;
+  height: 80%;
+  margin : auto;
+  background-color: salmon;
+  border-radius: 50%;
+}
+.cite-wrapper .pink-ball#pb1 {
+  grid-column: 1;
+  grid-row : 1;
+}
+.cite-wrapper .pink-ball#pb2{
+  grid-row : 3;
+  grid-column: 1;
+}
+.cite-wrapper .mid-para{
+  grid-column: 2;
+  grid-row: 2;
+  margin-top : 0;
+  margin-bottom: 0;
+}
+
+.article-wrapper .end-para{
+  grid-column: 1;
+  grid-row : 5;
+}
+.col-article{
+  grid-column: 1;
+  grid-row : 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 5vw minmax(20px,30vw) auto;
+  grid-template-rows: 5vh auto;
+}
+.col-article .vbar{
+  grid-column: 2;
+  grid-row: 1;
+   
+}
+.col-article .par{
+  grid-column: 3;
+  grid-row: 1/3;
+  margin-top: 0;
+}
+.foot-wrapper{
+  grid-column: 1/3;
+  grid-row: 1;
+  width: 100vw;
+  display: grid;
+  grid-template-columns: 20% 60% auto;
+  grid-template-rows: auto auto;
+
+}
+.link-wrapper{
+   grid-column: 2;
+  grid-row : 1;
+}
+
+
+.foot-wrapper .foot-text{
+  grid-row: 1;
+  grid-column: 2;
+  writing-mode: vertical-lr;
+  justify-self: start;
+  font-size: 2vh;
+  border-left: 10px solid darkred;
+
+}
+.foot-wrapper .foot-fill{
+  grid-row: 2;
+  grid-column: 1/-1;
+  background-color:  darkred;
+}
+.foot-wrapper img{
+  grid-column: 3;
+  grid-row: 2;
+  height: 20vh;
+  margin:auto;
+  filter : hue-rotate(80deg);
+}
+.foot-wrapper .foot-fill-text{
+    grid-column: 2;
+  grid-row: 2;
+  margin : auto;
+  color: wheat;
+  font-weight: 800;
+}
