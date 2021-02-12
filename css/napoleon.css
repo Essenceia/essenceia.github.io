@@ -2,6 +2,7 @@ html{
   font-family: helvetica, sans-serif;
 text-rendering: optimizelegibility;
   background-color: rgba(255, 255, 218, 0.8);
+  scroll-behavior: smooth;
 }
 .wrapper-intro{
     width: 100vw;
@@ -42,8 +43,14 @@ text-rendering: optimizelegibility;
     display: block;
   margin: auto;
 /*! filter : none; */
-  
+  animation: 1s ease-in-out 0s infinite alternate heartbeat;
 }
+@keyframes heartbeat{
+  from { transform: scale(1.0); }
+  to { transform:  scale(1.05 ); }
+}
+
+
 #na-circle{
   grid-column: 1;
   grid-row: 1/3;
@@ -68,7 +75,13 @@ text-rendering: optimizelegibility;
   font-size: 10vw;
   color : darkred;
   font-weight : 900;
+  transition : 1s color; 
 }
+#arrow-down:hover{
+  color : coral; 
+  cursor: pointer;
+}
+
 
 #bottom-txt{
   grid-column: 2;
