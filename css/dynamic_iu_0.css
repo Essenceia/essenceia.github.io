@@ -1,0 +1,134 @@
+/* Works on Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: salmon transparent;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: salmon;
+  border-radius: 20px;
+}
+
+#main{
+  min-height: 100vh;
+  width: 100wh;
+}
+#wrapper-ui{
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2vw auto 1fr 2vw;
+  grid-template-rows: 5vh auto 1fr 5vh;
+}
+#wrapper-buttons{
+  grid-column: 2;
+  grid-row : 2;
+  display: grid;
+  grid-template-columns: auto;
+  grid-auto-rows : auto;
+  /* scrolling */
+  overflow-y: scroll;
+  /*! direction: rtl; */
+
+}
+
+#wrapper-buttons button{
+/*   font */
+  font-family: courier, monospace;
+  font-size: 1.3rem;
+  
+  margin : auto;
+  border : 0;
+  cursor : pointer;
+  display: inline-block;
+  min-width: 10rem;
+  margin-right: 1rem;
+  height: 3rem;
+  background-color: wheat;
+  border-left: 1rem solid salmon;
+  color : salmon;
+  font-weight: 900;
+  transition : all 0.1s ease-in;
+}
+#wrapper-buttons button:hover {
+  background-color: salmon;
+  color : wheat;
+/*   min-width: 11rem; */
+  margin-right: 0;
+
+}
+.attr{
+  background-color: wheat;
+  font-family: courier, monospace;
+  font-size: 1rem;
+  margin-right: 1rem;
+  display: grid;
+  grid-template-columns: auto;
+  grid-auto-rows: auto;  
+  grid-row-gap: 1rem;
+  border-radius: 0.5rem;
+}
+.alternate{
+  grid-row : 1;
+  margin-top : 1rem;
+  margin-bottom: 1rem;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: courier, monospace;
+}
+.attributes{
+  display: grid;
+  grid-template-columns: auto;
+  grid-auto-rows: auto;  
+  grid-row-gap: 1rem;
+  
+}
+.attributes .slider-field{
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: 5px auto auto;
+}
+.slider-field .name{
+  grid-column: 1;
+  grid-row:  2;
+/*   justify-self : start; */
+}
+.slider-field .slider {
+  grid-column: 1/-1;
+  grid-row : 3;
+/*   display: inline-block; */
+  width: 90%;
+  height: 2rem;
+  margin : auto;
+/*   color : salmon; */
+/*   padding: 0; */
+}
+
+/* number display */
+.slider-field .num-disp::-webkit-outer-spin-button,
+.slider-field .num-disp::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+.slider-field .num-disp {
+  -moz-appearance: textfield;
+  /* common field look */
+  grid-column: 2;
+  grid-row : 2;
+  justify-self: end;
+  margin-right: 5%;
+/*   width: 40%; */
+  width: 4rem;
+  border : none;
+  border-bottom: medium solid salmon;
+}

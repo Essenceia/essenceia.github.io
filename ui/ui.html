@@ -1,0 +1,45 @@
+<head>
+    <meta charset="utf-8">
+    <title>Dynamic UI v0.1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/koralion/colors.css">
+    <link rel="stylesheet" href="../css/koralion/margin.css">
+    <link rel="stylesheet" href="../css/koralion/ui.css">
+    <script type="text/javascript" src="../js/koralion/dynamic_ui.js"></script>
+</head>
+<body>
+    <div class="ui">
+        <div class="ui-header grid-column">
+            <div class="menu" id="file">File</div>
+            <div class="menu" id="edit">Edit</div>
+            <div class="menu" id="view">View</div>
+        </div>
+        <div class="ui-common-tools"></div>
+        <div class="ui-access-bar"></div>
+        <div class="ui-canvas"></div>
+        <div class="ui-function-menu"></div>
+        <div class="ui-arg-menu">
+            
+            <div class="header">Function</div>
+            <div class="args">
+                <div class="select-field">
+                    <div class="sel-arrow">▼</div>
+                    <select name="pets" id="pet-select">
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                        <option value="hamster">Hamster</option>
+                        <option value="parrot">Parrot</option>
+                        <option value="spider">Spider</option>
+                        <option value="goldfish">Goldfish</option>
+                    </select>
+
+                </div>
+            </div>
+            <div class="resize_contrainer">
+                <div class="handle" draggable="true">&#9001;</div>
+            </div>
+            
+        </div>
+        <div class="ui-footer"></div>
+    </div>
+</body>

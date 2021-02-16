@@ -1,0 +1,132 @@
+
+/* number display */
+
+.num::-webkit-outer-spin-button,
+.num::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.num {
+  -moz-appearance: textfield;
+  border : none;
+  border-bottom: thin solid var(--col_txt_dark);
+      color : var(--col_txt_light);
+}
+.num:hover , .num:active , .num:focus{
+    border: thin solid var(--col_sel_blue_light);
+    color : var(--col_sel_blue_light);
+}
+
+
+
+/* range slider */
+
+input[type="range"] { 
+    margin: auto;
+    -webkit-appearance: none;
+    position: relative;
+/*     overflow: hidden; */
+    height: var(--slider_base_height);
+    width: 100%;
+    cursor: pointer;
+    /*! border: 1px solid transparent; */
+    /*! color : transparent; */
+    --bg_col       : var(--col_txt_dark);
+    --prog_bg_col  : var(--col_txt_light);
+    --thumb_bg_col : var(--col_txt_light);
+    background-color: var(--bg_col);
+    border-radius: 5%;
+/*     background-color: green; */
+    /*     border-color : transparent; */
+}
+
+
+input[type=range]:-moz-focusring{
+    outline: none;
+}
+input[type=range]:focus{
+   outline: none;
+   background-color : var(--prog_bg_col);
+}
+/* Thumb : represents the indicator that slides in the groove. */
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: var(--thumb_bg_col);
+    height:  var(--slider_thumb_height);
+    width: var(--slider_thumb_height);
+    border : none;
+    border-radius: 50%;
+}
+input[type=range]::-moz-range-thumb {
+    background-color: var(--thumb_bg_col);
+    height:  var(--slider_thumb_height);
+    width: var(--slider_thumb_height);
+    border : none;
+}
+input[type=range]::-moz-range-thumb:hover , 
+input[type=range]::-moz-range-thumb:active {
+    --thumb_bg_col : var(--col_sel_blue_light);
+/*     background-color:var(--col_sel_blue_light); */
+}
+input[type=range]::-webkit-slider-thumb:hover,
+input[type=range]::-webkit-slider-thumb:active{
+  --thumb_bg_col : var(--col_sel_blue_light);
+}
+
+/* Progress : represents the lower portion of the track.*/
+input[type=range]::-moz-range-progress {
+    height: var(--slider_base_height);
+    background-color:var(--prog_bg_col);
+    border-radius: 5%;
+}
+
+
+/* select */
+select{
+    appearance: none;
+    background-color:  transparent;
+    color : var(--col_txt_light);
+    border: thin solid var(--sel_status_col);
+}
+select option{
+  background-color : var(--col_bg_light);
+} 
+select:focus{
+  outline :none;
+}
+.select-field{
+/*   width: 200px; */
+/*   overflow: hidden; */
+/*   width: 100%; */
+  display: grid;
+  --arrow_width : calc( var(--text_base_size) * 2 );
+  grid-template-columns: 1fr var(--arrow_width);
+  grid-template-rows: 1fr;
+  --sel_status_col : var(--col_txt_dark);
+  cursor: pointer;
+  color : var(--col_txt_light);
+  
+/*   padding: 10px 0; */
+}
+.select-field:hover{
+    --sel_status_col: var(--col_sel_blue_light);
+  
+}
+.select-field select{
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+.select-field .sel-arrow{
+  margin-top : 0;
+  grid-column: 2;
+  grid-row : 1;
+  margin-right: var(--mar_width);
+  justify-self: end;
+  color : var(--sel_status_col);
+}
+
+
+
+
+
+
