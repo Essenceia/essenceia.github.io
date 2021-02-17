@@ -10,11 +10,13 @@
 --col_txt_dark : #666666;
 /* selected : blue for buttons and background */
 --col_sel_blue_light : #42b7f0;
+--col_sel_blue_light_transparent : #42b7f0;
 --col_sel_blue : #0F72BD;
   
     /* defines */
   --text_base_size : 13px;
   --text_big_size  : 16px;
+
   --txt_base_width : calc(var(--text_base_size)/2);
   --txt_base_height : calc(var(--text_base_size)/2);
   --mar_height : var(--txt_base_height);
@@ -24,5 +26,5 @@
   --grid_gap : 2px;
   --slider_base_height : calc(var( --txt_base_height)/3);
   --slider_thumb_height : calc(var( --txt_base_height)*1.5);
-
+  
 }

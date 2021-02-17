@@ -94,7 +94,7 @@ select option{
 select:focus{
   outline :none;
 }
-.select-field{
+.select-variadique {
 /*   width: 200px; */
 /*   overflow: hidden; */
 /*   width: 100%; */
@@ -108,15 +108,15 @@ select:focus{
   
 /*   padding: 10px 0; */
 }
-.select-field:hover{
+.select-variadique:hover{
     --sel_status_col: var(--col_sel_blue_light);
   
 }
-.select-field select{
+.select-variadique select{
   grid-column: 1 / -1;
   grid-row: 1;
 }
-.select-field .sel-arrow{
+.select-variadique .sel-arrow{
   margin-top : 0;
   grid-column: 2;
   grid-row : 1;
