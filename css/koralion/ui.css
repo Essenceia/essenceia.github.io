@@ -9,7 +9,7 @@
   --size_func_icon_width : var(--size_func_height);
   --size_func_width :      var(--size_func_icon_width);
   --size_func_menu_header_height : calc( var(--txt_base_height )*2 + var(--mar_height)*4 - var(--mar_big_height) );
-  --size_func_menu_cath_header_height : calc(var(--txt_base_height ) + var(--mar_height)*3); /* mar text mar mar */
+  --size_func_menu_cath_header_height : calc(var(--txt_base_height ) + var(--mar_height)*4); /* mar text mar mar mar*/
   /* common */
   --size_header_height : calc(var(--txt_base_height)*4);
   --size_text_with_margin : calc(var(--txt_base_height) + var(--mar_height)*2);
@@ -155,7 +155,7 @@
   height: 100%;
   width: 100%;
   cursor: pointer;
-/*   background-color: blue; */
+  background-color: blue;
 }
 .resize_contrainer .handle{
   grid-row: 2;
@@ -237,12 +237,12 @@
 .ui-function-menu  .resize_contrainer .handle{
   grid-row: 1;
   grid-column: 2;
+  cursor : row-resize;
 }
-.resize_contrainer .handle_buffer
+.ui-function-menu .resize_contrainer .handle_buffer
 {
   grid-row: 1;
   grid-column: 2;
-  cursor: pointer;
 /*   background-color: blue; */
 }
 .ui-function-menu .resize_contrainer .handle_buffer:hover{
@@ -267,25 +267,16 @@
 }
 .toolbar svg{
   --svgcolor : var(--col_sel_light);
+  margin-bottom : var(--mar_height);
+  cursor : pointer;
 }
+
 .toolbar svg:focus,
-.toolbar svg:hover
-{
-  background-color: var(--col_bg_dark);
-}
-.toolbar svg:focus{
-  --svgcolor : var(--col_txt_light);
-}
 .toolbar svg:hover{
   --svgcolor : var(--col_sel_blue_light);
 }
-.toolbar img{
-  /*! fill : #f00; */
-  filter : invert(0.5);
-}
-.toolbar img:hover{
-   filter : invert(0.5);
-}
+
+
 .list{
   grid-row : 4;
   overflow-y : scroll;
@@ -301,6 +292,7 @@
   padding-bottom: var(--mar_height);
   text-align: center;
   color : var(--col_txt_unfocus);
+  cursor : pointer;
 }
 .category-item:hover{
   color : var(--col_txt_light);
@@ -310,8 +302,20 @@
   grid-column: 2;
 }
 .category-current{
+  cursor : pointer;
   background-color : var(--col_sel_dark);
-  border-left : medium solid var(--col_txt_light); 
-  
+  border-left : medium solid var(--col_txt_light);
+  padding-left: var(--mar_width);
+  padding-right: var(--mar_width);
+/*   padding-top : var(--mar_height); */
+  margin-right: var(--mar_width);
+  margin-left: var(--mar_width);
+  margin-bottom: var(--mar_height);
+/*   margin-top : 1px; */
+  border-radius: 5%;
+}
+.category-current:hover{
+  color : var(--col_sel_blue_light);
+  border-left : medium solid var(--col_sel_blue_light);
 }
 
