@@ -1,12 +1,13 @@
 :root {
 /* selectable */
---col_sel_light: #404040;
---col_sel_dark:  #252525;
+--col_sel_light: #757575;
+--col_sel_dark:  #4e4c4f;
 /* background */
 --col_bg_light:  #333333;
 --col_bg_dark:   #272727;
 /* text color */
 --col_txt_light: #CECECE;
+--col_txt_unfocus: #AAA;
 --col_txt_dark : #666666;
 /* selected : blue for buttons and background */
 --col_sel_blue_light : #42b7f0;

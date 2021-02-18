@@ -249,9 +249,7 @@ function init_resize(){
 	let handle_o;
 	let ui_main_o; // ui master element
 	let ui_elem_o;
-	let border_s;
-	let grid_var_s;
-	let vertical_b; 
+
 	let mouse_o;
 	DRAG_V_B = false;
 	mouse_o = window.event;
@@ -261,9 +259,12 @@ function init_resize(){
 	len_i = get_array_length(resize_wrap_o_a);
 	for( i = 0 ; i < len_i ; i ++)
 	{
-		resize_wrap_o = resize_wrap_o_a[i];
-		handle_o = resize_wrap_o.querySelector(".handle_buffer");
-		ui_elem_o = resize_wrap_o.parentElement;
+		let border_s;
+		let grid_var_s;
+		let vertical_b; 
+		let resize_wrap_o = resize_wrap_o_a[i];
+		let handle_o      = resize_wrap_o.querySelector(".handle_buffer");
+		let ui_elem_o     = resize_wrap_o.parentElement;
 
 		switch (ui_elem_o.className) {
 			case "ui-arg-menu":
@@ -322,7 +323,7 @@ function resize_ui_drag(ui_main_o, ui_o, grid_var_s, vertical_b,mouse_o  ){
 			new_size_i =  elem_rect_o.right - event.screenX + 5;
 		}else{
 			/* horizontal element */
-			new_size_i = Math.abs(event.offsetY) - elem_rect_o.bottom;
+			new_size_i = elem_rect_o.bottom - event.screenY + 70;
 		}
 		// set new size
 		ui_main_o.style.setProperty( grid_var_s, new_size_i + "px");
