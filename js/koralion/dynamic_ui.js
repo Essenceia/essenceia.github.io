@@ -1,8 +1,17 @@
+/* GLOBALS */
+
+const FDB_m = new Map(); 
+			/* local function DB, stores list of all registered functions
+				structure of the object 
+				map< category_name , array_of_functions > */
+			
 // SLIDER
 // class : slider-field { name , num , slider }
 document.addEventListener("DOMContentLoaded", function(event) {
+	ldb_init();
 	create_arg_menu();
 	init_resize();
+	init_function_menu();
 });
 /* arg menu */
 function create_arg_menu(){
@@ -159,12 +168,12 @@ function add_arg_variadique(arg_o, options_s_a, selected_opt_i ){
 	variadique_choice_changed(arg_o, get_arg_category(arg_o) , get_arg_function_name(arg_o),get_selected_option(sel_o));
 	
 }
-function get_args_from_variadique(cathegory_s, fun_name_s, variadique_s){
+function get_engine_args_from_variadique(category_s, fun_name_s, variadique_s){
 	// TODO
 	let tmp_json_s;
 	let ret_val_o; 
-	if ( (typeof cathegory_s !== 'string') || (typeof fun_name_s !== 'string') || (typeof variadique_s !== 'string') ){
-		console.error("Undexpected type to be passed to backend");
+	if ( (typeof category_s !== 'string') || (typeof fun_name_s !== 'string') || (typeof variadique_s !== 'string') ){
+		console.error("Undexpected type to be passed to engine");
 	}
 	// tmp code 
 	if ( variadique_s == "World"){
@@ -194,14 +203,14 @@ function get_arg_function_name(arg_menu_o){
 	return arg_menu_o.dataset.function;
 }
 /* used on variadique option change as well as on change of the function selected */
-function variadique_choice_changed(arg_o, cathegory_s, fun_name_s, selected_option_s)
+function variadique_choice_changed(arg_o, category_s, fun_name_s, selected_option_s)
 {
 	
 	let child_o_a;
 	let child_o;
 	let class_name_a_s = _argument_s_a;
 	let choice_s       = selected_option_s;
-	let arguments_o_a  = get_args_from_variadique(cathegory_s, fun_name_s, choice_s);/* get new children */
+	let arguments_o_a  = get_engine_args_from_variadique(category_s, fun_name_s, choice_s);/* get new children */
 	let arguments_o;
 	let row_i;
 	// remove all arguments and fill up with new arguments
@@ -326,7 +335,11 @@ function resize_ui_drag(ui_main_o, ui_o, grid_var_s, vertical_b,mouse_o  ){
 			new_size_i = elem_rect_o.bottom - event.screenY + 70;
 		}
 		// set new size
+		/* negative value can occure when the mouse goes bellow the bounds of the window, small check to prevent that from happening and
+		affecting the layout */
+		if ( new_size_i > 0){
 		ui_main_o.style.setProperty( grid_var_s, new_size_i + "px");
+		}
 		//console.log("dragged, set new size " + new_size_i);
 	}
 }
@@ -339,4 +352,203 @@ function get_array_length(array){
 	  }
 	}
 	return len; 
+}
+
+/* search bar */
+function init_search_bar(seach_parent_o, hideable_list_o){
+	/* set up callback for the search bar, get search bar and associated search button then link it up to
+	the list of items that will be hidden based on the seach outcome */
+	let svg_search_o;
+	let bar_o;
+	/* parent look for seach bar with id="function-search" and svg with id="search" */
+	svg_search_o = seach_parent_o.querySelector("#search");
+	bar_o = seach_parent_o.querySelector("#function-search");
+	svg_search_o.addEventListener("click", search_click.bind(null, hideable_list_o, bar_o));
+	// TODO : binding for when Enter is pressed
+}
+function set_autocomplete(datalist_id_o, list_a_s){
+	/* remove current options and set new options 
+	create search autocomplete option list */
+	let opt_o;
+	let txt_o;
+	let i;
+	let opt_o_a = datalist_id_o.getElementsByTagName("datalist");
+	// remove element
+	for ( i = opt_o_a.length - 1; i > -1 ; i-- )
+	{
+		opt_o = opt_o_a[i];
+		opt_o_a.removeChild(opt_o);
+	}
+	// add new ellements
+	for ( i = 0; i < list_a_s.length; i ++)
+	{
+		opt_o = document.createElement("option");
+		txt_o = document.createTextNode(list_a_s[i]);
+		opt_o.append(txt_o);
+		datalist_id_o.append(opt_o);
+	}
+}
+function search_click(function_list_o, search_bar_o){
+	/* hide all ellements not containing the search item in there id */
+	let elem_o;
+	let search_val_s;
+	let show_b; // boolean value of if this item should be hidden
+	let item_id_s;
+	let i;
+	let child_o_a;
+	let match_o_a = []; // all ellements are passed by reference so we can put them in arrays and modify the attributes latter on 
+	let not_match_o_a = [];
+	/* get content of the search bar */
+	search_val_s = search_bar_o.value;
+	child_o_a = function_list_o.children;
+	/* go though all the list items and hide all the ellements that don't contain the search term in the id*/
+	/* search if we have at least on match, if not don't hide items and set an error on the search bar*/
+	for ( i = 0 ; i < child_o_a.length; i++ ){
+		elem_o = child_o_a[i];
+		item_id_s = elem_o.id;
+		show_b = item_id_s.includes(search_val_s);
+		if (show_b)
+		{
+			match_o_a.push(elem_o);
+			//elem_o.removeAttribute("hidden");
+		}else{
+			not_match_o_a.push(elem_o);
+			//elem_o.setAttribute("hidden", true);
+		}
+	}
+	if (match_o_a.length > 0){
+		for ( i = 0 ; i < match_o_a.length ; i++){
+			//match_o_a[i].removeAttribute("hidden");
+			match_o_a[i].style.removeProperty("display");
+		}
+		for ( i = 0 ; i < not_match_o_a.length ; i++){
+			// not_match_o_a[i].setAttribute("hidden", true);
+			not_match_o_a[i].style.setProperty("display","none");
+		}
+	}
+	// TODO search bar error
+}
+/*  set up the function list items and toolbar when we change category
+	added the _elem part to the function name to make it less ambigious */
+function set_function_list_elem(new_category_s){
+	// toolbar
+	// set function category
+	// set hint list for autocomplete
+
+	// function list
+	// create new function item per function
+	// TODO : get icon for each function
+}
+function ldb_init(){
+	/* fake init because we don't have the backend yet */
+	ldb_set_function_list_per_cateogry("Bridge",["Big","Small","Anciant"]);
+	ldb_set_function_list_per_cateogry("Door",["Big","Small","Wooden"]);
+	ldb_set_function_list_per_cateogry("Window",["Big","Small","Anciant"])
+	ldb_set_function_list_per_cateogry("Wall",["Big","Small","Anciant"])
+	ldb_add_function_per_category("Wall", "Tall");
+}
+/* get the list of functions registered for this category 
+	return : string array, function list */
+function ldb_get_function_list_per_category(category_s){
+		return FDB_m.get(category_s);
+}
+function ldb_set_function_list_per_cateogry(category_s, fun_a_s){
+	FDB_m.set(category_s, fun_a_s );
+	console.log("New cateogry added "+category_s+" : "+fun_a_s);
+}
+/* add a single function name, not an array of function names */
+function ldb_add_function_per_category(category_s, fun_s){
+	// check if catheogry exists
+	let fun_a_s;
+	let cat_exists_b = FDB_m.has(category_s);
+	/* if doesn't exist create it and set our fun_s as the only function,
+	 else append it to the end of the existing function name array */
+	if ( cat_exists_b ){
+		fun_a_s = FDB_m.get(category_s);
+		fun_a_s.push(fun_s);
+		console.log("Added to cateogry "+category_s+" ,new value : "+fun_a_s);
+	}else{
+		fun_a_s = [];
+		fun_a_s.push(fun_s);
+		FDB_m.set(category_s, fun_a_s);
+		console.log("New cateogry added "+category_s+" : "+fun_a_s);
+	}
+}
+/* remove function from category */
+function ldb_delete_function_from_category(category_s, fun_s){
+	let fun_a_s;
+	const cat_exists_b = FDB_m.has(category_s);
+	if ( cat_exists_b ){
+		fun_a_s = FDB_m.get(category_s);
+		const index = fun_a_s.indexOf(fun_s);
+		if (index > -1) {
+  			FDB_m.set( category_s, fun_a_s.splice(index, 1));
+		}
+	}
+}
+/* remove category */
+function ldb_delete_category(category_s){
+	const cat_exists_b = FDB_m.has(category_s);
+	if ( cat_exists_b ){
+		 FDB_m.delete(category_s);
+	}
+}
+/* function menu, class="ui-function-menu" */
+function init_function_menu()
+{
+	let ui_elem_o     = document.getElementsByClassName("ui-function-menu")[0];
+	/* function */
+	let fun_toolbar_o = ui_elem_o.querySelector(".function.toolbar");
+	let fun_list_o    = ui_elem_o.querySelector(".function.list");
+	init_search_bar(fun_toolbar_o, fun_list_o);
+	/* cateogry :  get the list of cateogries */
+	let cat_s_a = Array.from(FDB_m.keys());
+	let cat_toolbar_o = ui_elem_o.querySelector(".category.toolbar");
+	let cat_list_o    = ui_elem_o.querySelector(".cateogry.list");
+	init_category_list(cat_list_o, cat_s_a);
+	// add selected to the first item by first element
+	select_category(cat_list_o, cat_list_o.children[0]);
+}
+
+/* category */
+/* set up category list */
+function init_category_list(cat_list_o, cat_s_a){
+	/* <div class="cateogry list" >
+                <div class="category-item">Bridge</div>
+                [ ... ]
+        </div>
+    */
+    let i;
+    let item_elem_o;
+    let txt_elem_o;
+    for ( i = 0 ; i < cat_s_a.length ; i++ ){
+    	item_elem_o = document.createElement("div");
+    	item_elem_o.classList.add("category-item");
+    	item_elem_o.setAttribute("id",cat_s_a[i]);
+    	txt_elem_o = document.createTextNode(cat_s_a[i]);
+    	item_elem_o.append(txt_elem_o);
+    	cat_list_o.append(item_elem_o);
+    }
+}
+/*  highlight selected category : add the "selected" class to the element
+	and remove it from all the other items */
+function select_category(cat_list_o, clicked_elem_o){
+	const sel_class_s = "selected";
+	let cl_s_a = Array.from(clicked_elem_o.classList); // class list, strings array
+	// check if the clicked item is already selected, if it is then : don't need update
+	if (cl_s_a.indexOf(sel_class_s) === -1){
+		let elem_o;
+		let i;
+		
+		// remove all selected class
+		for( i = 0; i < cat_list_o.children.length ; i++){
+			elem_o = cat_list_o.children[i];
+			elem_o.classList.remove(sel_class_s);
+		}
+		// add selected class
+		clicked_elem_o.classList.add(sel_class_s);
+
+		// update function list
+		// TODO
+	}
 }
