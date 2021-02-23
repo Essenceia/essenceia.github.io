@@ -160,6 +160,7 @@ input[type="search"] {
   margin-top : var( --grid_gap);
   color : var(--col_txt_light);
   border : none;
+  flex : 3;
 }
 ::placeholder,
 ::-ms-input-placeholder{
@@ -172,6 +173,7 @@ input[type="search"]:hover,
 input[type="search"]:focus{
   border : thin solid var(--col_sel_blue_light);
     outline : none;
+/*   flex : 3; */
 }
 
 

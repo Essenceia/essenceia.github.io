@@ -120,3 +120,58 @@ function delete_children(elem_o){
 		}
 	}
 }
+/* return : bool, if the element has the selected class */ 
+function has_class(elem_o, class_s){
+	let cl_s_a = Array.from(elem_o.classList); // class list, strings array
+	if (cl_s_a.indexOf(class_s) === -1){
+		return false;
+	}
+	return true;
+}
+
+function remove_class(parent_elem_o, class_s)
+{
+	let elem_o;
+	for( i = 0; i < parent_elem_o.children.length ; i++){
+		elem_o = parent_elem_o.children[i];
+		elem_o.classList.remove(class_s);
+	}
+}
+function add_class(parent_elem_o, class_s)
+{
+	let elem_o;
+	for( i = 0; i < parent_elem_o.children.length ; i++){
+		elem_o = parent_elem_o.children[i];
+		// TODO : check if we don't already have the class
+		elem_o.classList.add(class_s);
+	}
+}
+/* class_s can only be held by one element per parent, clear all ellements
+    and add it to our clicked element if it isn't already present
+	return : bool, clicked element didn't had the specified class */
+function update_onehot_class(parent_elem_o, clicked_elem_o, class_s){
+	let ret_b; 
+	ret_b = has_class(clicked_elem_o, class_s);
+	if(ret_b === false){
+		// remove the class from the other children elements
+		remove_class(parent_elem_o, class_s);
+		// add to clicked
+		clicked_elem_o.classList.add(class_s);
+	}
+	return !ret_b; 
+}
+
+/* class_s can only NOT be held by one element per parent, add it to all ellements
+    and remove it from our clicked element if it is present
+	return : bool, clicked element had the specified class */
+function update_not_onehot_class(parent_elem_o, clicked_elem_o, class_s){
+	let ret_b; 
+	ret_b = has_class(clicked_elem_o, class_s);
+	if(ret_b === true){
+		// add the class from the other children elements
+		add_class(parent_elem_o, class_s);	
+		// add to clicked
+		clicked_elem_o.classList.remove(class_s);
+	}
+	return !ret_b; 
+}

@@ -46,22 +46,10 @@ function init_category_list(cat_list_o, cat_s_a){
 /*  highlight selected category : add the "selected" class to the element
 	and remove it from all the other items */
 function select_category(cat_list_o, clicked_elem_o){
-	const sel_class_s = "selected";
+	const selected_changed_b = update_onehot_class(cat_list_o, clicked_elem_o, "selected");
 	let new_cat_s;
-	let cl_s_a = Array.from(clicked_elem_o.classList); // class list, strings array
 	// check if the clicked item is already selected, if it is then : don't need update
-	if (cl_s_a.indexOf(sel_class_s) === -1){
-		let elem_o;
-		let i;
-		
-		// remove all selected class
-		for( i = 0; i < cat_list_o.children.length ; i++){
-			elem_o = cat_list_o.children[i];
-			elem_o.classList.remove(sel_class_s);
-		}
-		// add selected class
-		clicked_elem_o.classList.add(sel_class_s);
-
+	if (selected_changed_b === true){
 		// update function list
 		new_cat_s = clicked_elem_o.id;
 		set_function_list_elem(new_cat_s, ldb_get_function_list_per_category(new_cat_s));
