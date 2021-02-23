@@ -142,8 +142,8 @@ function add_class(parent_elem_o, class_s)
 {
 	let i;
 	let elem_o;
-	for( i = 0; i < parent_elem_o.children.length ; i++){
-		elem_o = parent_elem_o.children[i];
+	for( i = 0; i < parent_elem_o.length ; i++){
+		elem_o = parent_elem_o[i];
 		// TODO : check if we don't already have the class
 		elem_o.classList.add(class_s);
 	}

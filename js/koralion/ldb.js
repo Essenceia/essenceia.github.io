@@ -7,7 +7,7 @@ const FDB_m = new Map();
 
 function ldb_init(){
 	/* fake init because we don't have the backend yet */
-	ldb_set_function_list_per_cateogry("Bridge",["Big","Small","Anciant"]);
+	ldb_set_function_list_per_cateogry("Bridge",["Big","Small bridge over the rainbow","Anciant"]);
 	ldb_set_function_list_per_cateogry("Door",["Big","Small","Wooden"]);
 	ldb_set_function_list_per_cateogry("Window",["Big","Small","Anciant"])
 	ldb_set_function_list_per_cateogry("Wall",["Big","Small","Anciant"])

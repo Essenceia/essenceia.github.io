@@ -76,12 +76,12 @@ function focus_ui_elements(id_s){
 	let tmp_elem_o;
 	let menu_s    = "ui-function-menu"
 	document.getEle
-	tmp_elem_o    = document.querySelector("."+menu_s);
+	tmp_elem_o    = document.getElementsByClassName(menu_s);
 	ui_fun_menu_o = document.querySelector("."+menu_s+"#"+id_s);
 	update_not_onehot_class(tmp_elem_o, ui_fun_menu_o , "hidden");
 
 	menu_s        = "ui-arg-menu";
-	tmp_elem_o    = document.querySelector("."+menu_s);
+	tmp_elem_o    = document.getElementsByClassName(menu_s);
 	ui_arg_menu_o = document.querySelector("."+menu_s+"#"+id_s);
 	update_not_onehot_class(tmp_elem_o, ui_arg_menu_o , "hidden");
 
