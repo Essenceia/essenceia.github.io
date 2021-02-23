@@ -14,6 +14,8 @@
     <!-- ui ellements -->
     <script type="text/javascript" src="../js/koralion/arg_menu.js"></script>
     <script type="text/javascript" src="../js/koralion/function_menu.js"></script>
+    <script type="text/javascript" src="../js/koralion/access_menu.js"></script>
+    <!-- main -->
     <script type="text/javascript" src="../js/koralion/dynamic_ui.js"></script>
 </head>
 <body>
@@ -26,15 +28,19 @@
         <div class="ui-common-tools"></div>
         <div class="ui-access-bar">
             <div class="toolbar">
-                <svg class="selected" id="plane" fill="var(--svgcolor)" height="24" viewBox="0 0 24 24" width="24"><path d="M21 15V18H24V20H21V23H19V20H16V18H19V15H21M14 18H3V6H19V13H21V6C21 4.89 20.11 4 19 4H3C1.9 4 1 4.89 1 6V18C1 19.11 1.9 20 3 20H14V18Z"/></svg>
+                <svg id="plane" fill="var(--svgcolor)" height="24" viewBox="0 0 24 24" width="24"><path d="M21 15V18H24V20H21V23H19V20H16V18H19V15H21M14 18H3V6H19V13H21V6C21 4.89 20.11 4 19 4H3C1.9 4 1 4.89 1 6V18C1 19.11 1.9 20 3 20H14V18Z"/></svg>
                 <svg id="sketch" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M12,5.37L11.56,5.31L6,14.9C6.24,15.11 6.4,15.38 6.47,15.68H17.53C17.6,15.38 17.76,15.11 18,14.9L12.44,5.31L12,5.37M6.6,16.53L10.88,19.06C11.17,18.79 11.57,18.63 12,18.63C12.43,18.63 12.83,18.79 13.12,19.06L17.4,16.53H6.6M12,22A1.68,1.68 0 0,1 10.32,20.32L10.41,19.76L6.11,17.21C5.8,17.57 5.35,17.79 4.84,17.79A1.68,1.68 0 0,1 3.16,16.11C3.16,15.32 3.69,14.66 4.42,14.47V9.36C3.59,9.25 2.95,8.54 2.95,7.68A1.68,1.68 0 0,1 4.63,6C5.18,6 5.66,6.26 5.97,6.66L10.38,4.13L10.32,3.68C10.32,2.75 11.07,2 12,2C12.93,2 13.68,2.75 13.68,3.68L13.62,4.13L18.03,6.66C18.34,6.26 18.82,6 19.37,6A1.68,1.68 0 0,1 21.05,7.68C21.05,8.54 20.41,9.25 19.58,9.36V14.47C20.31,14.66 20.84,15.32 20.84,16.11A1.68,1.68 0 0,1 19.16,17.79C18.65,17.79 18.2,17.57 17.89,17.21L13.59,19.76L13.68,20.32A1.68,1.68 0 0,1 12,22M10.8,4.86L6.3,7.44L6.32,7.68C6.32,8.39 5.88,9 5.26,9.25L5.29,14.5L10.8,4.86M13.2,4.86L18.71,14.5L18.74,9.25C18.12,9 17.68,8.39 17.68,7.68L17.7,7.44L13.2,4.86Z"/></svg>
-                <svg id="3d" fill="var(--svgcolor)" height="24" viewBox="0 0 24 24" width="24"><path  d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L6.04,7.5L12,10.85L17.96,7.5L12,4.15M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z"/></svg>
+                <svg id="gen" fill="var(--svgcolor)" height="24" viewBox="0 0 24 24" width="24"><path  d="M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L6.04,7.5L12,10.85L17.96,7.5L12,4.15M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z"/></svg>
             </div>
             
             
         </div>
         <div class="ui-canvas"></div>
-        <div class="ui-function-menu">
+
+
+
+
+        <div class="ui-function-menu hidden" id="gen">
             <div class="resize_contrainer">
                 <div class="handle">&#65087;</div>
                 <div class="handle_buffer"></div>
@@ -58,59 +64,76 @@
                 <div class="category-current">Bridge</div>
                 <input type="search" id="function-search" results=5 class="search" placeholder="Search ..." list="function-list">
                 <datalist id="function-list">
-                <option>Antique bridge</option>
-                <option>Hermione</option>
-                <option>Dumbledore</option>
-                <option>Merlin</option>
-                <option>Gandalf</option>
-                <option>Fat Gandalf</option>
-                <option>Thin Gandalf</option>
-                <option>Premium Gandalf</option>
                 </datalist>
                 <svg id="search" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                 
             </div>
-            <div class="function list">
-                <!--
-                <div class="item-wrapper" id="Antique bridge">
-                    <div class="name">Antique bridge</div>
-                    <img src="../images/sensor_door-24px_2.svg">
-                </div>
-                <div class="item-wrapper" id="Hermione">
-                    <div class="name">Hermione</div>
-                    <img src="../images/sensor_door-24px_3.svg">
-                </div>
-                <div class="item-wrapper" id="Dumbledore">
-                    <div class="name">Dumbledore</div>
-                    <img src="../images/sensor_door-24px.svg">
-                </div>
-                <div class="item-wrapper" id="Merlin">
-                    <div class="name">Merlin</div>
-                    <img src="../images/sensor_door-24px.svg">
-                </div>
-                <div class="item-wrapper" id="Gandalf">
-                    <div class="name">Gandalf</div>
-                    <img src="../images/sensor_door-24px.svg">
-                </div>
-                <div class="item-wrapper" id="Fat Gandalf">
-                    <div class="name">Fat Gandalf</div>
-                    <img src="../images/sensor_door-24px.svg">
-                </div>
-                <div class="item-wrapper" id="Thin Gandalf">
-                    <div class="name">Thin Gandalf</div>
-                    <img src="../images/sensor_door-24px_2.svg">
-                </div>
-                <div class="item-wrapper" id="Premium Gandalf">
-                    <div class="name">Premium Gandalf</div>
-                    <img src="../images/sensor_door-24px_2.svg">
-                </div> -->
-            </div>
+            <div class="function list"> </div>
             
         </div>
-        <div class="ui-arg-menu" >
+
+        <div class="ui-function-menu hidden" id="plane"> </div>
+
+        <div class="ui-function-menu hidden" id="sketch">
+            <div class="resize_contrainer">
+                <div class="handle">&#65087;</div>
+                <div class="handle_buffer"></div>
+            </div>
+            <div class="header" name=""> Sketch menu</div>
+            <!-- category menu -->
+            <div class="cateogry toolbar">
+                <!-- directory -->
+                <svg id="dir" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+                <!-- create new category -->
+                <svg  id="new_dir" fill="var(--svgcolor)"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg>
+                <!-- add category -->
+                <svg  id="new" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </div>
+            <div class="cateogry list" >
+                <!-- <div class="category-item" id="Bridge">Bridge</div> -->
+            </div>
+            
+            <!-- function menu -->
+            <div class="function toolbar" data-category="bridge" >
+                <div class="category-current">Bridge</div>
+                <input type="search" id="function-search" results=5 class="search" placeholder="Search ..." list="function-list">
+                <datalist id="function-list">
+                </datalist>
+                <svg id="search" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                
+            </div>
+            <div class="function list"> </div>
+            
+        </div>
+
+
+
+        <div class="ui-arg-menu hidden" id="gen">
             
             <div class="header" name="">Function</div>
             <div class="args" data-category="bridge" data-function="effeil">
+            </div>
+            <div class="resize_contrainer">
+                <div class="handle">&#9001;</div>
+                <div class="handle_buffer"></div>
+            </div>
+            
+        </div>
+        <div class="ui-arg-menu hidden" id="plane">
+            
+            <div class="header" name="">Plane</div>
+            <div class="args">
+            </div>
+            <div class="resize_contrainer">
+                <div class="handle">&#9001;</div>
+                <div class="handle_buffer"></div>
+            </div>
+            
+        </div>
+                <div class="ui-arg-menu hidden" id="sketch">
+            
+            <div class="header" name="">Point</div>
+            <div class="args">
             </div>
             <div class="resize_contrainer">
                 <div class="handle">&#9001;</div>

@@ -131,6 +131,7 @@ function has_class(elem_o, class_s){
 
 function remove_class(parent_elem_o, class_s)
 {
+	let i;
 	let elem_o;
 	for( i = 0; i < parent_elem_o.children.length ; i++){
 		elem_o = parent_elem_o.children[i];
@@ -139,6 +140,7 @@ function remove_class(parent_elem_o, class_s)
 }
 function add_class(parent_elem_o, class_s)
 {
+	let i;
 	let elem_o;
 	for( i = 0; i < parent_elem_o.children.length ; i++){
 		elem_o = parent_elem_o.children[i];

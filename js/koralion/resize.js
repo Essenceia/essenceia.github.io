@@ -26,7 +26,7 @@ function init_resize(){
 		let handle_o      = resize_wrap_o.querySelector(".handle_buffer");
 		let ui_elem_o     = resize_wrap_o.parentElement;
 
-		switch (ui_elem_o.className) {
+		switch (ui_elem_o.classList[0]) {
 			case "ui-arg-menu":
 				border_s = "border-left";
 				grid_var_s = "--col_3_max";

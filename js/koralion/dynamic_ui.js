@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	init_arg_menu();
 	init_resize();
 	init_function_menu();
+	init_access_menu();
 });
 
 // TODO : remove the following function from the code, this was a mistake 

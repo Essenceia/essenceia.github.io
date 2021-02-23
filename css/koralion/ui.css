@@ -393,3 +393,10 @@ svg.selected{
 .ui .hidden{
   visibility: hidden;
 }
+
+.ui-function-menu#plane{
+  height: 0;
+}
+.ui-function-menu#3d{
+
+}
