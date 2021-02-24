@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="../css/koralion/colors.css">
     <link rel="stylesheet" href="../css/koralion/margin.css">
     <link rel="stylesheet" href="../css/koralion/ui.css">
+    <link rel="stylesheet" href="../css/koralion/resize.css">
     <script type="text/javascript" src="../js/koralion/define.js"></script>
     <!-- utils -->
     <script type="text/javascript" src="../js/koralion/ldb.js"></script>
@@ -36,12 +37,8 @@
             
         </div>
         <div class="ui-canvas"></div>
-
-
-
-
         <div class="ui-function-menu hidden" id="gen">
-            <div class="resize_contrainer">
+            <div class="resize_contrainer vertical">
                 <div class="handle">&#65087;</div>
                 <div class="handle_buffer"></div>
             </div>
@@ -71,24 +68,15 @@
             <div class="function list"> </div>
             
         </div>
-
         <div class="ui-function-menu hidden" id="plane"> </div>
-
         <div class="ui-function-menu hidden" id="sketch">
-            <div class="resize_contrainer">
+            <div class="resize_contrainer vertical">
                 <div class="handle">&#65087;</div>
                 <div class="handle_buffer"></div>
             </div>
             <div class="header" name=""> Sketch menu</div>
             <!-- category menu -->
-            <div class="cateogry toolbar">
-                <!-- directory -->
-                <svg id="dir" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
-                <!-- create new category -->
-                <svg  id="new_dir" fill="var(--svgcolor)"  xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M20 6h-8l-2-2H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-1 8h-3v3h-2v-3h-3v-2h3V9h2v3h3v2z"/></svg>
-                <!-- add category -->
-                <svg  id="new" fill="var(--svgcolor)" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0z" fill="none"/><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            </div>
+            <div class="cateogry toolbar"> </div>
             <div class="cateogry list" >
                 <!-- <div class="category-item" id="Bridge">Bridge</div> -->
             </div>
@@ -105,41 +93,38 @@
             <div class="function list"> </div>
             
         </div>
-
-
-
-        <div class="ui-arg-menu hidden" id="gen">
-            
-            <div class="header" name="">Function</div>
-            <div class="args" data-category="bridge" data-function="effeil">
-            </div>
-            <div class="resize_contrainer">
+        <div class="ui-right-menu">
+            <div class="resize_contrainer horizontal">
                 <div class="handle">&#9001;</div>
                 <div class="handle_buffer"></div>
             </div>
-            
-        </div>
-        <div class="ui-arg-menu hidden" id="plane">
-            
-            <div class="header" name="">Plane</div>
-            <div class="args">
-            </div>
-            <div class="resize_contrainer">
-                <div class="handle">&#9001;</div>
+            <div class="resize_contrainer vertical">
+                <div class="handle">&#65087;</div>
                 <div class="handle_buffer"></div>
             </div>
-            
-        </div>
-                <div class="ui-arg-menu hidden" id="sketch">
-            
-            <div class="header" name="">Point</div>
-            <div class="args">
+            <div class="ui-hierarchy-menu">
+                <!-- <div class="ui-hierarchy-tab"  id="sketch"></div>
+                <div class="ui-hierarchy-tab"  id="gen"></div>
+                <div class="ui-hierarchy-tab"  id="exp"></div>
+                <div class="ui-hierarchy-body" id="sketch"></div>
+                <div class="ui-hierarchy-body" id="gen"></div>
+                <div class="ui-hierarchy-body" id="exp"></div> -->
             </div>
-            <div class="resize_contrainer">
-                <div class="handle">&#9001;</div>
-                <div class="handle_buffer"></div>
+<!--             <div class="ui-arg-menu hidden" id="gen">
+                <div class="header" name="">Function</div>
+                <div class="args" data-category="bridge" data-function="effeil">
+                </div>
+            </div> -->
+            <!-- <div class="ui-arg-menu hidden" id="plane">
+                <div class="header" name="">Plane</div>
+                <div class="args">
+                </div>
             </div>
-            
+            <div class="ui-arg-menu hidden" id="sketch">
+                <div class="header" name="">Point</div>
+                <div class="args">
+                </div>
+            </div> -->
         </div>
         <div class="ui-footer"></div>
     </div>

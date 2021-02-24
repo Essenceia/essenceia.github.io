@@ -27,10 +27,17 @@ function init_resize(){
 		let ui_elem_o     = resize_wrap_o.parentElement;
 
 		switch (ui_elem_o.classList[0]) {
-			case "ui-arg-menu":
-				border_s = "border-left";
-				grid_var_s = "--col_3_max";
-				vertical_b = false;
+			case "ui-right-menu":
+				if (resize_wrap_o.classList[1] === "vertical"){
+					border_s   = "border-top";
+					grid_var_s = "--row_arg_height";
+					vertical_b = true;
+				}else{
+					border_s   = "border-left";
+					grid_var_s = "--col_3_max";
+					vertical_b = false;
+				}
+				
 				break;
 			case "ui-function-menu":
 				border_s = "border-top"

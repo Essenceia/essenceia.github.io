@@ -1,0 +1,76 @@
+.resize_contrainer{
+  line-height: 0.5;
+}
+
+.resize_contrainer.horizontal{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr auto 1fr;
+}
+.resize_contrainer.vertical{
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: 1fr;
+}
+
+.resize_contrainer .handle_buffer
+{
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+.resize_contrainer .handle{
+  font-size: var(--text_big_size);
+  color : var(--col_txt_dark);
+}
+.handle:focus ,
+.resize_contrainer:hover .handle{
+  color : var(--col_sel_blue_light);
+  font-weight: 100;
+  margin : auto;
+}
+.resize_contrainer.horizontal .handle_buffer:hover{
+  transform: scaleX(70) scaleY(6);
+/*   background-color: blue; */
+}
+.resize_contrainer.vertical .handle_buffer:hover{
+  transform: scaleX(6) scaleY(50) ;
+/*   background-color: blue; */
+}
+/*right menu*/
+.ui-right-menu .resize_contrainer.horizontal{
+  grid-column: 1;
+  grid-row : 1 / -1;
+}
+
+.ui-right-menu .resize_contrainer.horizontal .handle_buffer,
+.ui-right-menu .resize_contrainer.horizontal .handle{
+  grid-row: 2;
+  grid-column: 1;
+}
+.ui-right-menu .resize_contrainer.vertical{
+  grid-row : 3;
+  grid-column: 1/-1;
+}
+.ui-right-menu .resize_contrainer.vertical .handle_buffer,
+.ui-right-menu .resize_contrainer.vertical .handle{
+  grid-row: 3;
+  grid-column: 2;
+}
+
+
+
+/* UI function menu */
+/* resize */
+.ui-function-menu .resize_contrainer{
+  grid-column: 1/-1;
+  grid-row : 1;
+
+}
+.ui-function-menu .resize_contrainer .handle,
+.ui-function-menu .resize_contrainer .handle_buffer
+{
+  grid-row: 1;
+  grid-column: 2;
+/*   background-color: blue; */
+}
