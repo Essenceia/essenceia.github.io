@@ -50,15 +50,13 @@
 }
 .ui-right-menu .resize_contrainer.vertical{
   grid-row : 3;
-  grid-column: 1/-1;
+  grid-column: 2;
 }
 .ui-right-menu .resize_contrainer.vertical .handle_buffer,
 .ui-right-menu .resize_contrainer.vertical .handle{
   grid-row: 3;
   grid-column: 2;
 }
-
-
 
 /* UI function menu */
 /* resize */

@@ -10,6 +10,7 @@ function init_resize(){
 	let ui_main_o; // ui master element
 	let ui_elem_o;
 
+
 	let mouse_o;
 	DRAG_V_B = false;
 	mouse_o = window.event;
@@ -22,6 +23,7 @@ function init_resize(){
 		let border_s;
 		let grid_var_s;
 		let vertical_b; 
+		let offset_i;
 		let resize_wrap_o = resize_wrap_o_a[i];
 		let handle_o      = resize_wrap_o.querySelector(".handle_buffer");
 		let ui_elem_o     = resize_wrap_o.parentElement;
@@ -32,10 +34,12 @@ function init_resize(){
 					border_s   = "border-top";
 					grid_var_s = "--row_arg_height";
 					vertical_b = true;
+					offset_i   = 35;
 				}else{
 					border_s   = "border-left";
 					grid_var_s = "--col_3_max";
 					vertical_b = false;
+					offset_i   = 5;
 				}
 				
 				break;
@@ -43,6 +47,7 @@ function init_resize(){
 				border_s = "border-top"
 				grid_var_s = "--row_4_max";
 				vertical_b = true;
+				offset_i   = 70;
 				break;
 			case "ui-access-bar":
 				border_s = "border-right";
@@ -62,8 +67,11 @@ function init_resize(){
 		// handle_o.addEventListener("mouseenter", resize_ui_drag_start.bind(null, resize_wrap_o, border_s ));
 		handle_o.addEventListener("mousedown", resize_ui_drag_start.bind(null, resize_wrap_o, border_s ));
 		handle_o.addEventListener("mouseup", resize_ui_drag_end.bind(null, resize_wrap_o, border_s ));
-		handle_o.addEventListener("mousemove", function(event) { resize_ui_drag(ui_main_o, ui_elem_o, grid_var_s, vertical_b, event)} );
-
+		if ( vertical_b === true){
+			handle_o.addEventListener("mousemove", function(event) { resize_veritcal(ui_main_o, ui_elem_o, grid_var_s, event, offset_i)} );
+		}else{
+			handle_o.addEventListener("mousemove", function(event) { resize_horizental(ui_main_o, ui_elem_o, grid_var_s, event, offset_i)} );
+		}
 		// handle_o.addEventListener("mouseleave", resize_ui_drag_end.bind(null, resize_wrap_o, border_s ));
 	}
 }
@@ -80,6 +88,34 @@ function resize_ui_drag_end(drag_field_o, border_s ){
 	DRAG_V_B = false; 
 	//console.log("hover leave");
 }
+function resize_veritcal(ui_main_o, ui_o, grid_var_s, mouse_o, offset_i){
+	if ( DRAG_V_B === true){
+		let new_size_i;
+		let elem_rect_o = ui_o.getBoundingClientRect(); 
+		/* vertical element */
+		new_size_i = elem_rect_o.bottom - event.screenY + offset_i;
+			// set new size
+		/* negative value can occure when the mouse goes bellow the bounds of the window, small check to prevent that from happening and
+		affecting the layout */
+		if ( new_size_i > 0){
+			ui_main_o.style.setProperty( grid_var_s, new_size_i + "px");
+		}
+	}
+}
+function resize_horizental(ui_main_o, ui_o, grid_var_s, mouse_o, offset_i){
+	if ( DRAG_V_B === true){
+		let new_size_i;
+		let elem_rect_o = ui_o.getBoundingClientRect();
+		/* vertical element */
+		new_size_i =  elem_rect_o.right - event.screenX + offset_i;
+			// set new size
+		/* negative value can occure when the mouse goes bellow the bounds of the window, small check to prevent that from happening and
+		affecting the layout */
+		if ( new_size_i > 0){
+			ui_main_o.style.setProperty( grid_var_s, new_size_i + "px");
+		}
+	}
+}
 function resize_ui_drag(ui_main_o, ui_o, grid_var_s, vertical_b,mouse_o  ){
 	if ( DRAG_V_B === true){
 		let new_size_i;
@@ -90,7 +126,7 @@ function resize_ui_drag(ui_main_o, ui_o, grid_var_s, vertical_b,mouse_o  ){
 			new_size_i =  elem_rect_o.right - event.screenX + 5;
 		}else{
 			/* horizontal element */
-			new_size_i = elem_rect_o.bottom - event.screenY + 70;
+			new_size_i = elem_rect_o.bottom - event.screenY + 35;
 		}
 		// set new size
 		/* negative value can occure when the mouse goes bellow the bounds of the window, small check to prevent that from happening and
