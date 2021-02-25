@@ -1,0 +1,16 @@
+.hir-item{
+	display: flex;
+}
+.hir-item .hir-icon{
+	width : var(--txt_base_width);
+	height : var(--txt_base_width);
+/* 	margin: auto; */
+	margin-top : auto;
+	margin-bottom: auto;
+	background-color: pink;
+}
+.hir-item .hir-txt{
+	margin-left: var(--mar_width);
+	margin-top : auto;
+	margin-bottom: auto;
+}

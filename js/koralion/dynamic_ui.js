@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	init_resize();
 	init_function_menu();
 	init_access_menu();
+	init_hierarchy();
 });
 
 // TODO : remove the following function from the code, this was a mistake 

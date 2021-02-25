@@ -115,9 +115,7 @@ select:focus{
   outline :none;
 }
 .select-variadique {
-/*   width: 200px; */
-/*   overflow: hidden; */
-/*   width: 100%; */
+  margin-top : var(--mar_height);
   display: grid;
   --arrow_width : calc( var(--text_base_size) * 2 );
   grid-template-columns: 1fr var(--arrow_width);
