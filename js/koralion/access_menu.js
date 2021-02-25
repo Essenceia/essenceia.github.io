@@ -8,24 +8,9 @@ function init_access_menu(){
 	let i;
 	for ( i = 0 ; i < access_menu_o_a.children.length ; i++ ){
 		elem_o = access_menu_o_a.children[i];
-		switch (elem_o.id){
-			case "plane" :
-				elem_o.addEventListener("click", plane_clicked.bind(null, access_menu_o_a, elem_o, elem_o.id));
-				break;
-			case "gen" :
-				elem_o.addEventListener("click", gen_clicked.bind(null, access_menu_o_a, elem_o, elem_o.id));
-				break;
-			case "sketch":
-				elem_o.addEventListener("click", sketch_clicked.bind(null, access_menu_o_a, elem_o, elem_o.id));
-				break;
-			default :
-				console.log("Access bar id not found "+elem_o.id);
-				break;
-		}
+		elem_o.addEventListener("click", fsm_access_bar_clicked.bind(null,elem_o.id));
 	}
-	elem_o = access_menu_o_a.querySelector("#plane");
-	// set default selected : plane
-	plane_clicked(access_menu_o_a, elem_o, "plane");
+	fsm_access_bar_clicked("plane");
 }
 
 /* create a new plane argument menu */

@@ -49,6 +49,11 @@
   font-size : var(--text_base_size); 
   
   cursor : default;
+  /* make text unselectable */ 
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .ui-header{
   grid-column: 1/4;
