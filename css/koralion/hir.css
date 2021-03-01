@@ -1,16 +1,41 @@
+.ui-hierarchy-header svg#sketch.selected{
+  --svgcolor : var(--col_type_sketch);
+}
+.ui-hierarchy-header svg#gen.selected{
+  --svgcolor : var(--col_type_gen);
+}
+.ui-hierarchy-header svg#exp.selected{
+  --svgcolor : var(--col_type_exp);
+}
 .hir-item{
-	display: flex;
+	grid-column: 1/-1;
+	display: grid;
+	grid-auto-columns: auto;
+	grid-template-columns: var(--text_big_size) auto;
+
 }
 .hir-item .hir-icon{
-	width : var(--txt_base_width);
-	height : var(--txt_base_width);
+	grid-column: 1;
+	grid-row : 1;
+	width :  var(--text_base_size);
+	height : var(--text_base_size);
 /* 	margin: auto; */
 	margin-top : auto;
 	margin-bottom: auto;
-	background-color: pink;
+/* 	background-color: pink; */
+		background-size: contain;
+  background-repeat: no-repeat;
 }
 .hir-item .hir-txt{
+	grid-column: 2;
+	grid-row : 1;
+	
 	margin-left: var(--mar_width);
 	margin-top : auto;
 	margin-bottom: auto;
+
+/* 	align-self: start; */
+}
+.hir-item.type1 .hir-icon  {
+	filter : revert
 }

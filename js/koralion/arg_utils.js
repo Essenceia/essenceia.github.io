@@ -1,4 +1,4 @@
-/* slider */
+/* argument input field : slider */
 function add_slider_field(arg_o, name_s, value_f , min_f , max_f , row_i){
 	let slider_o; 
 	//let slider_progress_o;
@@ -98,6 +98,130 @@ function add_arg_slider(arg_o, txt_s, default_num_f, min_f, max_f, row_i ){
 
 	return field_o;
 }
+/* argument input field : point input field */
+function add_drop_box_field(arg_o, txt_s , bounded_type_i, min_i,type_i, row_i){
+// <div class="box-field sketch">
+//         <div class="name">Point</div>
+//         <div class="cnt">
+//             <div class="cur-cnt"> 0</div>
+//             <div class="sep-cnt">/</div>
+//             <div class="max-cnt">4</div>
+//         </div>
+//         <div class="box-input-field">
+//				<input list="<type_s>-list" type="text" class="box-item" placeholder="+" autocomplete="on">
+//         </div>
+// </div>
+	let field_o     = document.createElement("div");
+	field_o.classList.add('box-field');
+	field_o.style.setProperty("grid-row",row_i);
+
+	let name_o = document.createElement("div");
+	name_o.classList.add('name');
+	txt_o = document.createTextNode(txt_s);
+	name_o.append(txt_o);
+
+	// cnt 
+	let cnt_o = document.createElement("div");
+	cnt_o.classList.add('cnt');
+
+	let current_cnt_o         = document.createElement("div");
+	current_cnt_o.classList.add('cur-cnt');
+	current_cnt_o.textContent = "0";
+	let seperator_cnt_o       = document.createElement("div");
+	seperator_cnt_o.classList.add('sep-cnt');
+	seperator_cnt_o.textContent = "/";
+
+	let max_cnt_o         = document.createElement("div");
+	max_cnt_o.classList.add('cur-cnt');
+	field_o.dataset.bound_type  = bounded_type_i;
+	field_o.dataset.bound_value = min_i;
+	// determine if we have a strict number of upper bounded ellements, a range, or an unlimited number
+	switch (bounded_type_i){
+		case RANGE_BOUND_TYPE.strict :
+			max_cnt_o.textContent      = min_i;
+			break;
+		case RANGE_BOUND_TYPE.lower_bounded :
+			max_cnt_o.textContent      = min_i + "+";
+	}
+	cnt_o.append(current_cnt_o);
+	cnt_o.append(seperator_cnt_o);
+	cnt_o.append(max_cnt_o);
+	
+
+	let box_o  = document.createElement("div");
+	box_o.classList.add('box-input-field');
+
+
+	// get reference to corresponding hir list
+	let datalist_elem_o = h_get_datalist_from_type(type_i);
+
+	
+
+	for ( let i = 0 ; i < field_o.dataset.bound_value; i++ ){
+		// create empty input box
+		// <input list="<type_s>-list" type="text" class="box-item" placeholder="+" autocomplete="on">
+		let box_item_o = document.createElement("input");
+		box_item_o.classList.add('box-item');
+		box_item_o.setAttribute("autocomplete" , "on");
+		box_item_o.setAttribute("placeholder" , "+");
+		box_item_o.setAttribute("type" , "text");
+		box_item_o.setAttribute("list" , TypeToString[type_i]+"-list");
+		box_item_o.addEventListener('input', box_item_keyboard_input.bind(null,box_item_o, datalist_elem_o, current_cnt_o));
+
+		box_o.append(box_item_o);
+	}
+	field_o.append(name_o);
+	field_o.append(cnt_o);
+	field_o.append(box_o);
+	arg_o.append(field_o);
+
+	return row_i + 1;
+}
+/*  new input to the box item, update the number of items if valid, set invalid pseudo class on the item if not valid
+	validity is conditioned on having a matching object of type_s with the given uid
+	User will enter a new name, we check the map to see if we have a match with the correct uid*/
+function box_item_keyboard_input(box_item_o, datalist_elem_o, current_cnt_o){
+	let item_value_s = box_item_o.value;
+	let valid_value_b; 
+	if (item_value_s.length > 0){
+		// check if we have a corresponding element
+		let match_elem_o = datalist_elem_o.querySelector("option[value='"+item_value_s+"']");
+		valid_value_b = ( match_elem_o !== null );
+		add_validity_class(box_item_o, valid_value_b);
+		if ( !valid_value_b ){
+			console.log("No match value "+item_value_s);
+			
+		}else{
+			// get id for element and add it to the item and put it down as valid
+			box_item_o.id = match_elem_o.id;
+			// increment current counter
+			console.log("TODO number");
+		}
+	}
+}
+/* check if we have draged an object of the correct type */
+function box_item_drag_input(){
+
+}
+/* update the cnt of items */
+function update_current_cnt(){
+
+}
+/* 	add the valid or invalid clas to the element, 
+	if valid_b is true we add valid, if not, we add invalid
+	clear occurence of valid and invalid if present */
+function add_validity_class(elem_o, valid_b){
+	if(valid_b){
+		elem_o.classList.remove("invalid");
+		elem_o.classList.add("valid");
+	}else{
+		elem_o.classList.remove("valid");
+		elem_o.classList.add("invalid");
+	}
+	console.log("Validity added "+valid_b);
+}
+/* -------------- */
+
 function arg_size_grid(arg_o){
 	let row_s;
 	let row_i; // get the number of elements in the arg_o div and scale based on that

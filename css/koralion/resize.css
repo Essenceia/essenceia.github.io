@@ -19,6 +19,7 @@
   width: 100%;
   cursor: pointer;
 }
+
 .resize_contrainer .handle{
   font-size: var(--text_big_size);
   color : var(--col_txt_dark);

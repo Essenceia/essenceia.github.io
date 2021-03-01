@@ -13,8 +13,17 @@
 --col_sel_blue_light : #42b7f0;
 --col_sel_blue_light_transparent : #42b7f0;
 --col_sel_blue : #0F72BD;
+ 
+  /* color per type */
+  --col_type_sketch :#7CB8DE; /* dark blue */
+  --col_type_gen    :#C3DF7F; /* green */
+  --col_type_plane  :#DE6666; /* red */
+  --col_type_exp    :#DEDC66; /* yellow ? */
+  
+  --col_invalid     :#D74242; /* red */
   
     /* defines */
+  --text_small_size: 11px;
   --text_base_size : 13px;
   --text_big_size  : 16px;
 
