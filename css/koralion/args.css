@@ -43,6 +43,12 @@
 /*   grid-row-gap: var(--mar_height); */
   grid-template-rows: calc(var(--mar_height) + var(--text_base_size)) auto;
 }
+.box-field.point .cnt .cur-cnt{
+  color : var(--col_type_sketch);
+}
+.box-field.point .cnt .cur-cnt.valid{
+  color : #31E33D;
+}
 .name{
   color : var(--col_txt_light);
 }
@@ -52,17 +58,14 @@
  
   margin-bottom: auto;
 }
-.sketch {
-  color : var(--col_type_sketch);
-}
-.cnt .cur-cnt{
-  
-}
+
+.cnt .sep-cnt,
 .cnt .max-cnt{
    margin-top : auto;
   font-size: var(--text_small_size);
   color : var(--col_txt_unfocus);
 }
+
 .box-input-field{
    
   grid-column: 1/-1;
@@ -77,9 +80,6 @@
 /*   border-radius: 3%; */
 }
 
-.box-input-field .elem2{
-  height: calc(var(--mar_height) + var(--text_base_size) * 2);
-}
 .box-input-field > *{
     text-align: center;
 }
@@ -97,6 +97,9 @@
   border : none;
 /*   font-weight: 800; */
 }
+.box-field.point .box-input-field input[type=text]{
+  color : var(--col_type_sketch);
+}
 .box-input-field input[type=text]:hover{
   background-color: var(--col_sel_light);
 }
@@ -109,7 +112,7 @@
 .exp .box-input-field  input[type=text]{
   color : var(--col_type_exp);
 }
-.box-input-field input[type=text]:invalid{
+.box-field .box-input-field input[type=text].invalid{
   color : var(--col_invalid);
 }
 

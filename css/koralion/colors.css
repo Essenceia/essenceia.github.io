@@ -21,6 +21,7 @@
   --col_type_exp    :#DEDC66; /* yellow ? */
   
   --col_invalid     :#D74242; /* red */
+  --col_valid       :#D74242; /* green */
   
     /* defines */
   --text_small_size: 11px;

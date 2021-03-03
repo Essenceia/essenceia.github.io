@@ -26,8 +26,7 @@ function get_engine_args_from_variadique(category_s, fun_name_s, variadique_s){
 	if ( variadique_s == "World"){
 	tmp_json_s = '{ "args" : [{"type": "slider","name": "Slider","min": 0,	"max": 10,	"value": 6},{"type": "slider","name": "Not Slider","min": 0,	"max": 10,	"value": 6}, {	"type": "slider",	"name": "Slider_2",	"min": 0,	"max": 10,	"value": 6 }]}';
 	}else{
-		tmp_json_s = '{ "args" : [{"type": "slider","name": "Slider0","min": 0,	"max": 10,	"value": 6}, {"type": "box","name": "Point","bound_type":1, "min": 3, "obj_type": 0}, {	"type": "slider",	"name": "Slider_3",	"min": 0,	"max": 10,	"value": 6 }]}';
-	
+		tmp_json_s = '{ "args" : [{"type": "slider","name": "Slider0","min": 0,	"max": 10,	"value": 6}, {"type": "box","name": "Point","bound_type":0, "min": 3, "obj_type": '+TypeEnum.POINT+'}, {	"type": "slider",	"name": "Slider_3",	"min": 0,	"max": 10,	"value": 6 }]}';
 	}
 	try{
 		ret_val_o = JSON.parse(tmp_json_s);
@@ -87,7 +86,7 @@ function variadique_choice_changed(arg_o, category_s, fun_name_s, selected_optio
 					break;
 				case ARG_TYPE.box:
 					// {"type": "box","name": "Point","bound_type":0, "min": 3, "obj_type": 0}, 
-					row_i = add_drop_box_field(arg_o, arguments_a.name , arguments_a.bound_type , arguments_a.min, arguments_a.type, row_i);
+					row_i = add_drop_box_field(arg_o, arguments_a.name , arguments_a.bound_type , arguments_a.min, arguments_a.obj_type, row_i);
 					break;
 			default :
 				console.error("Unhandled agument type "+ arguments_a.type);

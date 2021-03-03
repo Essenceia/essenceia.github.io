@@ -160,7 +160,8 @@ function _h_draw_node(ui_o, node_o){
 		elem_o.classList.add("type"+node_o.type_i);
 		elem_o.style.setProperty("padding-left","calc( var(--mar_big_width) * "+ node_o.depth_i+" )");
 		elem_o.setAttribute("draggable", true);
-		elem_o.addEventListener("dragstart", h_item_drag_start.bind(null,elem_o));
+		elem_o.addEventListener("dragstart",  function(event) { h_item_drag_start(event,node_o.type_i)});
+		elem_o.addEventListener("drop", h_item_drop(event));
 
 		icon_elem_o = document.createElement("object");
 		icon_elem_o.classList.add("hir-icon");
@@ -179,11 +180,14 @@ function _h_draw_node(ui_o, node_o){
 		parent_uid_i  = node_o.parent_node_o.uid_i;
 		if (parent_uid_i !== ROOT_UID){
 			parent_elem_o = ui_o.querySelector("#h"+parent_uid_i);
+			elem_insert_after(parent_elem_o, elem_o);
 			//parent_elem_o.insertAdjacentElement('afterend' ,elem_o);
 		}else{
 			parent_elem_o = ui_o;
+			parent_elem_o.append(elem_o);
 		}
-		parent_elem_o.append(elem_o);
+		
+		//parent_elem_o.append(elem_o);
 
 		_h_add_to_datalist(ui_o, node_o);
 	}
@@ -212,8 +216,29 @@ function _h_add_to_datalist(ui_o, node_o){
 /* get reference to datalist DOM from type
 	return : pointer to DOM, datalist */
 function h_get_datalist_from_type(type_i){
-	return DHL_m.get(type_i);
+	if(DHL_m.has(type_i) === true){
+		return DHL_m.get(type_i);
+	}else{
+		console.error("Key of type not found in map "+type_i);
+		return null;
+	}
+	
 }
-function h_item_drag_start(item_elem_o){
+function h_item_drag_start(event, type_i){
+	event.dataTransfer.setData("text/plain", event.target.textContent);
+	event.dataTransfer.setData("id" , event.target.id);
+	event.dataTransfer.setData("type",  TypeToString[type_i]);
+	event.dataTransfer.effectAllowed = "copy";
 	console.log("Drag start");
+}
+
+function h_item_drop(event){
+	// event.preventDefault();
+	// let data_transfer = event.dataTransfer;
+	// const item_txt = event.dataTransfer.getData("text/plain");
+	// const item_id  = event.dataTransfer.getData("id");
+ //  	event.target.textContent = item_txt;
+ //  	event.target.id = item_id;
+  	console.log("Drop item");
+  	
 }

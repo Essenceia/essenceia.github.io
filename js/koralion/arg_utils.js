@@ -113,6 +113,7 @@ function add_drop_box_field(arg_o, txt_s , bounded_type_i, min_i,type_i, row_i){
 // </div>
 	let field_o     = document.createElement("div");
 	field_o.classList.add('box-field');
+	field_o.classList.add(TypeToString[type_i]);
 	field_o.style.setProperty("grid-row",row_i);
 
 	let name_o = document.createElement("div");
@@ -132,7 +133,7 @@ function add_drop_box_field(arg_o, txt_s , bounded_type_i, min_i,type_i, row_i){
 	seperator_cnt_o.textContent = "/";
 
 	let max_cnt_o         = document.createElement("div");
-	max_cnt_o.classList.add('cur-cnt');
+	max_cnt_o.classList.add('max-cnt');
 	field_o.dataset.bound_type  = bounded_type_i;
 	field_o.dataset.bound_value = min_i;
 	// determine if we have a strict number of upper bounded ellements, a range, or an unlimited number
@@ -166,8 +167,9 @@ function add_drop_box_field(arg_o, txt_s , bounded_type_i, min_i,type_i, row_i){
 		box_item_o.setAttribute("placeholder" , "+");
 		box_item_o.setAttribute("type" , "text");
 		box_item_o.setAttribute("list" , TypeToString[type_i]+"-list");
-		box_item_o.addEventListener('input', box_item_keyboard_input.bind(null,box_item_o, datalist_elem_o, current_cnt_o));
-
+		box_item_o.addEventListener('input', box_item_keyboard_input.bind(null,box_o,box_item_o, datalist_elem_o, current_cnt_o, max_cnt_o));
+		box_item_o.addEventListener("dragover", function(event) { box_item_drag_over(event, type_i)});
+		box_item_o.addEventListener("dragend", function(event) { box_item_drag_input(event,box_o,type_i, box_item_o, datalist_elem_o, current_cnt_o, max_cnt_o )});
 		box_o.append(box_item_o);
 	}
 	field_o.append(name_o);
@@ -180,13 +182,20 @@ function add_drop_box_field(arg_o, txt_s , bounded_type_i, min_i,type_i, row_i){
 /*  new input to the box item, update the number of items if valid, set invalid pseudo class on the item if not valid
 	validity is conditioned on having a matching object of type_s with the given uid
 	User will enter a new name, we check the map to see if we have a match with the correct uid*/
-function box_item_keyboard_input(box_item_o, datalist_elem_o, current_cnt_o){
+function box_item_keyboard_input(box_o, box_item_o, datalist_elem_o, current_cnt_o, max_cnt_o){
 	let item_value_s = box_item_o.value;
 	let valid_value_b; 
 	if (item_value_s.length > 0){
 		// check if we have a corresponding element
 		let match_elem_o = datalist_elem_o.querySelector("option[value='"+item_value_s+"']");
 		valid_value_b = ( match_elem_o !== null );
+		if(valid_value_b === true){
+			// check there is not duplicate, if there is, set to invalid
+			let duplicate_elem_o = box_o.querySelector("[id='"+match_elem_o.id+"'");
+			if (duplicate_elem_o !== null){
+				valid_value_b = false;
+			}
+		}
 		add_validity_class(box_item_o, valid_value_b);
 		if ( !valid_value_b ){
 			console.log("No match value "+item_value_s);
@@ -194,18 +203,41 @@ function box_item_keyboard_input(box_item_o, datalist_elem_o, current_cnt_o){
 		}else{
 			// get id for element and add it to the item and put it down as valid
 			box_item_o.id = match_elem_o.id;
-			// increment current counter
-			console.log("TODO number");
+
 		}
 	}
+	update_current_cnt(box_o, current_cnt_o, max_cnt_o);
+	
+}
+function box_item_drag_over(event, type_i){
+ 	const type_match = event.dataTransfer.getData("type") === TypeToString[type_i];
+  	if (type_match) {
+    	console.log("type match");
+
+
+ 	}
+ 	event.preventDefault();
 }
 /* check if we have draged an object of the correct type */
-function box_item_drag_input(){
-
+function box_item_drag_input(event,box_o, type_i , box_item_o, datalist_elem_o, current_cnt_o, max_cnt_o ){
+ 	const type_match = event.dataTransfer.types.includes(TypeToString[type_i]);
+  	if (type_match) {
+    	console.log("type match");
+ 	}
+ 	event.preventDefault();
 }
-/* update the cnt of items */
-function update_current_cnt(){
-
+/* update the cnt of items, count the number of children with the valid class*/
+function update_current_cnt(box_field_o, current_cnt_o, max_cnt_o){
+	let valid_class_a_o;
+	let i;
+	valid_class_a_o = box_field_o.getElementsByClassName("valid");
+	if ( valid_class_a_o !== null){
+		i = valid_class_a_o.length;
+	}else{
+		i = 0;
+	}
+	add_validity_class(current_cnt_o , ( max_cnt_o.textContent === "" + i ) );
+	current_cnt_o.textContent = i;
 }
 /* 	add the valid or invalid clas to the element, 
 	if valid_b is true we add valid, if not, we add invalid
@@ -300,4 +332,8 @@ function update_not_onehot_class(parent_elem_o, clicked_elem_o, class_s){
 		clicked_elem_o.classList.remove(class_s);
 	}
 	return !ret_b; 
+}
+
+function elem_insert_after(referenceNode, newNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
 }
