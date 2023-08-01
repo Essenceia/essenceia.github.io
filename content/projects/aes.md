@@ -11,7 +11,13 @@ draft: false
 The Advanced Encryption Standard ( AES ) is a widely used block cipher encryption algorithm.
 One of my past projects called for the RTL implementation of a version of aes for both 
 encoding and decoding. 
-This blog post is a presentation of this project.
+This blog post is a presentation of this verilog project.
+
+![Wave overview of aes128 encryption simulation, it take 10 cycles for the module to produce an output!](aes_enc.png "aes128 encryption simulation")
+
+{{< github repo="Essenceia/AES" >}}
+
+:warning: This code wasn't optimized for power, performance, area or side channel hardened.
 
 ## Adcanced Encryption Standard ( AES )
 
@@ -82,7 +88,7 @@ The AES algorithme can be inversed to performe the decoding operations. This is 
 
 ## Ressources
 
-If this article left you craving a more in depth explaination of the AES algorythme, would stongly I suggest reading the exellent writeup on the 
+If after rading this article you are left you craving a more in depth explaination of the AES algorythme, would stongly I suggest reading the exellent writeup on the 
 topic at the [braincoke](https://braincoke.fr/) blog. They have articles coverening :
 
 - [encryption](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/#the-inverse-cipher), 
@@ -126,13 +132,13 @@ needed to implement 16 memories, 256 entries deep and 8 bits wide to perform thi
 As such, we looked for a more effifcient way.
 
 
-Turns out the sbox logic can be simplified by brute forcing it with logic reduction, which is
-exactly what `todo source` did at `todo source`. The result was posted to `todo source` and 
-we simply converted this to verilog. 
+Turns out the sbox logic can be minimzed though optimization as shown by Boyar and Peralta in there 
+2009 paper [A new combinational logic minimization technique with applications to cryptology](https://eprint.iacr.org/2009/191.pdf).
+Our s-box is a translation of the circuit they proposed in this paper.
 
 The result is far from humanly readable but the 
 produced output matches up perfectly with the substituation table and is much cheaper in 
-logic. 
+logic. If in boubt about the logic's equivalence I have written a test bench to test just that : [{{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/sbox_test.vhd) 
 
 Link to implementation : [{{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/sbox.v)
 
@@ -147,6 +153,8 @@ The `ShiftRows` function performes a left cyclical byte shift of the data rows w
     >}} 
 
 This transformation of the data mapes onto hardware very well.
+
+This transform doesn't have it's own model and instead is performed within the top level : [{{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/top.v#L79-L95)
 
 ## `MixColumns`
 
@@ -180,15 +188,16 @@ such as "multiplication" and "addition" are different.
     caption="Galois field arithmetic, source : [FIPS-197 Announcing the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf) "
     >}}
 
-Because we are dealing with Galois field arithemetics all these operations can be implemented using
-_xor_ gates. 
+{{< katex >}}
+Because we are dealing with Galois field arithemetics all these operations can be implemented using basic
+_xor_ \\(\oplus\\) and _and_ \\(\bullet\\)  gates. 
 
 Link to implementation : [{{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/mixw.v) 
 
 
 ## `AddRoundKey`
 
-This transform is simuly a _xor_'ing between each data collumn and the corresponding collumn of this
+This transform is simply an _xor_'ing between each data collumn and the corresponding collumn of this
 round's key. 
 
 {{< figure
@@ -199,217 +208,74 @@ round's key.
 
 The key obtained as a result of the key shedulaing transform for each round.
 
-# Implementation of AES-128 
+As this step is quite simple it does have it's own module and is simply performed within
+the top level : [{{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/top.v#L113-L117)
 
+## `RotWord`
 
-This implementation included both the full encryption and decryption path witten in synthesizable RTL.
-The encryption/decryption takes place over multiple cycles inline with the aes's rounds. In the case of
-aes128 it take 10 cycles for the module to produce an output.
+This transform is part of the key schedule and consists of a simple a one byte left shift cyclical permutation on the last 4 byte column of the
+key. 
 
-![Wave overview of aes128 encryption simulation!](aes_enc.png "aes128 encryption simulation")
+$$
+    [ a_{0}, a_{1}, a_{2}, a_{3} ] \to [a_{1}, a_{2}, a_{3}, a_{0} ]
+$$
 
-{{< github repo="Essenceia/AES" >}}
+Link to implementation : [{{<icon "github" >}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/ks.v#L19-L23)
 
-## RTL
-This synthesizable implementation of AES128 includes two separate designs : one for encryption and another for decryption.
-Our implementation breaks down the more difficult rounds of the AES algorithm into there own module, simpler rounds are
-performed in the top level. 
+## `SubWord`
 
-Modules :
-|    | Encryption      | Decryption |
-| -- | --------------- | ----------- |
-|Top Level | aes       | iaes    |
-|SubBytes| sbox  | isbox      |
-|MixColumns | mixw  | imixw      |
-|Key Scheduling| ks  | iks  |
+The `SubWord` is the key sheduale's equivalent of the data `SubBytes`. It also performes a byte substitiution using the
+s-box, but this time on the last 4 bytes of the key column. 
 
+As such, in our implementation we re-use the same s-box module as for the data : [{{< icon "github" >}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/ks.v#L24-L33)
 
-### Top 
+## `Rcon`
 
-The top level module contains the main control logic for the aes algorithm.
-This module includes :
+This transform involved _xor_'ing the last byte of the last 4 byte collumn of the key with a constant
+who's value depends on what round we are currently in. 
 
-- FSM keeping track of the aes round we are currently
+For AES-128 rcon takes on the follwing values : 
 
-- flops for the data and key
+| round	| 1 | 2	| 3|4|5|6|7|8|9|10|
+|-------|---|---|--|-|-|-|-|-|-|--|
+| rcon ( hex ) |	8'h01| 8'h02| 8'h04| 8'h08| 8'h10| 8'h20| 8'h40| 8'h80| 8'h1b| 8'h36 |
+| rcon ( bin ) |8'b1| 8'b10|  8'b100| 8'b1000| 8'10000| 8'b100000|  8'b1000000| 8'b10000000|  8'b11011| 8'b110110|
 
-- flops for the rounds constant  
+Looking at the binary representation we can see a pattern emerge :
 
+- from round 1 to 8 rcon is a 1 bit left shift.
 
-#### Encryption interface
+- after round 8 rcon overflows, it's new values get's set to `8'h1b` and the pattern of shifting left by 1 bit continues.
 
-```
-module aes(
-	input clk,
-	input nreset,
-	
-	input          data_v_i, // input valid
-	input [127:0]  data_i,   // message to encode
-	input [127:0]  key_i,    // key
-	output         res_v_o,  // result valid
-	output [127:0] res_o     // result
-	);
-``` 
+Our implementation of for obtaining the next rcon is based on this simple observation : [{{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/ks.v#L34-L44)
 
-#### Decryption interface
-```
-module iaes(
-	input clk,
-	input nreset,
-	 
-	input          data_v_i, // input valid
-	input  [127:0] data_i,	 // message to decode
-	input  [127:0] key_i,    // key ( encoded version )
-	output         res_v_o,  // result valid
-	output [127:0] res_o     // result
-	);
-```
+# Decryption
 
-#### Encryption interface
-```
-module sbox(
-    input  [7:0] data_i,
-    output [7:0] data_o
-    );
-```
-#### Decryption interface
-```
-module isbox(
-    input  [7:0] data_i,
-    output [7:0] data_o
-    );
-```
-
-### Mix Columns
-
-This module takes in 4 bytes and treats them as a 4 term polynomial and multiplies them with a predetermined 4x4 matrix.
-These operations are done in a Galois field, as such the definition of operations such as "multiplication" and "addition"
-is different.
+As mentioned earlier, the decoding is simply the inverse of the transforms performed in reverse order.
 
 {{< figure
-    src="mixw_0.png"
-    alt="mixw"
->}}
-{{< figure
-    src="mixw.png"
-    alt="mixw"
-    caption="Mix column math, source : [FIPS-197 Announcing the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf) "
->}}
-
-#### Encryption Interface
-```
- module mixw(
-	input  [31:0] w_i,
-	output [31:0] mixw_o
-	);
-```
-
-{{< figure
-    src="imixw.png"
-    alt="imixw"
-    caption="Inverse mix column math, source : [FIPS-197 Announcing the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf) "
->}}
-
-#### Decryption Interface
-```
-module imixw(
-	input  [31:0] w_i,
-	output [31:0] mixw_o
-	);
-```
-
-### Key scheduling 
-
-This module derives the new 4 byte key and 1 byte round constant (rcon) for the current aes round by taking in the previous round key and rcon. 
-Internally this module also calls on the sbox module during operations on the higher order byte.
-
-encryption : 
-
-{{< figure
-    src="ks.png"
+    src="aes_decryption.png"
     alt=""
-    caption="Key schedualing, credit [braincoke](https://braincoke.fr/assets/static/aes_key_schedule.c19ed0b.1014f4f1d84001bbc9fa65f65a2a9ee7.png)"
->}}
+    caption="AES-128 decryption, credit [braincoke](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/)"
+    >}} 
 
-#### Encryption interface
-```
-module ks(
-	input  wire [127:0] key_i,
-	input  wire [7:0]   key_rcon_i,
-	output wire [127:0] key_next_o,
-	output wire [7:0]   key_rcon_o
-	);
-```
-#### Decryption interface
-```
-module iks(
-	input  wire [127:0] key_i,
-	input  wire [7:0]   key_rcon_i,
-	output wire [127:0] key_next_o,
-	output wire [7:0]   key_rcon_o
-	);
-```
+As such I will not provide any details regarding these steps and simply provide
+the links to my implementation of the various transforms :
 
-## Test bench
+- [InvSubBytes {{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/isbox.v) 
 
-This project includes a dedicated test bench for all major module. 
-The top level test benches is the most complete and the main tool for testing this design.
-Our testing is performed by comparing the design's output to the output of our golden model.
+- [InvShiftRows {{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/itop.v#L73-L108) 
 
-Test bench files :
-|    | Encryption      | Decryption |
-| -- | --------------- | ----------- |
-|top | top\_test.vhd   | itop\_test.vhd  |
-|sbox| sbox\_test.vhd  | isbox\_test.vhd      |
-|mix columns | mixw\_test.vhd  | imixw\_test.vhd      |
-|key scheduling| ks\_test.vhd  | iks\_test.vhd  |
+- [InvMixColumns {{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/imixw.v) 
+
+- [InvRotWord {{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/iks.v#L42-L46) 
+
+- [InvRcon {{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/iks.v#L58-L62) 
+ 
+# Testing 
+
+In order to test the correctness of our aes implementation we are, comparing the result of our
+implementation against the output of a golden model codeding in C. For more information on how to 
+run the testbench please check out the [README](https://github.com/Essenceia/AES/blob/master/README.md#test-bench).
 
 
-### Top 
-
-This implementation's correctness is tested by comparing, for a given input, the output produced
-by the rtl and a golden model implemented in C. 
-
-Located in the `tv/` folder is an implementation of aes in C produced a number of random data and keys and 
-computes the encoded output data and last round keys. Each of these values is written to file using ascii
-in a binary representation from msb to lsb, and using one line per vector. 
-
-Output files :
-
-- `aes_enc_data_i.txt` input data for encryption
-
-- `aes_enc_key_i.txt` input for encryption
-
-- `aes_enc_data_o.txt` encrypted data
-
-- `aes_enc_key_o.txt` key at the last round of the encryption
-
-By default these files should be populated with 10 unique test vectors so
-there is no requirement for users to run the model.
-
-#### Generating new test vectors
-
-To generate new test vectors we first need to compile our C AES code and run the resulting program.
-
-```
-make aes
-./aes
-```
-
-( optional ) To build with debug :
-```
-make aes debug=1
-```
-
-##### Configuration 
-
-Users can configure the generation of test vector using the following macro's "
-
-- `TEST_NUM`  number of test vectors to be generated, located in `main.c`, default value is `10`
-
-- `FILE_STR` array of file names to which the test vectors are written, located in `file.h`, default value is `{"aes_enc_data_i.txt","aes_enc_key_i.txt","aes_enc_res_o.txt", "aes_enc_key_o.txt"}`
-
-##### aes.h
-
-This aes implementation was originally written by Dani Huertas and Nikita Cartes and
-can be found at [https://github.com/dhuertas/AES](https://github.com/dhuertas/AES) 
