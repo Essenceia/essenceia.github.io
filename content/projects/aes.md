@@ -92,20 +92,6 @@ and then propagating this back through all the columns.
  
 The AES algorithm can be inverted to perform the decoding operations. This is done by applying the inverse cipher transforms in reverse order.
 
-## Resources
-
-If after reading this article, the reader desires a more in depth explanation of the AES algorithm,
-I would recommens reading the excellent write-up on this 
-topic at [braincoke](https://braincoke.fr/). In particular the articles covering :
-
-- [encryption](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/#the-inverse-cipher), 
-
-- [decryption](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/#the-inverse-cipher) 
-
-- [key scheduling](https://braincoke.fr/blog/2020/08/the-aes-key-schedule-explained/).
-
-Official AES specification, link to pdf : [Federal Information Processing Standard Publication 197 - Specification fo the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)
-
 # Encryption
 
 
@@ -281,4 +267,19 @@ In order to test the correctness of our AES implementation, our test bench compa
 simulation against the output of a golden model coded in C.
 
 For more information, as well as instructions on how to run the test bench, please see the [README](https://github.com/Essenceia/AES/blob/master/README.md#test-bench).
+
+# Resources
+
+If after reading this article, the reader desires a more in depth explanation of the AES algorithm,
+I would recommens reading the excellent write-up on this 
+topic at [braincoke](https://braincoke.fr/). In particular the articles covering :
+
+- [encryption](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/#the-inverse-cipher), 
+
+- [decryption](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/#the-inverse-cipher) 
+
+- [key scheduling](https://braincoke.fr/blog/2020/08/the-aes-key-schedule-explained/).
+
+Official AES specification, link to pdf : [Federal Information Processing Standard Publication 197 - Specification fo the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)
+
 

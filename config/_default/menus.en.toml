@@ -11,7 +11,7 @@
 # ordered by weight from lowest to highest.
 
 [[main]]
-  name = "Projects"
+  name = "Other projects"
   pageRef = "projects"
   weight = 20
 
@@ -21,8 +21,7 @@
 
 [[main]]
   name = "HFT"
-  parent = "Projects"
-  pageRef = "projects/hft"
+  pageRef = "hft"
   weight = 20
 
 #[[main]]

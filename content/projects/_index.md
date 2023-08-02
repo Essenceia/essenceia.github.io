@@ -1,7 +1,7 @@
 ---
-title: "Projects"
+title: "Other projects"
 description: "Project list."
 cascade:
   showReadingTime: false
 ---
-This section contains a list of some of my projects, the biggest one is the NASDAQ HFT FPGA.
+This section contains a list of some of my other recent projects outside of the HFT FPGA.
