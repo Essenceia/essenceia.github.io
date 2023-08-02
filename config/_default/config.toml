@@ -3,7 +3,7 @@
 # https://blowfish.page/docs/getting-started/
 
 theme = "blowfish"
-baseURL = "https://essenceia.github.io"
+baseURL = "essenceia.github.io"
 #baseURL = "localhost:1313"
 defaultContentLanguage = "en"
 

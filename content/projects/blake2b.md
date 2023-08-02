@@ -5,20 +5,32 @@ summary: "Learn more about me and why I am starting this blog."
 tags: ["rtl", "verilog", "cryptography", "blake2"]
 draft: false
 ---
+# Introduction
+
+{{< figure
+    src="blake2b_wave.png"
+    alt=""
+    caption="Blake2b wave view"
+    >}}
+
+{{< github repo="Essenceia/Blake2" >}}
 
 # Blake2b RTL implementation
 
 Partial implementation of the Blake2 cryptographic hash function (RFC7693) in 
 synthesizable RTL.
-
+{{< alert icon="fire" cardColor="#e63946" iconColor="#1d3557" textColor="#f1faee" >}}
 This code was written in a configurable manner to support both BLAKE2
 b and s variants, but **only the b variant has been thougrougly tested thus far**.
+{{< /alert >}}
 
 It this module only supports one block of data to hash at a time and produces an output after 12 cycles.
-![Blake2b wave overview!](/doc/wave.png)
 
-:warning: This implementation does not currently support secret keys or streaming data to be compressed: it
-only acccepts one block.
+{{< alert >}}
+This implementation does not currently support secret keys or streaming data to be compresse: it
+only acccepts one block at a time.
+{{{< /alert >}}
+
 
 ## RTL
 
