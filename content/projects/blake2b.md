@@ -7,29 +7,86 @@ draft: false
 ---
 # Introduction
 
+In this project we implemented a lite version of the BLAKE2 cryptographic hash function into
+synthetisable RTL.
 {{< figure
     src="blake2b_wave.png"
     alt=""
-    caption="Blake2b wave view"
+    caption="BLAKE2b hash simulation result, it takes 12 cycles to produce a result for one block"
     >}}
 
-{{< github repo="Essenceia/Blake2" >}}
+{{< github repo="essenceia/blake2" >}}
 
-# Blake2b RTL implementation
+# `BLAKE2`
 
-Partial implementation of the Blake2 cryptographic hash function (RFC7693) in 
-synthesizable RTL.
+
+BLAKE2 is specified in [RFC7693](https://tools.ietf.org/html/rfc7693) and is a function takes in plaintext data, called the `digest`, and produces a `hash` of 16 or 32 bytes. 
+
+In practice `BLAKE2` is used in different applications from password hashing to proof of work
+for cryptocurrencies.
+
+There are 2 main flavors of BLAKE2:
+
+
+| flavor | digest size ( bytes ) | internal operation size ( bytes ) | hash size ( bytes ) |
+| ------ | --------------------- | --------------------------------- | ------------------- |
+| `BLAKE2b` | 1 to 63 | 64 | 32 | 
+| `BLAKE2s` | 1 to 32 | 32 | 16 | 
+
+
+Our code is written in a parametric fashion as to support both the 64B (b) and 32B (s) version.
+
+This hash function may work on individual blocks of data or on data streams.
+
 {{< alert icon="fire" cardColor="#e63946" iconColor="#1d3557" textColor="#f1faee" >}}
-This code was written in a configurable manner to support both BLAKE2
+This code was written to be configured as both the
 b and s variants, but **only the b variant has been thougrougly tested thus far**.
 {{< /alert >}}
-
-It this module only supports one block of data to hash at a time and produces an output after 12 cycles.
 
 {{< alert >}}
 This implementation does not currently support secret keys or streaming data to be compresse: it
 only acccepts one block at a time.
-{{{< /alert >}}
+{{< /alert >}}
+
+## Function overview
+
+The main function in `BLAKE2` is called the `compression function`, it takes the 
+{{< mermaid >}}
+flowchart TD
+
+
+subgraph BLAKE2
+B-->I[for each message block]
+F-->G[end for]
+I-->J;
+G-->I
+
+    subgraph Compression
+    J[Init block]-->E[for i=0..N];
+    E-->C[Permulation];
+    C-->D[Mixing];
+    D-->F[end for];
+    F-->E;
+    end
+
+end
+
+A(Plaintext)-->B[Init];
+G-->H(Hash);
+
+click B "#init" _blank
+click C "#permulation function" _blank
+click D "#mixing function" _blank
+click G "#end" _blank
+{{< /mermaid >}}
+
+## `Init`
+
+## `Permutation` function
+
+## `Mixing` function
+
+## `End` 
 
 
 ## RTL
