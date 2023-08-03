@@ -1,0 +1,13 @@
+\usetikzlibrary{shapes.multipart}
+\begin{tikzpicture}[stack/.style={rectangle split, rectangle split parts=#1,draw, anchor=center}]
+\node[stack=8]  {
+\nodepart{one}Trading algorithm
+\nodepart{two}ITCH
+\nodepart{three}MoldUDP64
+\nodepart{four}UDP Layer
+\nodepart{five}IP Layer
+\nodepart{six}MAC Layer
+\nodepart{seven}Physical Layer
+\nodepart{eight}Medium
+};
+\end{tikzpicture}
