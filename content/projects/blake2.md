@@ -19,11 +19,13 @@ synthetisable RTL using `verilog`.
 
 {{< github repo="essenceia/blake2" >}}
 
+
 # `BLAKE2`
 
 
-BLAKE2 is specified in [RFC7693](https://tools.ietf.org/html/rfc7693) and its 
-is a function takes plaintext data, breaks it down into `32` or `64` byte blocks 
+BLAKE2 is specified in the [RFC7693](https://tools.ietf.org/html/rfc7693).
+
+The algorithm receives plaintext data, breaks it down into blocks of `32` or `64` bytes 
 and produces a `hash` of `16` or `32` bytes for each block. 
 
 In practice `BLAKE2` is used in different applications from password hashing to proof of work
@@ -32,15 +34,15 @@ for cryptocurrencies.
 There are 2 main flavors of `BLAKE2`:
 
 
-|  | block size ( bytes ) | hash size ( bytes ) |
+|  | block size (bytes) | hash size (bytes) |
 | ------ | --------------------------- | ------------------- |
 | `BLAKE2b` | 64 | 32 | 
 | `BLAKE2s` |  32 | 16 | 
 
 
-Our code is written in a parametric fashion as to support both the `b` and `s` flavor.
+Our code is written in a parametric fashion, to support both the `b` and `s` flavor.
 
-This hash function may work on individual blocks of data or on data streams.
+This hash function works on individual blocks of data or on data streams.
 
 {{< alert icon="fire" cardColor="#e63946" iconColor="#1d3557" textColor="#f1faee" >}}
 This code was written to be configured as both the
@@ -48,7 +50,7 @@ b and s variants, but **only the b variant has been thougrougly tested thus far*
 {{< /alert >}}
 
 {{< alert >}}
-This implementation does not currently support secret keys or streaming data to be compress: it
+This implementation does not currently support secret keys or streaming data for compression : it
 only accepts one block at a time.
 {{< /alert >}}
 
@@ -56,10 +58,10 @@ only accepts one block at a time.
 
 The
 <span style="color:#8b5cf6; font-weight: 800;">BLAKE2</span> 
-takes in the plaintext, breaks it down into blocks of `32` or `64` bytes,
+takes plaintext data, breaks it down into blocks of `32` or `64` bytes,
 and passes each of these blocks through the 
 <span style="color:#d946ef; font-weight: 800;">compression function</span>.
-The main loop in this function includes the `premutation function` and the `mixing functions`, this
+The main loop in this function includes the `premutation function` and the `mixing function`, this
 loop will be called `10` or `12` times. 
 {{< mermaid >}}
 flowchart TD
@@ -100,7 +102,7 @@ The number of rounds is dependant of the flavor of `BLAKE2` :
  
 ## `Permutation function`
 
-Within the compression function loop, at the start of each round we calculate a new 16 wide selection array `s`
+Within the compression function loop, at the start of each round, we calculate a new 16 entry wide selection array `s`
 based on a pre-defined pattern shown bellow :
 
 |  Round    |  0|  1|  2|  3|  4|  5|  6|  7|  8|  9| 10| 11| 12| 13| 14| 15 |
@@ -116,10 +118,10 @@ based on a pre-defined pattern shown bellow :
 |  SIGMA[8] |  6| 15| 14|  9| 11|  3|  0|  8| 12|  2| 13|  7|  1|  4| 10|  5 |
 |  SIGMA[9] | 10|  2|  8|  4|  7|  6|  1|  5| 15| 11|  9| 14|  3| 12| 13|  0 |
 
-This array `s` is then used to select the index used to access data from our
+This array `s` is then used to select the indexes used to access data from our
 message block vector `m`.
 
-In `C` this operation can be written simply as `m[sigma[round][x]]`, with `round` the
+In the `C` language, this operation can be written simply as `m[sigma[round][x]]`, with `round` the
 round we are currently at and `x` the initial array index.
 
 
@@ -137,7 +139,7 @@ It is referred to in the official
 specification as `G`. It takes in 6 bytes and produces 4 new bytes.
 
 ```
-FUNCTION G( v[0..15], a, b, c, d, x, y )
+FUNCTION G(v[0..15], a, b, c, d, x, y)
     |
     |   v[a] := (v[a] + v[b] + x) mod 2**w
     |   v[d] := (v[d] ^ v[a]) >>> R1
@@ -153,23 +155,23 @@ FUNCTION G( v[0..15], a, b, c, d, x, y )
     END FUNCTION.
 ```
 
-Internally is is composed of simple operations :
+Internally it is composed of simple operations :
 - 3 way unsigned integer `add`
 - 32 or 64 byte `modulo` 
 - `circular right shift`
 - `xor`
 
-Function `G` is called in the compression loop with the following arguments:
+The `G` function is called in the compression loop, with the following arguments:
 ```
-v := G( v, 0, 4,  8, 12, m[s[ 0]], m[s[ 1]] )
-v := G( v, 1, 5,  9, 13, m[s[ 2]], m[s[ 3]] )
-v := G( v, 2, 6, 10, 14, m[s[ 4]], m[s[ 5]] )
-v := G( v, 3, 7, 11, 15, m[s[ 6]], m[s[ 7]] )
+v := G(v, 0, 4,  8, 12, m[s[ 0]], m[s[ 1]])
+v := G(v, 1, 5,  9, 13, m[s[ 2]], m[s[ 3]])
+v := G(v, 2, 6, 10, 14, m[s[ 4]], m[s[ 5]])
+v := G(v, 3, 7, 11, 15, m[s[ 6]], m[s[ 7]])
 
-v := G( v, 0, 5, 10, 15, m[s[ 8]], m[s[ 9]] )
-v := G( v, 1, 6, 11, 12, m[s[10]], m[s[11]] )
-v := G( v, 2, 7,  8, 13, m[s[12]], m[s[13]] )
-v := G( v, 3, 4,  9, 14, m[s[14]], m[s[15]] )
+v := G(v, 0, 5, 10, 15, m[s[ 8]], m[s[ 9]])
+v := G(v, 1, 6, 11, 12, m[s[10]], m[s[11]])
+v := G(v, 2, 7,  8, 13, m[s[12]], m[s[13]])
+v := G(v, 3, 4,  9, 14, m[s[14]], m[s[15]])
 ```
 
 
@@ -192,8 +194,10 @@ As such, this function easily maps onto hardware with minimal cost.
 
 # Testing
 
-For testing our implementation we are comparing the output of our simulated implementation 
-with the test vector produced by a golden model. In this case our golden model was the `C`
+To test our implementation, we are comparing the output of our simulated implementation 
+with the test vector produced by a golden model.
+
+In this case our golden model was the `C`
 implementation of `BLAKE2` found in the appendix of the `RFC7693` specification.
 
 For more instructions on running the test bench see the [README {{<icon "github">}}](https://github.com/Essenceia/Blake2/blob/46764d1882debe8f61166b7c65b51d4fee945ae4/blake2.v#L276-L383).
