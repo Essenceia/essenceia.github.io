@@ -4,7 +4,7 @@ date: 2023-08-02
 description: "RTL implementation of the MoldUDP64 module."
 summary: "Discussing the design of the current MoldUDP64 module."
 tags: ["FPGA", "HFT", "moldudp64","verilog"]
-draft: true
+draft: false
 ---
 # Introduction
 
@@ -63,7 +63,8 @@ The `session id` and `sequence number` fields are used to keep track of missing 
 
 `Session id` keeps track of what sequence of message we are currently receiving.
  
-Each message has it's own `sequence number`, the header's `sequence number` indicated the `sequence number` 
+Each message within a `session` is individually tracked using a unique `sequence number`.
+The header's `sequence number` indicates the `sequence number` 
 of the first message in the packet. The messages following this first message are implicity numbered sequencentially.
 
 The `message count` tells us how many messages our packet will contain.
@@ -127,6 +128,7 @@ of this new message's data.
  
 {{< figure
     src="mold_len_normal.svg"
+    alt=""
     caption="2 bytes of the length field are in the middle of the payload sandwitched between the end of the previous message and the first data bytes of our new message."
     >}}
 
@@ -137,6 +139,7 @@ the length field aligned on the start of the payload as well as 6 bytes of our n
 
 {{< figure
     src="mold_len_start.svg"
+    alt=""
     caption="The previous message ended on the payload boundary, the new payload containst the new message length field aligned on the beging of the payload and 6 bytes of the new messages data."
     >}}
 
@@ -148,6 +151,7 @@ Our previous message's data's end's 2 bytes before the end of the payload, givin
 
 {{< figure
     src="mold_len_end.svg"
+    alt=""
     caption="The full 2 bytes of the lenght of our new message are at the end of the payload but there are no bytes of our new data."
     >}}
 
@@ -160,6 +164,7 @@ received byte to recompose the length field once the second part arrives.
 
 {{< figure
     src="mold_len_split.svg"
+    alt=""
     caption="The 2 bytes of our new message's length field are split between 2 different payloads."
     >}}
 
@@ -172,14 +177,43 @@ As of now 3 iterations of this module have been written each aiming to reduce la
 ### Version 1
 
 I the first verions the goal was to have the ITCH message data aligned on the data stream's width 
-and only have 1 message getting sent at a time.
+with no bublles and only have 1 message getting sent at a time.
 
 This created a corner case when 2 different messages where on the same payload. 
 Since we could only send 1 message at a time we needed to backpressure the 
 UDP module to leave us time to purge the end of the previous message before starting
 to send the new message.
 
-This worked but the occurence rate of this backpressure was to high.
+{{< figure
+    src="mold_v1.svg"
+    alt=""
+    caption="Backpressure when 2 messages arrive withing the same payload. Purged spread over multiple cycles"
+    >}}
+
+
+To make matter worst, contrary to the example just above I was waiting to have 
+accumulated a full payload's worth of valid message data **before** sending it 
+out.
+ 
+The initial motivation for doing so was to simplify the logic on the ITCH side as all payload's 
+would be guarantied to be 8 bytes wide with the exception of the last.\
+Additionally, it allows us to not apply backpressur in examples like about and start
+accumulating bytes to complete our output vector. \
+In practice this doesn't rid us of backpressure as there is a limit to the amount
+of bytes we can store in our flop and we sill need to purge it. \
+The only reason there was not backpressure in our example was because we implied that
+at _t_ our flop was empty.
+
+
+{{< figure
+    src="mold_v1.1.svg"
+    alt=""
+    caption="Backpressure when 2 messages arrive withing the same payload. Purged spread over multiple cycles"
+    >}}
+
+As such this increases the complexity of the MoldUPD64 logic and doesn't help
+latency much.
+
 
 ### Version 2
 
@@ -191,9 +225,17 @@ payload width and we only marked the ITCH message as valid once all the bytes
 had been received we could add a muliplexer at the output of the ITCH message 
 to have a signle itch message interface connected to the trading algorithme.
 
-This idea was ultimatly scrapped as :
+{{< figure
+    src="mold_v2.svg"
+    alt=""
+    caption="Backpressure when 2 messages arrive withing the same payload. Purged spread over multiple cycles"
+    >}}
 
-- muxes would have added logic depth on this critical data feed path
+This implementation was untimatly scrapped as :
+
+- demux inside the `moldudp64` module and muxes between the `itch` and `trading alogithm` 
+    module would have added avoidable logic depth on this critical data feed path
+
 
 - the logic duplicated would have increased wire delay due to 
     it's increased size
@@ -206,8 +248,33 @@ This idea was ultimatly scrapped as :
 
 ### Version 3
 
-This third iteration looks to leverage the fact that the message data will allways be 
+This third iteration and the most recent as of writting, looks to leverage the fact that the message data will allways be 
 larger than the payload's width.
+
+In order to make this version possible I had to complexify the `ITCH` module's logic such that
+I can relax the requirements on the number of message data bytes that can we 
+obtained from each payload. Previously, we expected 8 bytes from every payload with the
+expection of the last.
+
+I have added a second outbound data interface used to store message data bytes in the 
+even 2 message overlap on the same payload. It is called the `ov` for "overlap" interface and
+valid bytes on the overlap are always the first bytes of a new message.
+
+Because the presence of an overlap coincides with the end of the previous message and
+I want to only have 1 ITCH module, internally, in the `ITCH` module these bytes are 
+flopped as the finishing itch message drains, and are then appended to the start of the
+new itch message data. In these cases we will be writing more than 8 bytes of data per cycle.
+We will elaborate on this more in the upcoming ITCH module post. 
+
+{{< figure
+    src="mold_v3.svg"
+    alt=""
+    caption="Overlap signals are transmitted in parallel to normal message signals. There is only one `ITCH` module and a single interface between it and the `Trading algorithm`. Because overlaps only occure when there is at least 1 byte of the previous message data in the payload and the length field is 2 bytes our overlap data is at most 5 bytes wide for a 8 byte payload."
+    >}}
+
+Since a message overlap  
+
+
 
 
 
