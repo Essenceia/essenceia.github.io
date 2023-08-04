@@ -12,7 +12,7 @@ autoSwitchAppearance = true
 enableSearch = true
 enableCodeCopy = false
 
-# mainSections = ["section1", "section2"]
+mainSections = ["hft", "projects"]
 # robots = ""
 
 disableImageOptimization = true
@@ -35,12 +35,12 @@ disableImageOptimization = true
   showScrollToTop = true
 
 [homepage]
-  layout = "profile" # valid options: page, profile, hero, card, background, custom
-  #homepageImage = "IMAGE.jpg" # used in: hero, and card
-  showRecent = false
-  showRecentItems = 5
+  layout = "background" # valid options: page, profile, hero, card, background, custom
+  homepageImage = "pexels-brett-sayles-2881229.jpg" # used in: hero, and card
+  showRecent = true
+  showRecentItems = 3
   showMoreLink = false
-  showMoreLinkDest = "/posts"
+  showMoreLinkDest = "/hft"
   cardView = false
   cardViewScreenWidth = false
   layoutBackgroundBlur = false # only used when layout equals background
