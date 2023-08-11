@@ -61,7 +61,7 @@ The
 takes plaintext data, breaks it down into blocks of `32` or `64` bytes,
 and passes each of these blocks through the 
 <span style="color:#d946ef; font-weight: 800;">compression function</span>.
-The main loop in this function includes the `premutation function` and the `mixing function`, this
+The main loop in this function includes the `permutation function` and the `mixing function`, this
 loop will be called `10` or `12` times. 
 {{< mermaid >}}
 flowchart TD
@@ -75,7 +75,7 @@ G-->I
 
     subgraph T1[" "]
     J[Init block]-->E[for round=0..N];
-    E-->C[Permulation];
+    E-->C[Permutation];
     C-->D[Mixing];
     D-->F[end for];
     F-->E;
@@ -103,7 +103,7 @@ The number of rounds is dependant of the flavor of `BLAKE2` :
 ## `Permutation function`
 
 Within the compression function loop, at the start of each round, we calculate a new 16 entry wide selection array `s`
-based on a pre-defined pattern shown bellow :
+based on a pre-defined pattern shown below :
 
 |  Round    |  0|  1|  2|  3|  4|  5|  6|  7|  8|  9| 10| 11| 12| 13| 14| 15 |
 | ----------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|----|

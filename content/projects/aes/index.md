@@ -126,7 +126,7 @@ It turns out that the `S-box` logic can be minimized, as shown by Boyar and Pera
 
 Our `S-box` is a translation of the circuit they proposed in this paper.
 
-The result is far from being human readable, but the produced output matches perfectly with the substitution table and is much cheaper in term of logic.
+The result is far from being human readable, but the produced output matches perfectly with the substitution table and is much cheaper logic-wise.
 
 If the reader is as doubtfull of the logic's equivalence as I was when I implemented it, he can take a look at [a test bench that I wrote {{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/sbox_test.vhd) to verify that equivalence.
 
@@ -233,7 +233,7 @@ Looking at the binary representation we can see a pattern emerge :
 
 - from round 1 to 8 `Rcon` is a 1 bit left shift.
 
-- after round 8 `Rcon` overflows, it's new values get's set to `8'h1b` and the pattern of shifting left by 1 bit continues.
+- after round 8 `Rcon` overflows, its new values gets set to `8'h1b` and the pattern of shifting left by 1 bit continues.
 
 [Our implementation of for obtaining the next `Rcon` is based on this simple observation {{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/ks.v#L34-L44)
 

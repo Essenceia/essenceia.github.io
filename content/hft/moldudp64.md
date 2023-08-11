@@ -87,7 +87,7 @@ sequence_number_next = sequence_number + message_count
 ```
 
 If the sequence number of the next packet doesn't match, either the packet has been re-ordered
-within the network and will arrive latter or we have missed a packet. 
+within the network and will arrive later or we have missed a packet. 
 
 ## Messages
 
@@ -122,12 +122,12 @@ to accept new data **without any corner case**.
 
 {{< alert >}}
 We will be using an AXI steam data `axis_tdata` width of `64` bits for our illustration, but
-ultimately the goal is to make this parametrisable. 
+ultimately the goal is to make this parametrizable. 
 {{< /alert >}}
 
 ## Message overlap 
 
-As this implementation targets low latency,we want accept a new payload each cycle.\
+As this implementation targets low latency,we won't accept a new payload each cycle.\
 As of writing, **3** iterations of this module have been written, each aiming to improve latency.
 
 ### Version 1
@@ -207,7 +207,7 @@ I could relax the requirements on the number of message data bytes that could be
 
 Previously, I expected 8 bytes from every payload with the exception of the last.
 
-I have added a second outbound data interface used to store message data bytes in the event where two message overlap on the same payload.
+I have added a second outbound data interface used to store message data bytes in the event two messages overlap on the same payload.
 
 It is called the `ov` for "overlap" interface, and because of its nature, valid bytes on the overlap are always the first bytes of a new message.
 
@@ -231,11 +231,9 @@ I will elaborate on this more in a future `ITCH` module write-up.
 
 # Conclusion
 
-There is still a lot of room for improvement and this will constantly force me to re-think my architectural directions.
+There is still a lot of room for improvement.
 For instance, there is not guarantee that the payload size will remain 8 bytes.
 If it drops under 4 bytes, some corner cases like the overlap will cease to exit.
-
-This code is in constant change and I hope you will join me on the ride.
 
 The next write-up will likely be on the ITCH module. [If you wish to be notified when this article is published shot me a mail.{{<icon "envelope">}}](mailto:julia.desmazes@gmail.com?subject="ITCH")
 
