@@ -15,7 +15,56 @@ Although there is practically no documentation on this switch and I have no prio
 network equipement wathsoever it was cheap. 
 2 weeks latter this beauty showed up.
 
-These posts are about troubleshooting my way into a working configuration.
+These posts are about troublshooting my way to a working setup.
+
+# Initial impressions
+
+The Celestica Redston D2020 is an 1U data center switch with 48 10GbE SFP+ ports and 4 QSFP+ 40GbE capable ports.
+It has two 460W power supplies for redudancy, 5 colling fans, 1 ethernet RJ45, 1 console RJ45 and 1 USB type A port.
+
+[Datasheet](/pdf/cls_datasheet_redstone_d2020_09.pdf) 
+
+Unlike some other models it doesn't require any license to opperate.
+
+I got mine off from [UNIXSurplusNet on ebay](https://www.ebay.com/str/unixsurplusnet?_trksid=p4429486.m3561.l161211) for 
+150$ and it was shipped with a system report mentioning the admin username and password, as well as some
+information on the general system and serial configuration.
+
+Thanks to it we learn that the main IC is showing up as a `Broadcom Trident 56846`.
+This is probably of the first Trident generation, the `BCM56846KFRBG` of the Broadcome `BCM56840` family that has since been discontinued. 
+This appears to be a custom broadcom ASIC targetting 10Gb ethernet applications with 64 integrated 10GBASE-KR capable serial PHY's.
+In our switch 16 of these modules are configured such that 4 lanes are bounded together to form our 4 40GBASE-R ports.
+
+{{< figure
+    src="bcm56846.svg"
+    alt="ascii art"
+    caption="Broadcome ethernet IC configuration in our switch"
+    >}}
+
+I was unfortuantly unable to find a datasheet describing this IC's internals in detail.
+
+Poping the lid open we discover a single gorgeous multilayer PCB. 
+Judging by the traces coming from the ethernet connectors the broadcome IC is likely under the massive passive colling block. 
+
+{{< figure
+    src="images/d2020/pcb1.jpg"
+    alt="pcb art"
+    caption="Admiring a beautiful PCB, top face"
+    >}}
+
+Both the power blocks and the 5 fans have connectors to the pcb making them easily detachable.
+
+{{< figure
+    src="images/d2020/pcb2.jpg"
+    caption="Detachable fan blocks connectors"
+    alt="cute fan block connectors"
+    >}}
+
+Intrsetingly this PCB also features 4 small Lattice FPGA's of the `MachX02` family, though at a glance it is 
+unclear what these are used for. 
+I might glean more information if I was to check out the back side of the pcb.
+
+
 
 
 # Reducing noise
@@ -90,3 +139,9 @@ Since `cat` may not be installed by default, you can quickly real the files usin
 # Resources 
 
 [Reddit thread](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/)
+
+Boardcome ASIC :
+
+[Is Broadcom’s chip powering Juniper’s Stratus?](https://www.gazettabyte.com/home/2010/10/14/is-broadcoms-chip-powering-junipers-stratus.html)
+
+[HIGH-CAPACITY STRATAXGS® ETHERNET SWITCH FAMILY WITH INTEGRATED 10G SERIAL PHY](https://docs.broadcom.com/doc/12358267)
