@@ -90,13 +90,13 @@ network interface connected to the CPU via PCIe.
 
 ### CPU 
 
-Our system's CPU is likely located bellow the block cooling block as hinted by the DDR Sk hyinx DIMMs surrounding another
+Our system's CPU is likely located bellow the block cooling block as hinted by the DDR3 Sk hyinx memory chips surrounding another
 imposing black passive cooler.
 
 {{< figure
     src="images/d2020/pcb2.jpg"
     alt="pcb art"
-    caption="Switch CPU surrounded by multiple Skyinx DDR3 DIMs."
+    caption="Switch CPU surrounded by multiple Skyinx DDR3 memory chips."
     >}}
 
 
