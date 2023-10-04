@@ -9,7 +9,7 @@ showTableOfContents : true
 draft: false
 ---
 
-# Introduction
+## Introduction
 
 One of my current project is building the Ethernet physical layer for 10Gb (10GBASE-R)  and 40Gb (40GBASE-R) fiber.
 In order to create a test bench I went out and bough a decommissioned Redstone D2020 enterprise switch off ebay.
@@ -30,7 +30,7 @@ acquire that missing experience.
 I am writing these posts to document my experience in the hopes it may 
 be useful to future owners of a Redstone D2020.
 
-# Celestical Redstone D2020
+## Celestical Redstone D2020
 
 The Celestica Redston D2020 is an 1U data center switch with 48 10GbE SFP+ ports and 4 QSFP+ 40GbE capable ports.
 It has two 460W power supplies for redundancy, 5 cooling fans, 1 Ethernet RJ45, 1 console RJ45 and 1 USB type A port.
@@ -50,7 +50,7 @@ console serial configuration and as some general system information.
     caption="Test report provided with the switch by the ebay seller."
     >}}
 
-## Ethernet ASIC
+### Ethernet ASIC
 
 Thanks to this seller provided test report we learn that the main IC is showing up as a `Broadcom Trident 56846`.
 
@@ -88,7 +88,7 @@ network interface connected to the CPU via PCIe.
     caption="BCM56840 system schematics from the [products brief]()https://docs.broadcom.com/doc/12358267)."
     >}}
 
-## CPU 
+### CPU 
 
 Our system's CPU is likely located bellow the block cooling block as hinted by the DDR Sk hyinx DIMMs surrounding another
 imposing black passive cooler.
@@ -127,7 +127,7 @@ model           : fsl,P2020
 Memory          : 2048 MB
 ``` 
 
-## Power and cooling 
+### Power and cooling 
 
 Behind the processor we have a series of cooling fans flanked on both sides by our power blocks.
  
@@ -144,7 +144,7 @@ can safely be removed at any time during operation.
 
 Same goes for the power block, only 1 one the 460W bricks is needed to power the switch, even at maximum load.
 
-## FPGA
+### FPGA
 
 Interestingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
 
@@ -238,7 +238,7 @@ Here I have 2 40Gb transivers compliant with IEEE 802.3 Physical Medium Dependan
 This is the 4 lane optical physical layer compatible with the `40GBASE-R4` PMA, the `40GBASE-R` PCS, both of which I am
 currently working on.
  
-# Connecting to the switch console
+## Connecting to the switch console
 
 My original plan was to gain access to the switch command line interface via the console port.
 
@@ -318,7 +318,7 @@ trying different serial configuration I didn't see to find a way to successfully
 
 Was there something wrong with the switch, was it booting properly ?
 
-# Checking switch liveness 
+## Checking switch liveness 
 
 At this point the switch is powered and connected via it's console port the my PC but it's connected to the network.
 
@@ -349,7 +349,7 @@ We can spot our switch's MAC address as the source MAC in the packets MAC header
 
 This confirmed that our switch was indeed working correctly, so now we just needed to find another way in.
 
-# Telnet
+## Telnet
 
 Since I now knew the switch was working and basic networking functionality was running as evidenced by the `ICMP` packet
 I decided to check if there wasn't also an `ssh` port open. 
@@ -405,7 +405,7 @@ Password:
 
 Success, we are in :partying_face:
 
-# Getting access to linux shell
+## Getting access to linux shell
 
 When connecting to the switch, by default we log into a networking specific command line interface
 and not a linux shell.
@@ -508,7 +508,7 @@ To recap :
 I can now fell right at home. 
 
 
-# Reducing noise
+## Reducing noise
 
 At idle the fan duty cycle is set to `60%`, stated otherwise : this switch is cosplaying as a jet engine. :rocket:
  
@@ -525,7 +525,7 @@ So far a `~15%` duty cycle seems to be a good compromise given my use case.
 # echo 40 > /sys/class/thermal/manual_pwm
 ```
 
-## Check thermals
+### Check thermals
 
 To check thermals, either exit `linuxsh` using the `exit` command and check the equipment's status using `show environment` :
 ```
@@ -580,7 +580,7 @@ Since `cat` is not be installed by default, I am using `head` as a replacement t
 28
 ```
 
-## Scripts are removed at reboot
+### Scripts are removed at reboot
 
 I had written a small script to rewrite the fan `pwm` after boot, which I have names `rc.local` and placed in `/etc/init.d` with execute permission.
 ```sh
@@ -596,7 +596,7 @@ This may be a syndrome that the root file system is getting mounted at boot from
 I am modifying the mounted version and not the original my changes are not permanent.
 Finding a work around for this will be the subject of a latter post. 
 
-# Closing remarks 
+## Closing remarks 
 
 From initially getting what amounted to a black box and having no networking equipment knowledge.
 I now have a working switch, a better understanding on how this switch functions internally, root access to it's linux shell
@@ -610,7 +610,7 @@ I would like to thank EmbeddedKen for helping me figure out the use of the latti
 and reddit user bvcb907 for his very insightful responses from 3 years ago [on the reddit thread related to this switch](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/). 
 
 
-## Resources
+### Resources
  
 [Redstone D2020 data brief](/pdf/cls_datasheet_redstone_d2020_09.pdf) 
 
