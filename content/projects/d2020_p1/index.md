@@ -183,7 +183,7 @@ Broadcom Ethernet ASIC to interface with the I2C bus.
 Thanks to this we can obtain information on the internal status of our connected transceivers.
 
 Commands like `show fiber-ports optical-transceiver` give us the latest internal operating
-parameters as read by the transverse internal microcontroller and reported over the switch.
+parameters as read by the transverse internal microcontroller and reported over I2C to the system.
 Using this command we can get information on the transceivers temperature, input and output signal strength and operating voltage.
 ```
 (Routing) #show fiber-ports optical-transceiver all
@@ -203,8 +203,9 @@ Port      Temp  Voltage  Current     Power    Power   TX     LOS
  TX Fault - Transmitter fault.
  LOS - Loss of signal.
 ```
-Here I can see one of my transceivers has a much lower recieved optical power `Input Power (dBm) = -19.318` 
-this indicates an issue and might be some dust in my connection or a bad contract.
+Here I can see one of my transceivers has a low recieved optical power `Input Power (dBm) = -19.318` 
+this might be an issue and could indicates I might have some dust in my optical connections
+or may just be a bad contract.
  
 Commands like `show fiber-ports optical-transceiver-info` reports the content of
 sections of the transceivers EEPROM and presents them in a readable format.
