@@ -600,7 +600,7 @@ Moving forward I plan to continue looking for a way to re-set `pwm` fan speed af
 writing a few static routing tables, and maybe open an `ssh` tunnel to replace `telnet`.
 
 
-I would like a thanks Kenneth Vorseth for helping me figure out the use of the lattice fpga's, ThomasC
+I would like to thank EmbeddedKen for helping me figure out the use of the lattice fpga's, ThomasC
 and reddit user bvcb907 for his very insightful responses from 3 years ago [on the reddit thread related to this switch](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/). 
 
 
