@@ -11,11 +11,19 @@ draft: false
 
 # Introduction
 
-Because one of my current project is building the Ethernet physical layer for 10G and 40G fiber I went out and bough
-a decommissioned Redstone D2020 enterprise switch from ebay.
+One of my current project is building the Ethernet physical layer for 10Gb (10GBASE-R)  and 40Gb (40GBASE-R) fiber.
+In order to create a test bench I went out and bough a decommissioned Redstone D2020 enterprise switch off ebay.
 Although there is practically no documentation on this switch and I have no prior experience working with
-network equipment whatsoever it was cheap. 
+network equipment whatsoever it was cheap and I believe troubleshooting a system is a great way to gain experience.
+
 2 weeks latter this beauty showed up.
+
+{{< figure
+    src="images/d2020/switch.jpg"
+    alt="pcb art"
+    caption="Celestical Redstone D2020"
+    >}}
+
 
 These posts are about troubleshooting my way to a working setup.
 
@@ -28,8 +36,16 @@ It has two 460W power supplies for redundancy, 5 cooling fans, 1 Ethernet RJ45, 
 Unlike some other models it doesn't require any license to operate.
 
 I got mine off from [UNIXSurplusNet on ebay](https://www.ebay.com/str/unixsurplusnet?_trksid=p4429486.m3561.l161211) for 
-150$ and it was shipped with a system report mentioning the admin username and password, as well as some
-information on the general system and serial configuration.
+150$.
+
+It was shipped with a test report mentioning some very handy information such as the admin username and password, as well the 
+console serial configuration and as some general system information.
+
+{{< figure
+    src="images/d2020/doc.jpg"
+    alt="pcb art"
+    caption="Test report provided with the switch by the ebay seller."
+    >}}
 
 ## Ethernet ASIC
 
@@ -83,8 +99,9 @@ imposing black passive cooler.
 
 
 Our processor chip is a Freescale `P2020`, this is a dual core PowerPC system with 2GB of external EEC DDR3 DRAM.
-Here was can notice an interesting inconsistency, the switch datasheet lists the CPUs as running at 800MHz,
-but when we reading the contents of `/proc/cpuinfo` they are reported as running at 1.2GHz.
+Here was can notice an interesting inconsistency, the [switch data brief](https://download.datasheets.com/pdfs/2016/4/20/10/27/21/216/clst_/manual/cls_datasheet_redstone_d2020_09.pdf) 
+lists the CPUs as running at 800MHz,
+but when we reading the contents of `/proc/cpuinfo` the core's are reported as running at 1.2GHz.
 
 ```
 # head -n 20 /proc/cpuinfo
@@ -122,6 +139,8 @@ can safely be removed at any time during operation.
     alt="cute fan block connectors"
     >}}
 
+Same goes for the power block, only 1 one the 460W bricks is needed to power the switch, even at maximum load.
+
 ## FPGA
 
 Interestingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
@@ -133,7 +152,8 @@ Interestingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
     >}}
 
 These are relatively small FPGA's with only about 1280 LUT's each and are likely used as I2C bus controllers
-for accessing the Digital Diagnostic Monitoring Interface (DDMI) on the optical transceivers.
+for accessing the [Digital Diagnostic Monitoring Interface (DDMI)](https://cdn.hackaday.io/files/21599924091616/AN_2030_DDMI_for_SFP_Rev_E2.pdf)
+on the optical transceivers.
 
 {{< figure 
     src="images/d2020/machXO2.png"
@@ -148,17 +168,72 @@ operating parameters are outside of a factory set normal operating range. Additi
 on the transceiver itself, such at the vendor, it's laser wavelength,it's supported link length, and more.
 
 Internally each transceiver features an small microcontroller in charge of reporting these diagnostic information and
-commincating this transiver information with the wider system via the 2-wire serial I2C bus.
+communicates data to the wider system via the 2-wire serial I2C bus.
 
 {{< figure
     src="images/d2020/i2c_bus.svg"
-    caption=""
+    caption="I2C bus connecting transceivers to Broadcom ASIC"
     alt="i2b bus"
     >}}
 
-Since an I2C bus is a shared medium and multiple transivers are connected onto the same I2C bus
-the FPGA act's as the I2C Master of this bus.
+Since an I2C bus is a shared medium and multiple transceivers are connected onto the same I2C bus
+the FPGA act's as the I2C Master of this bus, as well as the controller for allowing the 
+Broadcom Ethernet ASIC to interface with the I2C bus. 
 
+Thanks to this we can obtain information on the internal status of our connected transceivers.
+
+Commands like `show fiber-ports optical-transceiver` give us the latest internal operating
+parameters as read by the transverse internal microcontroller and reported over the switch.
+Using this command we can get information on the transceivers temperature, input and output signal strength and operating voltage.
+```
+(Routing) #show fiber-ports optical-transceiver all
+
+                                    Output    Input
+Port      Temp  Voltage  Current     Power    Power   TX     LOS
+           [C]   [Volt]     [mA]     [dBm]    [dBm]   Fault
+--------  ----  -------  -------   -------  -------   -----  ---
+0/49      30.5    3.292      N/A    -4.737  -19.318   No     Yes
+0/51      32.9    3.288      N/A    -4.665   -9.397   No     No
+
+ Temp - Internally measured transceiver temperatures.
+ Voltage - Internally measured supply voltage.
+ Current - Measured TX bias current.
+ Output Power - Measured optical output power relative to 1mW.
+ Input Power - Measured optical power received relative to 1mW.
+ TX Fault - Transmitter fault.
+ LOS - Loss of signal.
+```
+Here I can see one of my transceivers has a much lower recieved optical power `Input Power (dBm) = -19.318` 
+this indicates an issue and might be some dust in my connection or a bad contract.
+ 
+Commands like `show fiber-ports optical-transceiver-info` reports the content of
+sections of the transceivers EEPROM and presents them in a readable format.
+These include the unit's vendor, it's serial numbers, part number and what 802.3
+physical medium it is compliant with.
+
+```
+(Routing) #show fiber-ports optical-transceiver-info all
+
+                         Link Link                                 Nominal
+                       Length Length                                   Bit
+                         50um 62.5um                                  Rate
+Port     Vendor Name      [m] [m]  Serial Number    Part Number     [Mbps] Rev  Compliance
+-------- ---------------- --- ---- ---------------- ---------------- ----- ---- ----------------
+0/49     AVAGO            0   0    QF2606UK         AFBR-79EQDZ-JU1  10300   01 40GBase-SR4
+0/51     AVAGO            0   0    QF1803PC         AFBR-79EQDZ-JU1  10300   01 40GBase-SR4
+```
+Here I have 2 40Gb transivers compliant with IEEE 802.3 Physical Medium Dependant (PMD) type `40GBASE-SR4` as outlines in clause
+86.
+
+{{< figure
+    src="images/d2020/86.png"
+    caption="IEEE clause 86 Physical Medium Dependant (PMD), summary for 40GBASE-SR4 medium requirements"
+    alt="IEEE 802.3 clause 86 summary"
+    >}} 
+
+This is the 4 lane optical physical layer compatible with the `40GBASE-R4` PMA, the `40GBASE-R` PCS, both of which I am
+currently working on.
+ 
 # Connecting to the switch console
 
 My original plan was to gain access to the switch command line interface via the console port.
@@ -170,7 +245,7 @@ My original plan was to gain access to the switch command line interface via the
     >}}
 
 
-To this end I had aquired an `RJ45 to USB` cable and configured my PC's serial to match the seller
+To this end I had acquired an `RJ45 to USB` cable and configured my PC's serial to match the seller
 provided serial configuration.
 
 ```
@@ -198,7 +273,7 @@ pitchu /etc >sudo dmesg | tail
 [55357.949663] usb 1-4: ch341-uart converter now attached to ttyUSB0
 ```
 
-I was using picocom as my serial terminal with a baudrate of 9600, no flow control, a character size of 8, 1
+I was using `picocom` as my serial terminal with a baudrate of 9600, no flow control, a character size of 8, 1
 stop bit and no parity. 
 
 
@@ -231,11 +306,11 @@ exit is        : no
 Type [C-a] [C-h] to see available commands
 Terminal ready
 ```
-Yet, nothing happened, there was never any response from the consol port.
+Yet, nothing happened, there was never any response from the console port.
 It was as if I was sending commands into the void .
 
 Even after trying multiple different serial terminals such as `minicom` and `screen` as well as
-trying different serial configuration I didn't see to find a way to sucessfully connect to the switch.
+trying different serial configuration I didn't see to find a way to successfully connect to the switch.
 
 Was there something wrong with the switch, was it booting properly ?
 
@@ -243,12 +318,17 @@ Was there something wrong with the switch, was it booting properly ?
 
 At this point the switch is powered and connected via it's console port the my PC but it's connected to the network.
 
-Althoug the fans were spinning and I had some blinking, I wasnted to check if the switch was alive.
+Although the fans were spinning and I had some blinking, I wanted to check if the switch systems had been successfully started.
 I connected the `RJ45` management port directly to my PC and started scanning network traffic on this link using `wireshark`.
 
-22 bits of the MAC address are reserved for the equipement vendors idenfiers, and Celestica has the vendor identifier `0x00e0ec`.
-Additionally, we know our switch's MAC address is `00:e0:ec:38:e5:d5`
+For context, within the first 3 bytes of the MAC address, 22 bits are reserved for the equipment vendors identifiers, and Celestica has the vendor identifier `0x00e0ec`.
+Our switch's MAC address is `00:e0:ec:38:e5:d5`.
 
+{{< figure
+    src="images/d2020/mac.jpg"
+    caption="Switch MAC addresses"
+    alt="i2b bus"
+    >}}
 
 After a little while an `ICMP` message originating from the MAC address `00:e0:ec:38:e5:d5` was captured.
 We can spot our switch's MAC address as the source MAC in the packets MAC header.
@@ -263,7 +343,7 @@ We can spot our switch's MAC address as the source MAC in the packets MAC header
 0050   00 00 00 00 00 01 ff 38 e5 d5                     .......8..
 ```
 
-This confirmed that our switch was indeed alive, so now we just needed to find another way in.
+This confirmed that our switch was indeed working correctly, so now we just needed to find another way in.
 
 # Telnet
 
@@ -302,10 +382,11 @@ PORT   STATE SERVICE
 Nmap done: 1 IP address (1 host up) scanned in 0.19 seconds
 ```
 
-Although initially I had hoped for an open `ssh` port, `telnet` can also provide access to a virtual terminal and
-it just as good for my local usecase.
+Initially I had hoped for an open `ssh` port, `telnet` can also provide access to a virtual terminal.
+Although `telnet` is sometimes considered as lesser compared to `ssh` because it is less secure for
+my local test oriented use case it is just as good. 
 
-I then opened a telnet connection and logged into the `admin` user's session.
+I then opened a telnet connection and logged into the `admin` user session.
 
 ```sh
 pitchu /dev >telnet 192.168.4.106 23
@@ -318,33 +399,107 @@ Password:
 (Routing) >
 ```
 
-Sucess :partying_face:
+Success, we are in :partying_face:
 
 # Getting access to linux shell
 
-When connecting to the switch, by default we log into a dedicated CLI with only has a very limited amount of commands.
+When connecting to the switch, by default we log into a networking specific command line interface
+and not a linux shell.
+This CLI is very similar to the one use [by Dell for there S4048-ON System](https://www.dell.com/support/manuals/en-ca/dell-emc-os-9/s4048-on-9.14.2.5-cli-pub/accessing-the-command-line?guid=guid-b40fe3d9-62ea-46a3-9f3b-3e27868415f1&lang=en-us).
+
+By entering the `?` character was can view all available commands.
 ```
-TODO ?
+(Routing) >?
+
+enable                   Enter into user privilege mode.
+help                     Display help for various special keys.
+logout                   Exit this session. Any unsaved changes are lost.
+password                 Change an existing user's password.
+ping                     Send ICMP echo packets to a specified IP address.
+quit                     Exit this session. Any unsaved changes are lost.
+show                     Display Switch Options and Settings.
+telnet                   Telnet to a remote host.
 ```
-To expand the available commands we need to enter `enable` to turn on priviledge commands.
-We now have many more commands available to us.
+By default we are logged in an unprivileged mode, as signified by the `>` in out prompt.
+We can elevate our privileged level by using the `enable` command, this also expands 
+our available commands.
+We can also confirmed we have entered privileged mode thanks to the `#` in our prompt.
+
 ```
-TODO ?
+(Routing) >enable
+
+(Routing) #?
+
+application              Start or stop an application.
+arp                      Purge a dynamic or gateway ARP entry.
+bcmsh                    Enter into BCM Shell
+boot                     Marks the given image as active for subsequent
+                         re-boots.
+cablestatus              Isolate the problem in the cable attached to an
+                         interface.
+capture                  Enable CPU packets capturing.
+clear                    Reset configuration to factory defaults.
+configure                Enter into Global Config Mode.
+copy                     Uploads or Downloads file.
+debug                    Configure debug flags.
+delete                   Deletes the given image or the language pack file.
+dir                      Display directory information.
+disconnect               Close remote console session(s).
+dot1x                    Configure dot1x privileged exec parameters.
+enable                   Set the password for the enable privilege level.
+erase                    Erase configuration file.
+exit                     To exit from the mode.
+filedescr                Sets text description for a given image.
+help                     Display help for various special keys.
+hostname                 Change the system hostname.
+ip                       Configure IP parameters.
+linuxsh                  Enter into Linux Shell
+logout                   Exit this session. Any unsaved changes are lost.
+network                  Configuration for inband connectivity.
+ping                     Send ICMP echo packets to a specified IP address.
+quit                     Exit this session. Any unsaved changes are lost.
+release                  To release IP Address.
+reload                   Reset the switch.
+renew                    To renew IP Address.
+script                   Apply/Delete/List/Show/Validate Configuration Scripts.
+serviceport              Specify the serviceport parameters / protocol.
+set                      Set Router Parameters.
+show                     Display Switch Options and Settings.
+snmp-server              Configure SNMP server parameters.
+sshcon                   Configure SSH connection parameters.
+telnet                   Telnet to a remote host.
+telnetcon                Configure telnet connection parameters.
+terminal                 Set terminal line parameters.
+traceroute               Trace route to destination.
+udld                     Reset UDLD disabled interfaces.
+vlan                     Type 'vlan database' to enter into VLAN mode.
+watchdog                 Enable/Disable/Clear watchdog timer settings.
+write                    Configures save options.
 ```
 
-Unfortuantly, this is still a basic CLI and I would rather the full power of a linux shell.
-We can escape this CLI mode and access the linux shell by using `linuxsh` in this priviliedged mode.
+Unfortunately, this a dedicated CLI and I would like to have access to the full linux shell.
+Now that we are in privilege mode We can escape this CLI mode and access the linux shell by using `linuxsh`.
 ```
-TODO ? 
+(Routing) #linuxsh
+Trying 127.0.0.1...
+
+Connected to 127.0.0.1
+
+
+Linux System Login
+
+# pwd
+/mnt/application
 ```
 
+To recap : 
 {{< figure
     src="images/d2020/cli.svg"
-    caption="Priviledge escalation using the CLI to get the root linux shell."
+    caption="Privilege escalation using the CLI to get the root linux shell."
     alt=""
     >}}
 
-I can now fell home. 
+I can now fell right at home. 
 
 
 # Reducing noise
@@ -352,6 +507,8 @@ I can now fell home.
 At idle the fan duty cycle is set to `60%`, stated otherwise : this switch is cosplaying as a jet engine. :rocket:
  
 Obviously this isn't going to fly.
+
+The first order of business is to make the noise a little more bearable. 
 
 I can reduce the fan's pwm by overwriting the contents of `/sys/class/thermal/manual_pwm`. This
 value is bounds within the `[0;255]` range. 
@@ -364,7 +521,7 @@ So far a `~15%` duty cycle seems to be a good compromise given my use case.
 
 ## Check thermals
 
-To check thermals, either exit `linuxsh` using the `exit` comand and check the equipement's status using `show environment` :
+To check thermals, either exit `linuxsh` using the `exit` command and check the equipment's status using `show environment` :
 ```
 # exit
 
@@ -411,17 +568,49 @@ LIA_temp        bcm56846_temp   fan3speed       manual_pwm      psu2_status
 RIA_temp        fan1speed       fan4speed       p2020_temp      psuinlet1_temp
 ROA_temp        fan2speed       fan5speed       psu1_status     psuinlet2_temp
 ```
-Since `cat` may not be installed by default, you can quickly real the files using `head`.
+Since `cat` is not be installed by default, I am using `head` as a replacement to quickly read these files.
 ```
 # head ROA_temp
 28
 ```
 
-# Resources
- 
-[Redstone D2020 datasheet](/pdf/cls_datasheet_redstone_d2020_09.pdf) 
+## Scripts are removed at reboot
 
-[Reddit thread](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/)
+I had written a small script to rewrite the fan `pwm` after boot, which I have names `rc.local` and placed in `/etc/init.d` with execute permission.
+```sh
+#!/bin/sh
+echo 30 > /sys/class/thermal/manual_pwm
+exit 0
+```
+This script was confirmed to be working when invoked via shell.
+
+Unfortunately after reboot not only did the changes not take effect but the script was gone. 
+
+This may be a syndrome that the root file system is getting mounted at boot from an image, and since
+I am modifying the mounted version and not the original my changes are not permanent.
+Finding a work around for this will be the subject of a latter post. 
+
+# Closing remarks 
+
+From initially getting what amounted to a black box and having no networking equipment knowledge.
+I now have a working switch, a better understanding on how this switch functions internally, root access to it's linux shell
+and have leveled up my networking and network equipment related knowledge through troubleshooting and experimentation.
+
+Moving forward I plan to continue looking for a way to re-set `pwm` fan speed after boot, start experimenting by 
+writing a few static routing tables, and maybe open an `ssh` tunnel to replace `telnet`.
+
+
+I would like a thanks Kenneth Vorseth for helping me figure out the use of the lattice fpga's, ThomasC
+and reddit user bvcb907 for his very insightful responses from 3 years ago [on the reddit thread related to this switch](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/). 
+
+
+## Resources
+ 
+[Redstone D2020 data brief](/pdf/cls_datasheet_redstone_d2020_09.pdf) 
+
+[Digital Diagnostic Monitoring Interface for SFP and SFP+ Optical Transceivers](https://cdn.hackaday.io/files/21599924091616/AN_2030_DDMI_for_SFP_Rev_E2.pdf)
+
+[Reddit : Redstone D2020 48x 10GbE SFP+ & 4x QSFP Switch???](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/)
 
 [Is Broadcom’s chip powering Juniper’s Stratus?](https://www.gazettabyte.com/home/2010/10/14/is-broadcoms-chip-powering-junipers-stratus.html)
 
@@ -431,4 +620,4 @@ Since `cat` may not be installed by default, you can quickly real the files usin
 
 [List of MAC addresses with vendor identifiers](https://gist.github.com/aallan/b4bb86db86079509e6159810ae9bd3e4).
 
-
+[Dell Command Line Reference Guide for the S4048–ON System 9.14.2.5](https://www.dell.com/support/manuals/en-ca/dell-emc-os-9/s4048-on-9.14.2.5-cli-pub/about-this-guide?guid=guid-98ef68ee-8c72-479e-815f-e2acb596f1e0&lang=en-us)
