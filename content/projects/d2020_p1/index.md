@@ -1,5 +1,5 @@
 ---
-title: "Troubleshooting the redstone D2020"
+title: "Troubleshooting the redstone D2020, part 1"
 date: 2023-10-02
 description: ""
 summary: ""
