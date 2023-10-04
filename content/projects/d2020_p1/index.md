@@ -13,8 +13,10 @@ draft: false
 
 One of my current project is building the Ethernet physical layer for 10Gb (10GBASE-R)  and 40Gb (40GBASE-R) fiber.
 In order to create a test bench I went out and bough a decommissioned Redstone D2020 enterprise switch off ebay.
+
 Although there is practically no documentation on this switch and I have no prior experience working with
-network equipment whatsoever it was cheap and I believe troubleshooting a system is a great way to gain experience.
+network equipment whatsoever it was cheap and I believe troubleshooting a system is my opportunity to
+acquire that missing experience.
 
 2 weeks latter this beauty showed up.
 
@@ -25,7 +27,8 @@ network equipment whatsoever it was cheap and I believe troubleshooting a system
     >}}
 
 
-These posts are about troubleshooting my way to a working setup.
+I am writing these posts to document my experience in the hopes it may 
+be useful to future owners of a Redstone D2020.
 
 # Celestical Redstone D2020
 
@@ -33,12 +36,12 @@ The Celestica Redston D2020 is an 1U data center switch with 48 10GbE SFP+ ports
 It has two 460W power supplies for redundancy, 5 cooling fans, 1 Ethernet RJ45, 1 console RJ45 and 1 USB type A port.
 
 
-Unlike some other models it doesn't require any license to operate.
+Another big additional selling point is that, unlike some other models it doesn't require any license to operate.
 
 I got mine off from [UNIXSurplusNet on ebay](https://www.ebay.com/str/unixsurplusnet?_trksid=p4429486.m3561.l161211) for 
 150$.
 
-It was shipped with a test report mentioning some very handy information such as the admin username and password, as well the 
+The sell provided a test report mentioning some very handy information such as the admin username and password, as well the 
 console serial configuration and as some general system information.
 
 {{< figure
@@ -63,7 +66,7 @@ In our switch 16 of these modules are configured such that 4 lanes are bounded t
 
 I was unfortunately unable to find a full datasheet describing this IC's internals in details.
 
-So I do the next best thing... 
+So I do the next best thing I could think off... 
 
 Pooping the lid open we discover a single gorgeous multilayer PCB. 
 
@@ -422,8 +425,10 @@ show                     Display Switch Options and Settings.
 telnet                   Telnet to a remote host.
 ```
 By default we are logged in an unprivileged mode, as signified by the `>` in out prompt.
+
 We can elevate our privileged level by using the `enable` command, this also expands 
 our available commands.
+
 We can also confirmed we have entered privileged mode thanks to the `#` in our prompt.
 
 ```
@@ -479,7 +484,7 @@ write                    Configures save options.
 ```
 
 Unfortunately, this a dedicated CLI and I would like to have access to the full linux shell.
-Now that we are in privilege mode We can escape this CLI mode and access the linux shell by using `linuxsh`.
+Now that we are in privilege mode we can escape this CLI mode and access the linux shell by using `linuxsh`.
 ```
 (Routing) #linuxsh
 Trying 127.0.0.1...
@@ -595,7 +600,7 @@ Finding a work around for this will be the subject of a latter post.
 
 From initially getting what amounted to a black box and having no networking equipment knowledge.
 I now have a working switch, a better understanding on how this switch functions internally, root access to it's linux shell
-and have leveled up my networking and network equipment related knowledge through troubleshooting and experimentation.
+and have upgraded up my network equipment related knowledge through troubleshooting and experimentation.
 
 Moving forward I plan to continue looking for a way to re-set `pwm` fan speed after boot, start experimenting by 
 writing a few static routing tables, and maybe open an `ssh` tunnel to replace `telnet`.
