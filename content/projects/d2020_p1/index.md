@@ -4,27 +4,28 @@ date: 2023-10-02
 description: ""
 summary: ""
 tags: ["linux", "network", "switch"]
+sharingLinks : false
+showTableOfContents : true
 draft: false
 ---
 
 # Introduction
 
-Because one of my current project is building the ethernet physical layer for 10G and 40G fiber I went out and bough
-a decomissioned Redstone D2020 enterprise switch from ebay.
+Because one of my current project is building the Ethernet physical layer for 10G and 40G fiber I went out and bough
+a decommissioned Redstone D2020 enterprise switch from ebay.
 Although there is practically no documentation on this switch and I have no prior experience working with
-network equipement wathsoever it was cheap. 
+network equipment whatsoever it was cheap. 
 2 weeks latter this beauty showed up.
 
-These posts are about troublshooting my way to a working setup.
+These posts are about troubleshooting my way to a working setup.
 
 # Celestical Redstone D2020
 
 The Celestica Redston D2020 is an 1U data center switch with 48 10GbE SFP+ ports and 4 QSFP+ 40GbE capable ports.
-It has two 460W power supplies for redudancy, 5 colling fans, 1 ethernet RJ45, 1 console RJ45 and 1 USB type A port.
+It has two 460W power supplies for redundancy, 5 cooling fans, 1 Ethernet RJ45, 1 console RJ45 and 1 USB type A port.
 
-[Datasheet](/pdf/cls_datasheet_redstone_d2020_09.pdf) 
 
-Unlike some other models it doesn't require any license to opperate.
+Unlike some other models it doesn't require any license to operate.
 
 I got mine off from [UNIXSurplusNet on ebay](https://www.ebay.com/str/unixsurplusnet?_trksid=p4429486.m3561.l161211) for 
 150$ and it was shipped with a system report mentioning the admin username and password, as well as some
@@ -35,30 +36,32 @@ information on the general system and serial configuration.
 Thanks to this seller provided test report we learn that the main IC is showing up as a `Broadcom Trident 56846`.
 
 This is probably of the first Trident generation, the `BCM56846KFRBG` of the Broadcome `BCM56840` family that has since been discontinued. 
-This appears to be a custom broadcom ASIC targetting 10Gb ethernet applications with 64 integrated 10GBASE-KR capable serial PHY's.
+This appears to be a custom Broadcom ASIC targeting 10Gb Ethernet applications with 64 integrated 10GBASE-KR capable serial PHY's.
 In our switch 16 of these modules are configured such that 4 lanes are bounded together to form our 4 40GBASE-R ports.
 
 {{< figure
     src="bcm56846.svg"
     alt="ascii art"
-    caption="Broadcome ethernet IC configuration in our switch"
+    caption="Broadcome Ethernet IC configuration in our switch"
     >}}
 
-I was unfortuantly unable to find a full datasheet describing this IC's internals in details.
+I was unfortunately unable to find a full datasheet describing this IC's internals in details.
 
 So I do the next best thing... 
 
-Poping the lid open we discover a single gorgeous multilayer PCB. 
+Pooping the lid open we discover a single gorgeous multilayer PCB. 
 
-Judging by the traces on the pcb coming from the ethernet connectors cages the broadcome IC is likely under the massive passive colling block. 
+Judging by the traces on the pcb coming from the Ethernet connectors cages the Broadcom IC is likely under 
+the massive passive cooling block. 
 
 {{< figure
     src="images/d2020/pcb1.jpg"
     alt="pcb art"
-    caption="Switch PCS top face, we can see the pcb traces going from the ethernet connector cages to bellow the big metal passive cooler"
+    caption="Switch PCS top face, we can see the pcb traces going from the Ethernet connector cages to bellow the big metal passive cooler"
     >}}
 
-Looking at the porduct brief it appears this broadcome IC doesn't feature an CPU, rather it acts as a NIC connecting to the CPU via PCIe.
+Looking at the product brief it appears this Broadcom IC doesn't feature an CPU, rather it acts as a
+network interface connected to the CPU via PCIe.
 
 {{< figure
     src="images/d2020/pcie.png"
@@ -68,19 +71,19 @@ Looking at the porduct brief it appears this broadcome IC doesn't feature an CPU
 
 ## CPU 
 
-Our system's CPU is likely located bellow the block colling block as hinted by the DDR Sk hyinx DIMMs surounding another
+Our system's CPU is likely located bellow the block cooling block as hinted by the DDR Sk hyinx DIMMs surrounding another
 imposing black passive cooler.
 
 {{< figure
     src="images/d2020/pcb2.jpg"
     alt="pcb art"
-    caption="Switch CPU surounded by multiple Skyinx DDR3 DIMs."
+    caption="Switch CPU surrounded by multiple Skyinx DDR3 DIMs."
     >}}
 
 
 
 Our processor chip is a Freescale `P2020`, this is a dual core PowerPC system with 2GB of external EEC DDR3 DRAM.
-Here was can notice an intresting inconsistency, the switch datasheet lists the CPUs as running at 800MHz,
+Here was can notice an interesting inconsistency, the switch datasheet lists the CPUs as running at 800MHz,
 but when we reading the contents of `/proc/cpuinfo` they are reported as running at 1.2GHz.
 
 ```
@@ -110,18 +113,18 @@ Behind the processor we have a series of cooling fans flanked on both sides by o
  
 Both the power blocks and the 5 fans have connectors to the pcb making them detachable.
 The fan's can be easily popped outcome out, and come off as a single block.
-In practive only 4 fan's are needed for opperation, the 5th is redudant, so one fan block
+In practice only 4 fan's are needed for operation, the 5th is redundant, so one fan block
 can safely be removed at any time during operation.
 
 {{< figure
     src="images/d2020/fan.jpg"
-    caption="Detachable fan blocks, these were detached when the switch was not in opperation"
+    caption="Detachable fan blocks, these were detached when the switch was not in operation"
     alt="cute fan block connectors"
     >}}
 
 ## FPGA
 
-Intrsetingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
+Interestingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
 
 {{< figure
     src="images/d2020/fpga.jpg"
@@ -129,8 +132,8 @@ Intrsetingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
     alt="fpga spotted"
     >}}
 
-These are realtively small FPGA's with only about 1280 LUT's each and are likely used as I2C bus controllers
-for accessing the Digital Diagnostic Monitoring Interface (DDMI) on the optipcal transivers.
+These are relatively small FPGA's with only about 1280 LUT's each and are likely used as I2C bus controllers
+for accessing the Digital Diagnostic Monitoring Interface (DDMI) on the optical transceivers.
 
 {{< figure 
     src="images/d2020/machXO2.png"
@@ -139,12 +142,12 @@ for accessing the Digital Diagnostic Monitoring Interface (DDMI) on the optipcal
     >}}
 
 
-For thoese unfamiliar optical transivers this interface allows real time access to the transiver's operating
+For those unfamiliar optical transceivers this interface allows real time access to the transceiver's operating
 parameters, and it includes a system of alarm and warning flags which alerts the host system when particular 
 operating parameters are outside of a factory set normal operating range. Additionally this also includes information 
-on the transiver itself, such at the vendor, it's laser wavelength,it's supported link length, and more.
+on the transceiver itself, such at the vendor, it's laser wavelength,it's supported link length, and more.
 
-Internally each transiver features an small microcontroller in charge of reporting these diagnostic information and
+Internally each transceiver features an small microcontroller in charge of reporting these diagnostic information and
 commincating this transiver information with the wider system via the 2-wire serial I2C bus.
 
 {{< figure
@@ -236,7 +239,7 @@ trying different serial configuration I didn't see to find a way to sucessfully 
 
 Was there something wrong with the switch, was it booting properly ?
 
-# Checking liveness 
+# Checking switch liveness 
 
 At this point the switch is powered and connected via it's console port the my PC but it's connected to the network.
 
@@ -317,7 +320,7 @@ Password:
 
 Sucess :partying_face:
 
-# Priviledge levels
+# Getting access to linux shell
 
 When connecting to the switch, by default we log into a dedicated CLI with only has a very limited amount of commands.
 ```
@@ -346,7 +349,8 @@ I can now fell home.
 
 # Reducing noise
 
-At idle the fan duty cycle is set to `60%`, stated otherwise : this switch is cosplaying as a jet engine ... 
+At idle the fan duty cycle is set to `60%`, stated otherwise : this switch is cosplaying as a jet engine. :rocket:
+ 
 Obviously this isn't going to fly.
 
 I can reduce the fan's pwm by overwriting the contents of `/sys/class/thermal/manual_pwm`. This
@@ -361,7 +365,7 @@ So far a `~15%` duty cycle seems to be a good compromise given my use case.
 ## Check thermals
 
 To check thermals, either exit `linuxsh` using the `exit` comand and check the equipement's status using `show environment` :
-```sh
+```
 # exit
 
 Connection closed by foreign host.
@@ -400,7 +404,7 @@ Unit     Power supply   Description        Type          State
 ```
 
 Or read the contents of the `*_temp` files in the `/sys/class/thermal` folder.
-```sh
+```
 # cd /sys/class/thermal/
 # ls
 LIA_temp        bcm56846_temp   fan3speed       manual_pwm      psu2_status
@@ -408,16 +412,16 @@ RIA_temp        fan1speed       fan4speed       p2020_temp      psuinlet1_temp
 ROA_temp        fan2speed       fan5speed       psu1_status     psuinlet2_temp
 ```
 Since `cat` may not be installed by default, you can quickly real the files using `head`.
-```sh
+```
 # head ROA_temp
 28
 ```
 
-# Resources 
+# Resources
+ 
+[Redstone D2020 datasheet](/pdf/cls_datasheet_redstone_d2020_09.pdf) 
 
 [Reddit thread](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/)
-
-Boardcome ASIC :
 
 [Is Broadcom’s chip powering Juniper’s Stratus?](https://www.gazettabyte.com/home/2010/10/14/is-broadcoms-chip-powering-junipers-stratus.html)
 
