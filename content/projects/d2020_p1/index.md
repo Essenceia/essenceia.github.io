@@ -11,14 +11,14 @@ draft: false
 
 ## Introduction
 
-One of my current project is building the Ethernet physical layer for 10Gb (10GBASE-R)  and 40Gb (40GBASE-R) fiber.
-In order to create a test bench I went out and bough a decommissioned Redstone D2020 enterprise switch off ebay.
+One of my current projects to build the Ethernet physical layer for 10Gb (10GBASE-R) and 40Gb (40GBASE-R) fiber.
+In order to create a testbench I went out and bought a decommissioned Redstone D2020 enterprise switch off ebay.
 
-Although there is practically no documentation on this switch and I have no prior experience working with
-network equipment whatsoever it was cheap and I believe troubleshooting a system is my opportunity to
+Although there is practically no documentation on this switch and I have no prior experience working with any
+network equipment whatsoever, it was cheap and I believed that troubleshooting a system was a great opportunity to
 acquire that missing experience.
 
-2 weeks latter this beauty showed up.
+2 weeks later, this beauty showed up !
 
 {{< figure
     src="images/d2020/switch.jpg"
@@ -27,22 +27,20 @@ acquire that missing experience.
     >}}
 
 
-I am writing these posts to document my experience in the hopes it may 
+I am writing this article to document my experience, and in the hope that it may 
 be useful to future owners of a Redstone D2020.
 
 ## Celestical Redstone D2020
 
-The Celestica Redston D2020 is an 1U data center switch with 48 10GbE SFP+ ports and 4 QSFP+ 40GbE capable ports.
+The Celestica Redston D2020 is an 1U data center switch with 48 10GbE SFP+ capable ports and 4 QSFP+ 40GbE capable ports.
 It has two 460W power supplies for redundancy, 5 cooling fans, 1 Ethernet RJ45, 1 console RJ45 and 1 USB type A port.
 
+Another big additional selling point is that, unlike some other models, it doesn't require any license to operate.
 
-Another big additional selling point is that, unlike some other models it doesn't require any license to operate.
-
-I got mine off from [UNIXSurplusNet on ebay](https://www.ebay.com/str/unixsurplusnet?_trksid=p4429486.m3561.l161211) for 
-150$.
+I got mine off from [UNIXSurplusNet on ebay](https://www.ebay.com/str/unixsurplusnet?_trksid=p4429486.m3561.l161211) for 150$.
 
 The sell provided a test report mentioning some very handy information such as the admin username and password, as well the 
-console serial configuration and as some general system information.
+console serial configuration, and as some general system information.
 
 {{< figure
     src="images/d2020/doc.jpg"
@@ -52,11 +50,11 @@ console serial configuration and as some general system information.
 
 ### Ethernet ASIC
 
-Thanks to this seller provided test report we learn that the main IC is showing up as a `Broadcom Trident 56846`.
+Thanks to the seller provided test report we learn that the main IC is showing up as a `Broadcom Trident 56846`.
 
-This is probably of the first Trident generation, the `BCM56846KFRBG` of the Broadcome `BCM56840` family that has since been discontinued. 
+This is probably of the first Trident generation, the `BCM56846KFRBG` of the Broadcom `BCM56840` family that has since been discontinued. 
 This appears to be a custom Broadcom ASIC targeting 10Gb Ethernet applications with 64 integrated 10GBASE-KR capable serial PHY's.
-In our switch 16 of these modules are configured such that 4 lanes are bounded together to form our 4 40GBASE-R ports.
+In our switch 16 of these modules are configured, such that 4 lanes are bounded together, to form our 4 40GBASE-R ports.
 
 {{< figure
     src="bcm56846.svg"
@@ -64,19 +62,19 @@ In our switch 16 of these modules are configured such that 4 lanes are bounded t
     caption="Broadcome Ethernet IC configuration in our switch"
     >}}
 
-I was unfortunately unable to find a full datasheet describing this IC's internals in details.
+I was unfortunately unable to find a full data-sheet describing this IC's internals in details.
 
-So I do the next best thing I could think off... 
+As such, I did the next best thing I could think of... 
 
-Pooping the lid open we discover a single gorgeous multilayer PCB. 
+Pooping the lid open, we discover a single gorgeous multilayer PCB. 
 
-Judging by the traces on the pcb coming from the Ethernet connectors cages the Broadcom IC is likely under 
+Judging by the traces on the PCB coming from the Ethernet connectors cages, the Broadcom IC is likely under 
 the massive passive cooling block. 
 
 {{< figure
     src="images/d2020/pcb1.jpg"
     alt="pcb art"
-    caption="Switch PCS top face, we can see the pcb traces going from the Ethernet connector cages to bellow the big metal passive cooler"
+    caption="Switch PCS top face, we can see the PCB traces going from the Ethernet connector cages to bellow the big metal passive cooler"
     >}}
 
 Looking at the product brief it appears this Broadcom IC doesn't feature an CPU, rather it acts as a
@@ -90,7 +88,7 @@ network interface connected to the CPU via PCIe.
 
 ### CPU 
 
-Our system's CPU is likely located bellow the block cooling block as hinted by the DDR3 Sk hyinx memory chips surrounding another
+Our system's CPU is likely located below the block cooling block as hinted by the DDR3 Sk hyinx memory chips surrounding another
 imposing black passive cooler.
 
 {{< figure
@@ -99,12 +97,10 @@ imposing black passive cooler.
     caption="Switch CPU surrounded by multiple Skyinx DDR3 memory chips."
     >}}
 
-
-
-Our processor chip is a Freescale `P2020`, this is a dual core PowerPC system with 2GB of external EEC DDR3 DRAM.
-Here was can notice an interesting inconsistency, the [switch data brief](https://download.datasheets.com/pdfs/2016/4/20/10/27/21/216/clst_/manual/cls_datasheet_redstone_d2020_09.pdf) 
+Our processor's chip is a Freescale `P2020`, this is a dual core PowerPC system with 2GB of external EEC DDR3 DRAM.
+Here we can notice an interesting inconsistency : the [switch data brief](https://download.datasheets.com/pdfs/2016/4/20/10/27/21/216/clst_/manual/cls_datasheet_redstone_d2020_09.pdf) 
 lists the CPUs as running at 800MHz,
-but when we reading the contents of `/proc/cpuinfo` the core's are reported as running at 1.2GHz.
+but when we read the contents of `/proc/cpuinfo` the cores are reported as running at 1.2GHz.
 
 ```
 # head -n 20 /proc/cpuinfo
@@ -131,9 +127,9 @@ Memory          : 2048 MB
 
 Behind the processor we have a series of cooling fans flanked on both sides by our power blocks.
  
-Both the power blocks and the 5 fans have connectors to the pcb making them detachable.
-The fan's can be easily popped outcome out, and come off as a single block.
-In practice only 4 fan's are needed for operation, the 5th is redundant, so one fan block
+Both the power blocks and the 5 fans have connectors to the PCB making them detachable.
+The fans can be easily detached, and come off as a single block.
+In practice only 4 fans are needed for operation, the 5th is redundant, so that one fan block
 can safely be removed at any time during operation.
 
 {{< figure
@@ -142,11 +138,11 @@ can safely be removed at any time during operation.
     alt="cute fan block connectors"
     >}}
 
-Same goes for the power block, only 1 one the 460W bricks is needed to power the switch, even at maximum load.
+Same goes for the power block, only one the 460W bricks is needed to power the switch, even at maximum load.
 
 ### FPGA
 
-Interestingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
+Interestingly this PCB also features 4 Lattice FPGAs of the `MachXO2` family.
 
 {{< figure
     src="images/d2020/fpga.jpg"
@@ -154,7 +150,7 @@ Interestingly this PCB also features 4 Lattice FPGA's of the `MachXO2` family.
     alt="fpga spotted"
     >}}
 
-These are relatively small FPGA's with only about 1280 LUT's each and are likely used as I2C bus controllers
+These are relatively small FPGAs with only about 1280 LUTs each and are likely used as I2C bus controllers
 for accessing the [Digital Diagnostic Monitoring Interface (DDMI)](https://cdn.hackaday.io/files/21599924091616/AN_2030_DDMI_for_SFP_Rev_E2.pdf)
 on the optical transceivers.
 
@@ -165,12 +161,12 @@ on the optical transceivers.
     >}}
 
 
-For those unfamiliar optical transceivers this interface allows real time access to the transceiver's operating
+For those unfamiliar with optical transceivers, this interface allows real time access to the transceiver's operating
 parameters, and it includes a system of alarm and warning flags which alerts the host system when particular 
 operating parameters are outside of a factory set normal operating range. Additionally this also includes information 
-on the transceiver itself, such at the vendor, its laser wavelength,its supported link length, and more.
+ the transceiver itself, such as the vendor, its laser wavelength, its supported link length, and more.
 
-Internally each transceiver features an small microcontroller in charge of reporting these diagnostic information and
+Internally each transceiver features an small microcontroller in charge of reporting this diagnostic information and
 communicates data to the wider system via the 2-wire serial I2C bus.
 
 {{< figure
@@ -180,14 +176,14 @@ communicates data to the wider system via the 2-wire serial I2C bus.
     >}}
 
 Since an I2C bus is a shared medium and multiple transceivers are connected onto the same I2C bus
-the FPGA act's as the I2C Master of this bus, as well as the controller for allowing the 
+the FPGA acts as the I2C Master of this bus, as well as the controller for allowing the 
 Broadcom Ethernet ASIC to interface with the I2C bus. 
 
 Thanks to this we can obtain information on the internal status of our connected transceivers.
 
 Commands like `show fiber-ports optical-transceiver` give us the latest internal operating
-parameters as read by the transverse internal microcontroller and reported over I2C to the system.
-Using this command we can get information on the transceivers temperature, input and output signal strength and operating voltage.
+parameters as read by the transceiver's internal microcontroller and reported over I2C to the system.
+Using this command we can get information on the transceiver's temperature, input and output signal strength and operating voltage.
 ```
 (Routing) #show fiber-ports optical-transceiver all
 
@@ -206,13 +202,13 @@ Port      Temp  Voltage  Current     Power    Power   TX     LOS
  TX Fault - Transmitter fault.
  LOS - Loss of signal.
 ```
-Here I can see one of my transceivers has a lost the signal and the recieved optical power `Input Power (dBm) = -19.318 dBm` 
+Here I can see that one of my transceivers has a lost the signal and the received optical power `Input Power (dBm) = -19.318 dBm` 
 this might indicate I might have some dust in my optical connections
-or may just be a bad contact.
+, or may just be a bad contact.
  
 Commands like `show fiber-ports optical-transceiver-info` reports the content of
-sections of the transceivers EEPROM and presents them in a readable format.
-These include the unit's vendor, its serial numbers, part number and what 802.3
+sections of the transceiver's EEPROM and presents them in a readable format.
+This includes the unit's vendor, its serial numbers, part number and what 802.3
 physical medium it is compliant with.
 
 ```
@@ -226,7 +222,7 @@ Port     Vendor Name      [m] [m]  Serial Number    Part Number     [Mbps] Rev  
 0/49     AVAGO            0   0    QF2606UK         AFBR-79EQDZ-JU1  10300   01 40GBase-SR4
 0/51     AVAGO            0   0    QF1803PC         AFBR-79EQDZ-JU1  10300   01 40GBase-SR4
 ```
-Here I have 2 40Gb transivers compliant with IEEE 802.3 Physical Medium Dependant (PMD) type `40GBASE-SR4` as outlines in clause
+Here I have 2 40Gb transceivers compliant with IEEE 802.3 Physical Medium Dependant (PMD) type `40GBASE-SR4` as outlines in clause
 86.
 
 {{< figure
@@ -249,8 +245,7 @@ My original plan was to gain access to the switch command line interface via the
     >}}
 
 
-To this end I had acquired an `RJ45 to USB` cable and configured my PC's serial to match the seller
-provided serial configuration.
+To this end, I had acquired an `RJ45 to USB` cable and configured my PC's serial to match the seller-provided serial configuration.
 
 ```
 (Routing) #show serial
@@ -263,8 +258,8 @@ Stop Bits...................................... 1
 Parity......................................... none
 ```
 
-Initially all seemed to be going well, the serial cable was correctly getting detected as an 
-USB to serial device as evidenced by my `dmesg` logs.
+Initially all seemed to be going well, the serial cable was correctly detected as an 
+USB to serial device, as evidenced by my `dmesg` logs.
 
 ```sh
 pitchu /etc >sudo dmesg | tail
@@ -277,8 +272,7 @@ pitchu /etc >sudo dmesg | tail
 [55357.949663] usb 1-4: ch341-uart converter now attached to ttyUSB0
 ```
 
-I was using `picocom` as my serial terminal with a baudrate of 9600, no flow control, a character size of 8, 1
-stop bit and no parity. 
+I was using `picocom` as a serial terminal with a baud-rate of 9600B, no flow control, a character size of 8, 1 stop bit and no parity. 
 
 
 ```bash
@@ -310,22 +304,22 @@ exit is        : no
 Type [C-a] [C-h] to see available commands
 Terminal ready
 ```
-Yet, nothing happened, there was never any response from the console port.
+Yet, nothing happened. There was never any response from the console port.
 It was as if I was sending commands into the void .
 
 Even after trying multiple different serial terminals such as `minicom` and `screen` as well as
-trying different serial configuration I didn't see to find a way to successfully connect to the switch.
+trying different serial configurations I didn't seem to find a way to successfully connect to the switch.
 
-Was there something wrong with the switch, was it booting properly ?
+Was there something wrong with the switch, was it not booting properly ?
 
 ## Checking switch liveness 
 
-At this point the switch is powered and connected via its console port the my PC but it is not connected to my network.
+At this point the switch was powered and connected via its console port my PC but it was not connected to my network.
 
 Although the fans were spinning and I had some blinking, I wanted to check if the switch systems had been successfully started.
 I connected the `RJ45` management port directly to my PC and started scanning network traffic on this link using `wireshark`.
 
-For context, within the first 3 bytes of the MAC address, 22 bits are reserved for the equipment vendors identifiers, and Celestica has the vendor identifier `0x00e0ec`.
+For context, within the first 3 bytes of the MAC address, 22 bits are reserved for the equipment vendor's identifiers, and Celestica has the vendor identifier `0x00e0ec`.
 Our switch's MAC address is `00:e0:ec:38:e5:d5`.
 
 {{< figure
@@ -351,11 +345,10 @@ This confirmed that our switch was indeed working correctly, so now we just need
 
 ## Telnet
 
-Since I now knew the switch was working and basic networking functionality was running as evidenced by the `ICMP` packet
+Since I now had proof that the switch was working properly, and that the basic networking features were running as evidenced by the `ICMP` packet
 I decided to check if there wasn't also an `ssh` port open. 
 
-At this point I connected the switch to my home's router and started scanning my network using `nmap` see at what
-IP it was going to be attributed.
+At this point I connected the switch to my home's router and started scanning my network using `nmap`, to see if the switch had an assigned IP.
 
 ```sh
 pitchu /dev/serial >nmap -sn 192.168.4.0/24
@@ -371,7 +364,7 @@ Host is up (0.015s latency).
 Nmap done: 256 IP addresses (4 hosts up) scanned in 3.09 seconds
 ```
 
-The switch was now at address `192.168.4.106` so I then proceeded to check what ports where open.
+The switch's address was `192.168.4.106`, and I then proceeded to check what ports where open.
 
 ```sh
 pitchu /dev/serial >nmap --top-ports 1000 192.168.4.106
@@ -387,7 +380,7 @@ Nmap done: 1 IP address (1 host up) scanned in 0.19 seconds
 ```
 
 Initially I had hoped for an open `ssh` port, `telnet` can also provide access to a virtual terminal.
-Although `telnet` is sometimes considered as lesser compared to `ssh` because it is less secure for
+Although `telnet` is sometimes considered as lesser compared to `ssh` because it is less secure, for
 my local test oriented use case it is just as good. 
 
 I then opened a telnet connection and logged into the `admin` user session.
@@ -409,7 +402,7 @@ Success, we are in :partying_face:
 
 When connecting to the switch, by default we log into a networking specific command line interface
 and not a linux shell.
-This CLI is very similar to the one use [by Dell for there S4048-ON System](https://www.dell.com/support/manuals/en-ca/dell-emc-os-9/s4048-on-9.14.2.5-cli-pub/accessing-the-command-line?guid=guid-b40fe3d9-62ea-46a3-9f3b-3e27868415f1&lang=en-us).
+This CLI is very similar to the one used [by Dell for there S4048-ON System](https://www.dell.com/support/manuals/en-ca/dell-emc-os-9/s4048-on-9.14.2.5-cli-pub/accessing-the-command-line?guid=guid-b40fe3d9-62ea-46a3-9f3b-3e27868415f1&lang=en-us).
 
 By entering the `?` character was can view all available commands.
 ```
@@ -424,12 +417,12 @@ quit                     Exit this session. Any unsaved changes are lost.
 show                     Display Switch Options and Settings.
 telnet                   Telnet to a remote host.
 ```
-By default we are logged in an unprivileged mode, as signified by the `>` in out prompt.
+By default we are logged in an unprivileged session, as signified by the `>` in out prompt.
 
-We can elevate our privileged level by using the `enable` command, this also expands 
+We can elevate our privilege level, using the `enable` command, this also expands 
 our available commands.
 
-We can also confirmed we have entered privileged mode thanks to the `#` in our prompt.
+We can also confirm that we have entered privileged mode thanks to the `#` in our prompt.
 
 ```
 (Routing) >enable
@@ -484,7 +477,8 @@ write                    Configures save options.
 ```
 
 Unfortunately, this a dedicated CLI and I would like to have access to the full linux shell.
-Now that we are in privilege mode we can escape this CLI mode and access the linux shell by using `linuxsh`.
+Now that we are in privilege mode we can escape this CLI and access the linux shell by using `linuxsh`.
+
 ```
 (Routing) #linuxsh
 Trying 127.0.0.1...
@@ -505,10 +499,9 @@ To recap :
     alt=""
     >}}
 
-I can now fell right at home. 
+I now fell right at home. 
 
-
-## Reducing noise
+## Reducing the noise
 
 At idle the fan duty cycle is set to `60%`, stated otherwise : this switch is cosplaying as a jet engine. :rocket:
  
@@ -516,11 +509,12 @@ Obviously this isn't going to fly.
 
 The first order of business is to make the noise a little more bearable. 
 
-I can reduce the fan's pwm by overwriting the contents of `/sys/class/thermal/manual_pwm`. This
-value is bounds within the `[0;255]` range. 
-It is apparently advised to keep the temperature of all the switches internal components bellow `50` degrees celcius.
+I can reduce the fan's `PWM` by overwriting the contents of `/sys/class/thermal/manual_pwm`. This
+value is bound within the `[0;255]` range. 
+It is apparently advised to keep the temperature of all internal components of the switch below `50` degrees Celcius.
 
 So far a `~15%` duty cycle seems to be a good compromise given my use case.
+
 ```
 # echo 40 > /sys/class/thermal/manual_pwm
 ```
@@ -528,6 +522,7 @@ So far a `~15%` duty cycle seems to be a good compromise given my use case.
 ### Check thermals
 
 To check thermals, either exit `linuxsh` using the `exit` command and check the equipment's status using `show environment` :
+
 ```
 # exit
 
@@ -567,6 +562,7 @@ Unit     Power supply   Description        Type          State
 ```
 
 Or read the contents of the `*_temp` files in the `/sys/class/thermal` folder.
+
 ```
 # cd /sys/class/thermal/
 # ls
@@ -574,7 +570,9 @@ LIA_temp        bcm56846_temp   fan3speed       manual_pwm      psu2_status
 RIA_temp        fan1speed       fan4speed       p2020_temp      psuinlet1_temp
 ROA_temp        fan2speed       fan5speed       psu1_status     psuinlet2_temp
 ```
-Since `cat` is not be installed by default, I am using `head` as a replacement to quickly read these files.
+
+Since `cat` is not installed by default, I am using `head` as a replacement to quickly read those files.
+
 ```
 # head ROA_temp
 28
@@ -582,33 +580,33 @@ Since `cat` is not be installed by default, I am using `head` as a replacement t
 
 ### Scripts are removed at reboot
 
-I had written a small script to rewrite the fan `pwm` after boot, which I have names `rc.local` and placed in `/etc/init.d` with execute permission.
+I had written a small script to rewrite the fan's `PWM` after boot, which I had named `rc.local` and placed in `/etc/init.d` with execute permissions.
+
 ```sh
 #!/bin/sh
 echo 30 > /sys/class/thermal/manual_pwm
 exit 0
 ```
+
 This script was confirmed to be working when invoked via shell.
 
 Unfortunately after reboot not only did the changes not take effect but the script was gone. 
 
-This may be a syndrome that the root file system is getting mounted at boot from an image, and since
-I am modifying the mounted version and not the original my changes are not permanent.
-Finding a work around for this will be the subject of a latter post. 
+This may be a symptom that the root file system is getting mounted at boot from an image, and since
+I am modifying the mounted version and not the original one, my changes are not permanent.
+Finding a workaround for this will be the subject of a latter post. 
 
 ## Closing remarks 
 
 From initially getting what amounted to a black box and having no networking equipment knowledge.
-I now have a working switch, a better understanding on how this switch functions internally, root access to its linux shell
-and have upgraded up my network equipment related knowledge through troubleshooting and experimentation.
+I now have a working switch, a better understanding on the internals of this switch, a root access to its linux shell
+and have upgraded up my network-equipment-related knowledge through troubleshooting and experimentation.
 
-Moving forward I plan to continue looking for a way to re-set `pwm` fan speed after boot, start experimenting by 
+Moving forward I plan to continue looking for a way to reset `PWM` fan speed after boot, start experimenting by 
 writing a few static routing tables, and maybe open an `ssh` tunnel to replace `telnet`.
 
-
-I would like to thank EmbeddedKen for helping me figure out the use of the lattice fpga's, ThomasC
-and reddit user bvcb907 for his very insightful responses from 3 years ago [on the reddit thread related to this switch](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/). 
-
+I would like to thank EmbeddedKen for helping me figure out the use of the Lattice FPGAs, ThomasC
+and reddit user bvcb907 for their very insightful answers from 3 years ago [on the reddit thread related to this switch](https://www.reddit.com/r/homelab/comments/jzv2wv/redstone_d2020_48x_10gbe_sfp_4x_qsfp_switch/). 
 
 ### Resources
  
