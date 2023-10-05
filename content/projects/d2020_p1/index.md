@@ -168,7 +168,7 @@ on the optical transceivers.
 For those unfamiliar optical transceivers this interface allows real time access to the transceiver's operating
 parameters, and it includes a system of alarm and warning flags which alerts the host system when particular 
 operating parameters are outside of a factory set normal operating range. Additionally this also includes information 
-on the transceiver itself, such at the vendor, it's laser wavelength,it's supported link length, and more.
+on the transceiver itself, such at the vendor, its laser wavelength,its supported link length, and more.
 
 Internally each transceiver features an small microcontroller in charge of reporting these diagnostic information and
 communicates data to the wider system via the 2-wire serial I2C bus.
@@ -206,13 +206,13 @@ Port      Temp  Voltage  Current     Power    Power   TX     LOS
  TX Fault - Transmitter fault.
  LOS - Loss of signal.
 ```
-Here I can see one of my transceivers has a low recieved optical power `Input Power (dBm) = -19.318` 
-this might be an issue and could indicates I might have some dust in my optical connections
-or may just be a bad contract.
+Here I can see one of my transceivers has a lost the signal and the recieved optical power `Input Power (dBm) = -19.318 dBm` 
+this might indicate I might have some dust in my optical connections
+or may just be a bad contact.
  
 Commands like `show fiber-ports optical-transceiver-info` reports the content of
 sections of the transceivers EEPROM and presents them in a readable format.
-These include the unit's vendor, it's serial numbers, part number and what 802.3
+These include the unit's vendor, its serial numbers, part number and what 802.3
 physical medium it is compliant with.
 
 ```
@@ -235,8 +235,8 @@ Here I have 2 40Gb transivers compliant with IEEE 802.3 Physical Medium Dependan
     alt="IEEE 802.3 clause 86 summary"
     >}} 
 
-This is the 4 lane optical physical layer compatible with the `40GBASE-R4` PMA, the `40GBASE-R` PCS, both of which I am
-currently working on.
+This is the 4 lane optical physical layer compatible with the `40GBASE-R4` PMA, the `40GBASE-R` PCS, 
+[which I am currently working on](https://github.com/Essenceia/ethernet-physical-layer).
  
 ## Connecting to the switch console
 
@@ -320,7 +320,7 @@ Was there something wrong with the switch, was it booting properly ?
 
 ## Checking switch liveness 
 
-At this point the switch is powered and connected via it's console port the my PC but it's connected to the network.
+At this point the switch is powered and connected via its console port the my PC but it is not connected to my network.
 
 Although the fans were spinning and I had some blinking, I wanted to check if the switch systems had been successfully started.
 I connected the `RJ45` management port directly to my PC and started scanning network traffic on this link using `wireshark`.
@@ -599,7 +599,7 @@ Finding a work around for this will be the subject of a latter post.
 ## Closing remarks 
 
 From initially getting what amounted to a black box and having no networking equipment knowledge.
-I now have a working switch, a better understanding on how this switch functions internally, root access to it's linux shell
+I now have a working switch, a better understanding on how this switch functions internally, root access to its linux shell
 and have upgraded up my network equipment related knowledge through troubleshooting and experimentation.
 
 Moving forward I plan to continue looking for a way to re-set `pwm` fan speed after boot, start experimenting by 
