@@ -4,7 +4,7 @@ date: 2023-08-02
 description: "RTL implementation of the ITCH module."
 summary: "Design of the ITCH module."
 tags: ["FPGA", "HFT", "ITCH","verilog", "TotalView"]
-draft: false
+draft: true
 ---
 # Introduction
 

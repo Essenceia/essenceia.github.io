@@ -2,7 +2,7 @@
 title: "Troubleshooting the redstone D2020, part 1"
 date: 2023-10-02
 description: ""
-summary: ""
+summary: "No documentation, no problem"
 tags: ["linux", "network", "switch"]
 sharingLinks : false
 showTableOfContents : true
@@ -22,7 +22,7 @@ acquire that missing experience.
 
 {{< figure
     src="images/d2020/switch.jpg"
-    alt="pcb art"
+    alt="Switch"
     caption="Celestical Redstone D2020"
     >}}
 
