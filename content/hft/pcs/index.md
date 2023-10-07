@@ -14,11 +14,11 @@ draft: false
 This project aim's to implement the Ethernet physical layer for 10Gb and 40Gb fiber optics links.
 
 This post is a work in progress and currently used as means to more easily share
-schematics with others.
+schematics.
 
-### RTL
+### Architecture
 
-High level schematics.
+High level schematics and design considerations for the 10GBASE-R and 40GBASE-R RX and TX PCSs.
 
 #### 10G RX
 
@@ -51,7 +51,10 @@ The CDC would be optional, this would make this design better optimized for low 
 
 #### 40G RX
 
-TODO : Add lane valid data to output
+Because we need all lanes to be predictably valid at the same cycle to complete the
+descrambling I cannot have an design with an optional CDC.
+This is made less consequential as my objective with the 40GBASE-R PCS is not to optimize it 
+for low latency.
 
 {{< figure
     src="pcs/40g_rx.svg"
@@ -60,8 +63,9 @@ TODO : Add lane valid data to output
 >}}
 
 
-#### TX
+#### 10G TX
 
+I have decided to select the design with the optional CDC for 10G.
 ##### **Optional CDC**
 
 {{< figure
