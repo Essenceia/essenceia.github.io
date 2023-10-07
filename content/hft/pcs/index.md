@@ -74,7 +74,22 @@ I have decided to select the design with the optional CDC for 10G.
     alt="Svg schematic"
 >}}
 
+#### 40G TX
 
+Each lanes `SerDes` block is driven by the common 161,13MHz clock coming from the PCS.
+
+All the lanes are in sync with one another, so are there gearboxes, thus each one should be
+ready to accept a new 66b data block in the same cycles. 
+
+The ability to accept a new data block is
+signaled by the gearboxes using `ready` and since they are all in sync all theses `ready` signals should
+have the same value, thus was can use either signal interchangeably to the CDC we can accept the 4 lanes worth of data.
+
+{{< figure
+    src="pcs/40g_tx.svg"
+    caption="40GBASE-R TX path, all SerDes blocks are clocked from the same 161.13MHz clock coming from the PCS, optional `xgmii interface`"
+    alt=""
+    >}}
 
 
 
