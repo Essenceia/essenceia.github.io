@@ -16,6 +16,8 @@ This project aim's to implement the Ethernet physical layer for 10Gb and 40Gb fi
 This post is a work in progress and currently used as means to more easily share
 schematics.
 
+{{< github repo="essenceia/ethernet-physical-layer" >}}
+
 ### Architecture
 
 High level schematics and design considerations for the 10GBASE-R and 40GBASE-R RX and TX PCSs.
