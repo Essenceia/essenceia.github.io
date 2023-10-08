@@ -36,8 +36,10 @@ The CDC would be optional, this would make this design better optimized for low 
 
 -  Reduce latency for our latency optimized designs as we could to get away without having different clock frequencies.
     Instead, we would simply need to compensate the de-phasing between the SerDes derived clock and the rest of the
-    design also running at 161.13MHz. On the flip is all the downstream design I would need to support invalid
-    data one cycle every 32 cycles.
+    design also running at 161.13MHz. 
+    On the flip is all the downstream design I would need to support invalid
+    data one cycle every 32 cycles. Because of this we also need to a `signal_ok` signal along side the
+    data to help difference an cycle with no data and a signal loss. 
 
 - For the default implementation we would still be able to include the optional CDC and allow you to 
     have different clock frequencies and thus not need to support invalid data cycles.
