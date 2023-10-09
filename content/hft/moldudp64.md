@@ -4,6 +4,7 @@ date: 2023-08-02
 description: "RTL implementation of the MoldUDP64 module."
 summary: "Discussing the design of the current MoldUDP64 module."
 tags: ["FPGA", "HFT", "moldudp64","verilog"]
+showTableOfContents : true
 draft: false
 ---
 # Introduction
