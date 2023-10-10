@@ -11,26 +11,26 @@ draft: true
 
 ## Introduction
 
-When doing embedded system developpement sometimes it can be hard finding
-a developpement board with the desired features at an affordable price. 
-A solution to this is to learn to design and manifacture your own custom
-developpement boards. 
+When doing embedded system development sometimes it can be hard finding
+a development board with the desired features at an affordable price. 
+A solution to this is to learn to design and manufacturing your own custom
+development boards. 
 
 {{< figure
     src="images/dev_board/conn.jpg"
-    caption="Developpement board."
+    caption="Development board."
     alt="dev board"
     >}}
 
 
-This project is my first custom developpement board and features :
+This project is my first custom development board and features :
 - the `STM32H750VBT6TR` MCU containing an `arm cortex-m7` core
 - an `SWD` debug interface with a pinout compatible with the 20 pin J-Link probe 
 - `USB-B mini` connector
 - `Mico SD` card connector
 
 {{< alert >}}
-The USB's data transfert functionality and the SD card reader have not been
+The USB's data transfer functionality and the SD card reader have not been
 tested as of writing. I suggest double checking the PCB schematics for these
 if you intend to use them in your project.
 {{< /alert >}}
@@ -39,11 +39,11 @@ if you intend to use them in your project.
 
 ### An anniversary present
  
-I met my wonderful husband over 10 years ago, we where high school sweet hearts.
-Today he is a talented low level `C` developper that writes kernels for fun.
+I met my wonderful husband over 10 years ago, we where high school love birds.
+Today he is a talented low level `C` developer that writes kernels for fun.
 
-He likes targetting microcontroller but was often disapointed by the lack of an `JTAG`
-and `SWD` debugging interface on all the developpement boards he owned.
+He likes targeting microcontroller but was often disappointed by the lack of an `JTAG`
+and `SWD` debugging interface on all the development boards he owned.
 
 As such, this board was made as my 10 year anniversary present to him.
 
@@ -60,6 +60,7 @@ board without the need for any additional adapters.
     alt="schematics"
     >}}
 
+### J-Link connector pinout
 
 We are using a J-Link as our debug probe, natively 
 it has a 20 pin connector and supports SWD 
@@ -86,13 +87,49 @@ The following table lists the J-Link / J-Trace SWD pinout.
 |17|Not used|NC|This pin is not connected in J-Link.|
 |19|5V-Supply|Output|This pin is used to supply power to some eval boards.|
 
-Pins 4, 6, 8, 10, 12, 14, 16, 18, 20 are GND pins connected to GND in J-Link. They should also be connected to GND in the target system.
+Pins 4, 6, 8, 10, 12, 14, 16, 18, 20 are GND pins connected to GND in J-Link. 
+They should also be connected to GND on the board.
 
-All SWD J-Link pins are connected with the exception of the `5V-Supply`, power is
-gotten from the `USB`. As such, even when debugging the board will need to be
-connected to an `USB` for power.
+{{< figure
+    src="images/dev_board/pinout.svg"
+    caption="J-Link connections to board."
+    alt="jlink pcb bir"
+    >}}
+
+
+All SWD J-Link pins are connected with the exception of the `5V-Supply`, 
+even when the debug probe is connected power is still gotten from the `USB`. 
+
+### Mounting connector to PCB 
+
+The connector should be mounted with the slot facing down towards the MCU as shown bellow.
+ 
+{{< figure
+    src="images/dev_board/j-link_pcb.svg"
+    caption="Male 20 pin J-Link connector mounting direction on PCB frount face."
+    alt="jlink pcb bir"
+    >}}
+
+## Boot pin
+
+On boot the startup memory space is selected according to value of the `BOOT0` pin.
+
+Commonly this pin is driven high such that ST's bootloader is called.
+This boot loader is pre-configured during manufacturings and is located in non-user System memory. 
+It is used to reprogram the Flash memory through a serial interface (e (USART, I2C, SPI, USB-DFU).
+
+{{< figure
+    src="images/dev_board/pull_down_boot.svg"
+    caption="Pull down BOOT0."
+    alt="jlink pcb bir"
+    >}}
+
+On our board this pin is driven low such that the system jumps to main flash memory
+on boot. Thus firmware must handle the boot sequence for the MCU. 
 
 ## Schematic
+
+Full schematics of the board : 
 
 {{< figure
     src="images/dev_board/schematic.svg"
