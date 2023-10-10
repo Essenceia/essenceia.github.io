@@ -6,7 +6,7 @@ summary: "Designing a small stm32h750 developpement board as an anniversary pres
 tags: ["pcb", "electronics", "embedded", "manifacturing",]
 sharingLinks : false
 showTableOfContents : true
-draft: true
+draft: false
 ---
 
 ## Introduction
