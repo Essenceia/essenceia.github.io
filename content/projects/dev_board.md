@@ -102,7 +102,8 @@ even when the debug probe is connected power is still gotten from the `USB`.
 
 ### Mounting connector to PCB 
 
-The connector should be mounted with the slot facing down towards the MCU as shown bellow.
+The connector should be mounted with the slot facing up, away from
+the MCU as shown bellow.
  
 {{< figure
     src="images/dev_board/j-link_pcb.svg"
