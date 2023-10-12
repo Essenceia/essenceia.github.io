@@ -35,7 +35,6 @@ tested as of writing. I suggest double checking the PCB schematics for these
 if you intend to use them in your project.
 {{< /alert >}}
 
-{{< github repo="essenceia/stm32h750-dev-board" >}}
 
 ### An anniversary present
  
@@ -115,6 +114,8 @@ the MCU as shown bellow.
 
 This board was designed using kicad `7.0.8` and all project files are
 available for download in the github repository.
+
+{{< github repo="essenceia/stm32h750-dev-board" >}}
  
 ### Schematic
 
