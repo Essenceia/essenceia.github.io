@@ -107,28 +107,16 @@ the MCU as shown bellow.
  
 {{< figure
     src="images/dev_board/j-link_pcb.svg"
-    caption="Male 20 pin J-Link connector mounting direction on PCB frount face."
+    caption="Male 20 pin J-Link connector mounting direction on PCB front face."
     alt="jlink pcb bir"
     >}}
 
-## Boot pin
+## CAD
 
-On boot the startup memory space is selected according to value of the `BOOT0` pin.
-
-Commonly this pin is driven high such that ST's bootloader is called.
-This boot loader is pre-configured during manufacturings and is located in non-user System memory. 
-It is used to reprogram the Flash memory through a serial interface (e (USART, I2C, SPI, USB-DFU).
-
-{{< figure
-    src="images/dev_board/pull_down_boot.svg"
-    caption="Pull down BOOT0."
-    alt="jlink pcb bir"
-    >}}
-
-On our board this pin is driven low such that the system jumps to main flash memory
-on boot. Thus firmware must handle the boot sequence for the MCU. 
-
-## Schematic
+This board was designed using kicad `7.0.8` and all project files are
+available for download in the github repository.
+ 
+### Schematic
 
 Full schematics of the board : 
 
@@ -138,7 +126,7 @@ Full schematics of the board :
     alt="schematics"
     >}}
 
-## PCB
+### PCB
 
 Computer rending of the PCB :  
 
@@ -164,7 +152,8 @@ Final result :
     >}}
 
 
-## Bill of Materials
+### Bill of Materials
+
 | **Item #** | **Designator**                             | **Qty** | **Manufacturer**            | **Mfg Part #**                  | **Description / Value**     | **Package/Footprint** | **Type**     | **Your Instructions / Notes**       |
 |----------|------------------------------------------|-------|---------------------------|-------------------------------|---------------------------|---------------------|------------|-----------------------------------|
 | 1          | DC6,DC3,DC5,DC4,DC8,DC9,DC7,DC11,DC1,DC2 | 10      | KEMET                       | C0402C104K4RAC                  | 100nF                       | 0402                  | SMD          |                                     |
@@ -187,7 +176,13 @@ Final result :
 | 18         | J1                                         | 1       | Adam Tech                   | MUSB-B5-S-RA-SMT-PP-T/R         | USB_B_Mini                  |                       | SMD          |                                     |
 | 19         | J4,J5                                    | 2       | Sullins Connector Solutions | PPTC252LFBN-RC                  | Conn_02x25_Odd_Even         |                       | Through Hole |                                     |
 
+For reference, I recently ordered components for 3 version 2 boards in Canda and spent `107 CAD`
+at Mouser. 
+ 
 ## Version 2
+
+Now that the first version is up and running it is time to start
+thinking on imporvements for the second version.
 
 The first revision of the board uses the `STM32H750VBT6TR` MCU and this chip
 only has `128kB` of flash. 
