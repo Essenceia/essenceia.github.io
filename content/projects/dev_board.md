@@ -29,6 +29,8 @@ This project is my first custom development board. It features :
 - an `USB-B mini` connector;
 - a `Mico SD` card connector.
 
+{{< github repo="essenceia/stm32h750-dev-board" >}}
+
 {{< alert >}}
 The USB's data transfer functionality and the SD card reader have not been
 tested as of writing. I suggest double checking the PCB schematics for these
@@ -112,7 +114,6 @@ the MCU as shown below.
 This board was designed using kicad `7.0.8` and all project files are
 available for download in the following github repository.
 
-{{< github repo="essenceia/stm32h750-dev-board" >}}
  
 ### Schematic
 
