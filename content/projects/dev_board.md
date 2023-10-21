@@ -11,9 +11,9 @@ draft: false
 
 ## Introduction
 
-When doing embedded system development sometimes it can be hard finding
+When doing embedded systems development, it can sometimes be hard to find
 a development board with the desired features at an affordable price. 
-A solution to this is to learn to design and manufacturing your own custom
+A solution to this is to learn how to design and manifacture your own custom
 development boards. 
 
 {{< figure
@@ -23,35 +23,33 @@ development boards.
     >}}
 
 
-This project is my first custom development board and features :
-- the `STM32H750VBT6TR` MCU containing an `arm cortex-m7` core
-- an `SWD` debug interface with a pinout compatible with the 20 pin J-Link probe 
-- `USB-B mini` connector
-- `Mico SD` card connector
+This project is my first custom development board. It features :
+- the `STM32H750VBT6TR` MCU containing an `ARM cortex-m7` core;
+- an `SWD` debug interface with a pinout compatible with the 20 pin J-Link probe;
+- an `USB-B mini` connector;
+- a `Mico SD` card connector.
 
 {{< alert >}}
 The USB's data transfer functionality and the SD card reader have not been
 tested as of writing. I suggest double checking the PCB schematics for these
-if you intend to use them in your project.
+if you intend to use them in your own project.
 {{< /alert >}}
-
 
 ### An anniversary present
  
 I met my wonderful husband over 10 years ago, we where high school love birds.
 Today he is a talented low level `C` developer that writes kernels for fun.
 
-He likes targeting microcontroller but was often disappointed by the lack of an `JTAG`
-and `SWD` debugging interface on all the development boards he owned.
+He likes targeting microcontrollers but was often disappointed by the lack of proper `JTAG`
+or `SWD` debugging interface on all the development boards he owned.
 
 As such, this board was made as my 10 year anniversary present to him.
-
  
 ## Debug interface
 
 One of the goals on this design is to be able
 to directly plug the debug probe onto the 
-board without the need for any additional adapters.
+board without the need for any additional adapter.
 
 {{< figure
     src="images/dev_board/jlink.jpg"
@@ -61,8 +59,8 @@ board without the need for any additional adapters.
 
 ### J-Link connector pinout
 
-We are using a J-Link as our debug probe, natively 
-it has a 20 pin connector and supports SWD 
+We are using a J-Link as our debug probe.
+It has a 20 pin connector and supports SWD 
 using the following connector pinout:
 
 {{< figure
@@ -74,16 +72,16 @@ using the following connector pinout:
 The following table lists the J-Link / J-Trace SWD pinout.
 |Pin|Signal|Type|Description|
 |---|------|----|-----------|
-|1|VTref|Input|This is the target reference voltage. It is used to check if the target has power, to create the logic-level reference for the input comparators and to control the output logic levels to the target. It is normally fed from Vdd of the target board and must not have a series resistor.|
-|2|Vsupply|NC|This pin is not connected in J-Link. It is reserved for compatibility with other equipment. Connect to Vdd or leave open in target system.|
-|3|Not used|NC|This pin is not used by J-Link. If the device may also be accessed via JTAG, this pin may be connected to nTRST, otherwise leave open.|
-|5|Not used|NC|This pin is not used by J-Link. If the device may also be accessed via JTAG, this pin may be connected to TDI, otherwise leave open.|
+|1|VTref|Input|This is the target reference voltage. It is used to check if the target has power, to create the logic-level reference for the input comparators and to control the output logic levels to the target. It is normally fed from Vdd of the target board and must not have series resistors.|
+|2|Vsupply|NC|This pin is not connected in the J-Link. It is reserved for compatibility with other equipment. Connect to Vdd or leave open in target system.|
+|3|Not used|NC|This pin is not used by the J-Link. If the device may also be accessed via JTAG, this pin may be connected to nTRST, otherwise leave open.|
+|5|Not used|NC|This pin is not used by the J-Link. If the device may also be accessed via JTAG, this pin may be connected to TDI, otherwise leave open.|
 |7|SWDIO|I/O|Single bi-directional data pin.|
 |9|SWCLK|Output|Clock signal to target CPU. It is recommended that this pin is pulled to a defined state of the target board. Typically connected to TCK of target CPU.|
-|11|Not used|NC|This pin is not used by J-Link. This pin is not used by J-Link when operating in SWD mode. If the device may also be accessed via JTAG, this pin may be connected to RTCK, otherwise leave open.|
+|11|Not used|NC|This pin is not used by the J-Link. This pin is not used by J-Link when operating in SWD mode. If the device may also be accessed via JTAG, this pin may be connected to RTCK, otherwise leave open.|
 |13|SWO|Input|Serial Wire Output trace port. (Optional, not required for SWD communication.)|
 |15|nRESET|I/O|Target CPU reset signal. Typically connected to the RESET pin of the target CPU, which is typically called "nRST", "nRESET" or "RESET". This signal is an active low signal.|
-|17|Not used|NC|This pin is not connected in J-Link.|
+|17|Not used|NC|This pin is not connected in the J-Link.|
 |19|5V-Supply|Output|This pin is used to supply power to some eval boards.|
 
 Pins 4, 6, 8, 10, 12, 14, 16, 18, 20 are GND pins connected to GND in J-Link. 
@@ -91,18 +89,17 @@ They should also be connected to GND on the board.
 
 {{< figure
     src="images/dev_board/pinout.svg"
-    caption="J-Link connections to board."
+    caption="J-Link connections to the board."
     alt="jlink pcb bir"
     >}}
 
+All SWD J-Link pins are connected with the exception of the `5V-Supply`,
+as even when the debug probe is connected power is still gotten from the `USB`. 
 
-All SWD J-Link pins are connected with the exception of the `5V-Supply`, 
-even when the debug probe is connected power is still gotten from the `USB`. 
-
-### Mounting connector to PCB 
+### Mounting the connector to the PCB 
 
 The connector should be mounted with the slot facing up, away from
-the MCU as shown bellow.
+the MCU as shown below.
  
 {{< figure
     src="images/dev_board/j-link_pcb.svg"
@@ -113,7 +110,7 @@ the MCU as shown bellow.
 ## CAD
 
 This board was designed using kicad `7.0.8` and all project files are
-available for download in the github repository.
+available for download in the following github repository.
 
 {{< github repo="essenceia/stm32h750-dev-board" >}}
  
@@ -123,7 +120,7 @@ Full schematics of the board :
 
 {{< figure
     src="images/dev_board/schematic.svg"
-    caption="Schematics of development board."
+    caption="Schematics of the development board."
     alt="schematics"
     >}}
 
@@ -183,17 +180,15 @@ at Mouser.
 ## Version 2
 
 Now that the first version is up and running it is time to start
-thinking on imporvements for the second version.
+thinking of improvements for the second version.
 
-The first revision of the board uses the `STM32H750VBT6TR` MCU and this chip
-only has `128kB` of flash. 
+The first revision of the board uses the `STM32H750VBT6TR` MCU, which only has `128kB` of flash. 
 Now that I have confirmed that the board is working it is time to
 upgrade to something with more flash.
 
 This new revision will keep the existing PCB and components but
 drop in the `STM32H742VIT6` as the MCU.
-This MCU features `2 MB` of flash, `1 MB` of RAM and it otherwise
-for our purposes the same chip.  
+This MCU features `2 MB` of flash, `1 MB` of RAM and is otherwise the same chip with regards to the features that matter to us.
 
 
 
