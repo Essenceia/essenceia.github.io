@@ -11,7 +11,7 @@ draft: false
 
 ## Introduction
 
-One of my current projects to build the Ethernet physical layer for 10Gb (10GBASE-R) and 40Gb (40GBASE-R) fiber.
+One of my current projects is to build the Ethernet physical layer for 10Gb (10GBASE-R) and 40Gb (40GBASE-R) fiber.
 In order to create a testbench I went out and bought a decommissioned Redstone D2020 enterprise switch off ebay.
 
 Although there is practically no documentation on this switch and I have no prior experience working with any
@@ -50,7 +50,7 @@ console serial configuration, and as some general system information.
 
 ### Ethernet ASIC
 
-Thanks to the seller provided test report we learn that the main IC is showing up as a `Broadcom Trident 56846`.
+Thanks to the seller-provided test report we learn that the main IC is showing up as a `Broadcom Trident 56846`.
 
 This is probably of the first Trident generation, the `BCM56846KFRBG` of the Broadcom `BCM56840` family that has since been discontinued. 
 This appears to be a custom Broadcom ASIC targeting 10Gb Ethernet applications with 64 integrated 10GBASE-KR capable serial PHY's.
@@ -59,10 +59,10 @@ In our switch 16 of these modules are configured, such that 4 lanes are bounded 
 {{< figure
     src="bcm56846.svg"
     alt="ascii art"
-    caption="Broadcome Ethernet IC configuration in our switch"
+    caption="Broadcom Ethernet IC configuration in our switch"
     >}}
 
-I was unfortunately unable to find a full data-sheet describing this IC's internals in details.
+I was unfortunately unable to find a full data-sheet describing this IC's internals in detail.
 
 As such, I did the next best thing I could think of... 
 
@@ -156,7 +156,7 @@ on the optical transceivers.
 
 {{< figure 
     src="images/d2020/machXO2.png"
-    caption="Lattice semiconductor MachXO2 family datahseet, overview of FPGA features. We have the `XO2-1200U` in our switch"
+    caption="Lattice semiconductor MachXO2 family datasheet, overview of FPGA features. We have the `XO2-1200U` in our switch"
     alt="lattice machXO2 family features"
     >}}
 
@@ -314,7 +314,7 @@ Was there something wrong with the switch, was it not booting properly ?
 
 ## Checking switch liveness 
 
-At this point the switch was powered and connected via its console port my PC but it was not connected to my network.
+At this point the switch was powered and connected via its console port to my PC but it was not connected to my network.
 
 Although the fans were spinning and I had some blinking, I wanted to check if the switch systems had been successfully started.
 I connected the `RJ45` management port directly to my PC and started scanning network traffic on this link using `wireshark`.
@@ -329,7 +329,7 @@ Our switch's MAC address is `00:e0:ec:38:e5:d5`.
     >}}
 
 After a little while an `ICMP` message originating from the MAC address `00:e0:ec:38:e5:d5` was captured.
-We can spot our switch's MAC address as the source MAC in the packets MAC header.
+We can spot our switch's MAC address as the source MAC in the packet's MAC header.
 
 ```
 0000   33 33 00 00 00 16 00 e0 ec 38 e5 d5 86 dd 60 00   33.......8....`.
@@ -364,7 +364,7 @@ Host is up (0.015s latency).
 Nmap done: 256 IP addresses (4 hosts up) scanned in 3.09 seconds
 ```
 
-The switch's address was `192.168.4.106`, and I then proceeded to check what ports where open.
+The switch's address was `192.168.4.106`, and I then proceeded to check what ports were open.
 
 ```sh
 pitchu /dev/serial >nmap --top-ports 1000 192.168.4.106
@@ -476,7 +476,7 @@ watchdog                 Enable/Disable/Clear watchdog timer settings.
 write                    Configures save options.
 ```
 
-Unfortunately, this a dedicated CLI and I would like to have access to the full linux shell.
+Unfortunately, this is a dedicated CLI and I would like to have access to the full linux shell.
 Now that we are in privilege mode we can escape this CLI and access the linux shell by using `linuxsh`.
 
 ```
@@ -499,7 +499,7 @@ To recap :
     alt=""
     >}}
 
-I now fell right at home. 
+I now felt right at home. 
 
 ## Reducing the noise
 
@@ -594,7 +594,7 @@ Unfortunately after reboot not only did the changes not take effect but the scri
 
 This may be a symptom that the root file system is getting mounted at boot from an image, and since
 I am modifying the mounted version and not the original one, my changes are not permanent.
-Finding a workaround for this will be the subject of a latter post. 
+Finding a workaround for this will be the subject of a later post. 
 
 ## Closing remarks 
 

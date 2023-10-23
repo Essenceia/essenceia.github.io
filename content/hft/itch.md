@@ -9,7 +9,7 @@ draft: true
 ---
 ## Introduction
 
-This project is a synthesizable verilog implementation of an `ITCH` message
+This project is a synthesizable Verilog implementation of an `ITCH` message
 parser involved in receiving exchange data feeds.
  
 The majority of this RTL is automatically generated
@@ -26,9 +26,9 @@ message format.
 `ITCH` is a series of sequenced message formats used to enable
 the tracking of the status of an order from the time it is first 
 entered until the time it is either
-executed or cancelled. Administrative and exchange event messages also exist.
+executed or canceled. Administrative and exchange event messages also exist.
 
-There is no single implementation of `ITCH` but rather each exchange defines there own
+There is no single implementation of `ITCH` but rather each exchange defines their own
 messages:`NASDAQ`s flavor of `ITCH` is called `TotalView ITCH` and `ASX` the Australian Securities
 Exchange uses `ASX ITCH`.
 

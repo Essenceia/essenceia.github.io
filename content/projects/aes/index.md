@@ -11,7 +11,7 @@ draft: false
 The Advanced Encryption Standard (AES) is a widely used block cipher encryption algorithm.
 One of my past projects called for the RTL implementation of a version of AES for both 
 encoding and decoding. 
-This blog post is a presentation of this verilog project.
+This blog post is a presentation of this Verilog project.
 
 ![Wave overview of aes128 encryption simulation, it take 10 cycles for the module to produce an output!](aes_enc.png "aes128 encryption simulation")
 
@@ -20,7 +20,7 @@ This blog post is a presentation of this verilog project.
 {{< alert >}}
 This code wasn't optimized for power, performance, area or hardened against side channel attacks.
 {{< /alert >}}
-## Adcanced Encryption Standard (AES)
+## Advanced Encryption Standard (AES)
 
 Before we begin, here is a quick introduction to the AES algorithm :
 
@@ -36,7 +36,7 @@ Our implementation is of the AES-128 flavor.
 
 ## Overview of AES
 
-As mentioned earlier, AES is a block cypher algorithm, it encrypts/decrypts over multiple rounds.
+As mentioned earlier, AES is a block cipher algorithm, it encrypts/decrypts over multiple rounds.
 Each round will receive a 16 bytes data block and a key, and generate a new version of this data block, as well as a new key for the next round. 
 
 Let's emphasize here that both the key and the data will be updated each round.
@@ -84,7 +84,7 @@ and then propagating this back through all the columns.
 
 {{< figure
     src="ks.svg"
-    alt="key schedualing"
+    alt="key scheduling"
     caption="AES key scheduling for 128-bit key, credit [By Sissssou - Own work, CC BY-SA 4.0](https://commons.wikimedia.org/w/index.php?curid=54091435)"
     >}}
 
@@ -99,7 +99,7 @@ The AES algorithm can be inverted to perform the decoding operations. This is do
 
 The `SubBytes` transform is a byte substitution based on a table called the `S-box`.
 
-Each byte of the 16-bytes data block will be substituted by it's `S-box` equivalent.
+Each byte of the 16-bytes data block will be substituted by its `S-box` equivalent.
 
 {{< figure
     src="sbox_sub.png"
@@ -128,7 +128,7 @@ Our `S-box` is a translation of the circuit they proposed in this paper.
 
 The result is far from being human readable, but the produced output matches perfectly with the substitution table and is much cheaper logic-wise.
 
-If the reader is as doubtfull of the logic's equivalence as I was when I implemented it, he can take a look at [a test bench that I wrote {{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/sbox_test.vhd) to verify that equivalence.
+If the reader is as doubtful of the logic's equivalence as I was when I implemented it, he can take a look at [a test bench that I wrote {{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/sbox_test.vhd) to verify that equivalence.
 
 [Link to code {{<icon "github">}}](https://github.com/Essenceia/AES/blob/master/sbox.v)
 
@@ -139,7 +139,7 @@ The `ShiftRows` transform performs a left cyclical byte shift of each data row, 
 {{< figure
     src="aes_shift_row.png"
     alt=""
-    caption="Cyclical left shift of the data rowssource : [FIPS-197 Announcing the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)"
+    caption="Cyclical left shift of the data rows : [FIPS-197 Announcing the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)"
     >}} 
 
 This transform is easily implementable in hardware.
@@ -233,7 +233,7 @@ Looking at the binary representation we can see a pattern emerge :
 
 - from round 1 to 8 `Rcon` is a 1 bit left shift.
 
-- after round 8 `Rcon` overflows, its new values gets set to `8'h1b` and the pattern of shifting left by 1 bit continues.
+- after round 8 `Rcon` overflows, its new value gets set to `8'h1b` and the pattern of shifting left by 1 bit continues.
 
 [Our implementation of for obtaining the next `Rcon` is based on this simple observation {{<icon "github">}}](https://github.com/Essenceia/AES/blob/d8d5a44542012e1fc4272c4b85583aab773fdd69/ks.v#L34-L44)
 
@@ -271,7 +271,7 @@ For more information, as well as instructions on how to run the test bench, plea
 # Resources
 
 If after reading this article, the reader desires a more in depth explanation of the AES algorithm,
-I would recommens reading the excellent write-up on this 
+I would recommend reading the excellent write-up on this 
 topic at [braincoke](https://braincoke.fr/). In particular the articles covering :
 
 - [encryption](https://braincoke.fr/blog/2020/08/the-aes-decryption-algorithm-explained/#the-inverse-cipher), 
@@ -280,6 +280,6 @@ topic at [braincoke](https://braincoke.fr/). In particular the articles covering
 
 - [key scheduling](https://braincoke.fr/blog/2020/08/the-aes-key-schedule-explained/).
 
-Official AES specification, link to pdf : [Federal Information Processing Standard Publication 197 - Specification fo the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)
+Official AES specification, link to pdf : [Federal Information Processing Standard Publication 197 - Specification for the ADVANCED ENCRYPTION STANDARD (AES)](https://csrc.nist.gov/files/pubs/fips/197/final/docs/fips-197.pdf)
 
 

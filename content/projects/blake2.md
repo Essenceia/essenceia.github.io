@@ -9,7 +9,7 @@ draft: false
 # Introduction
 
 In this project we have implemented a feature reduced version of the `BLAKE2` cryptographic hash function into
-synthetisable RTL using `verilog`.
+synthesizable RTL using `Verilog`.
 
 {{< figure
     src="blake2b_wave.png"
@@ -46,7 +46,7 @@ This hash function works on individual blocks of data or on data streams.
 
 {{< alert icon="fire" cardColor="#e63946" iconColor="#1d3557" textColor="#f1faee" >}}
 This code was written to be configured as both the
-b and s variants, but **only the b variant has been thougrougly tested thus far**.
+b and s variants, but **only the b variant has been thoroughly tested thus far**.
 {{< /alert >}}
 
 {{< alert >}}
@@ -103,7 +103,7 @@ The number of rounds is dependant of the flavor of `BLAKE2` :
 ## `Permutation function`
 
 Within the compression function loop, at the start of each round, we calculate a new 16 entry wide selection array `s`
-based on a pre-defined pattern shown below :
+based on a predefined pattern shown below :
 
 |  Round    |  0|  1|  2|  3|  4|  5|  6|  7|  8|  9| 10| 11| 12| 13| 14| 15 |
 | ----------|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|----|
@@ -130,7 +130,7 @@ as it requires a lot of muxing logic :
 
 - One 64 bit wide, 10 deep mux to select, depending on which round we are at, the correct `s` select values. [Link to code {{<icon "github">}}](https://github.com/Essenceia/Blake2/blob/46764d1882debe8f61166b7c65b51d4fee945ae4/blake2.v#L183-L201)
 
-- 16 64 bit wide, 16 deep muxs used to assign the new values of array `m`, and using values of `s` for the select.[Link to code {{<icon "github">}}](https://github.com/Essenceia/Blake2/blob/46764d1882debe8f61166b7c65b51d4fee945ae4/blake2.v#L217-L242) 
+- 16 64 bit wide, 16 deep muxes used to assign the new values of array `m`, and using values of `s` for the select.[Link to code {{<icon "github">}}](https://github.com/Essenceia/Blake2/blob/46764d1882debe8f61166b7c65b51d4fee945ae4/blake2.v#L217-L242) 
 
 ## `Mixing function`
 

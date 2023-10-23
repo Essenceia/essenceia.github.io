@@ -1,9 +1,9 @@
 ---
-title: "Custom STM32H750 embedded developpement board"
+title: "Custom STM32H750 embedded development board"
 date: 2023-10-09
 description: ""
-summary: "Designing a small stm32h750 developpement board as an anniversary present"
-tags: ["pcb", "electronics", "embedded", "manifacturing",]
+summary: "Designing a small stm32h750 development board as an anniversary present"
+tags: ["pcb", "electronics", "embedded", "manufacturing",]
 sharingLinks : false
 showTableOfContents : true
 draft: false
@@ -13,7 +13,7 @@ draft: false
 
 When doing embedded systems development, it can sometimes be hard to find
 a development board with the desired features at an affordable price. 
-A solution to this is to learn how to design and manifacture your own custom
+A solution to this is to learn how to design and manufacture your own custom
 development boards. 
 
 {{< figure
@@ -27,7 +27,7 @@ This project is my first custom development board. It features :
 - the `STM32H750VBT6TR` MCU containing an `ARM cortex-m7` core;
 - an `SWD` debug interface with a pinout compatible with the 20 pin J-Link probe;
 - an `USB-B mini` connector;
-- a `Mico SD` card connector.
+- a `Micro SD` card connector.
 
 {{< github repo="essenceia/stm32h750-dev-board" >}}
 
@@ -39,7 +39,7 @@ if you intend to use them in your own project.
 
 ### An anniversary present
  
-I met my wonderful husband over 10 years ago, we where high school love birds.
+I met my wonderful husband over 10 years ago, we were high school love birds.
 Today he is a talented low level `C` developer that writes kernels for fun.
 
 He likes targeting microcontrollers but was often disappointed by the lack of proper `JTAG`
@@ -75,12 +75,12 @@ The following table lists the J-Link / J-Trace SWD pinout.
 |Pin|Signal|Type|Description|
 |---|------|----|-----------|
 |1|VTref|Input|This is the target reference voltage. It is used to check if the target has power, to create the logic-level reference for the input comparators and to control the output logic levels to the target. It is normally fed from Vdd of the target board and must not have series resistors.|
-|2|Vsupply|NC|This pin is not connected in the J-Link. It is reserved for compatibility with other equipment. Connect to Vdd or leave open in target system.|
-|3|Not used|NC|This pin is not used by the J-Link. If the device may also be accessed via JTAG, this pin may be connected to nTRST, otherwise leave open.|
-|5|Not used|NC|This pin is not used by the J-Link. If the device may also be accessed via JTAG, this pin may be connected to TDI, otherwise leave open.|
+|2|Vsupply|NC|This pin is not connected in the J-Link. It is reserved for compatibility with other equipment. Connect to Vdd or leave it open in target system.|
+|3|Not used|NC|This pin is not used by the J-Link. If the device may also be accessed via JTAG, this pin may be connected to nTRST, otherwise leave it open.|
+|5|Not used|NC|This pin is not used by the J-Link. If the device may also be accessed via JTAG, this pin may be connected to TDI, otherwise leave it open.|
 |7|SWDIO|I/O|Single bi-directional data pin.|
 |9|SWCLK|Output|Clock signal to target CPU. It is recommended that this pin is pulled to a defined state of the target board. Typically connected to TCK of target CPU.|
-|11|Not used|NC|This pin is not used by the J-Link. This pin is not used by J-Link when operating in SWD mode. If the device may also be accessed via JTAG, this pin may be connected to RTCK, otherwise leave open.|
+|11|Not used|NC|This pin is not used by the J-Link. This pin is not used by J-Link when operating in SWD mode. If the device may also be accessed via JTAG, this pin may be connected to RTCK, otherwise leave it open.|
 |13|SWO|Input|Serial Wire Output trace port. (Optional, not required for SWD communication.)|
 |15|nRESET|I/O|Target CPU reset signal. Typically connected to the RESET pin of the target CPU, which is typically called "nRST", "nRESET" or "RESET". This signal is an active low signal.|
 |17|Not used|NC|This pin is not connected in the J-Link.|
@@ -111,7 +111,7 @@ the MCU as shown below.
 
 ## CAD
 
-This board was designed using kicad `7.0.8` and all project files are
+This board was designed using Kicad `7.0.8` and all project files are
 available for download in the following github repository.
 
  
@@ -175,7 +175,7 @@ Final result :
 | 18         | J1                                         | 1       | Adam Tech                   | MUSB-B5-S-RA-SMT-PP-T/R         | USB_B_Mini                  |                       | SMD          |                                     |
 | 19         | J4,J5                                    | 2       | Sullins Connector Solutions | PPTC252LFBN-RC                  | Conn_02x25_Odd_Even         |                       | Through Hole |                                     |
 
-For reference, I recently ordered components for 3 version 2 boards in Canda and spent `107 CAD`
+For reference, I recently ordered components for 3 version 2 boards in Canada and spent `107 CAD`
 at Mouser. 
  
 ## Version 2

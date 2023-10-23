@@ -42,7 +42,7 @@ If you see any mistakes please contact me, so that I can correct them.
 Each client obtains the data feed from a NASDAQ server via UDP multicast.
 
 Each packet is only transmitted once. If a client misses a packet, it needs to
-detect this by itself, and make a re-transmission request to the dedicated re-request NASDAQ server.
+detect this by itself, and make a retransmission request to the dedicated re-request NASDAQ server.
 This server will respond with the missing packets via UDP unicast.
 
 {{< figure
@@ -74,7 +74,7 @@ Each packet header contains a 10 byte `session id`, an 8 byte `sequence number` 
 
 The `session id` and `sequence number` fields are used to keep track of missing messages.
 
-The `session id` keeps track of what sequence of message we are currently receiving.
+The `session id` keeps track of what sequence of messages we are currently receiving.
  
 Each message within a `session` is individually tracked using a unique `sequence number`.
 The `sequence number` of a header indicates the `sequence number` 
@@ -105,7 +105,7 @@ Each of these message data will contain an `ITCH` message.
 
 # Architecture
 
-Internally, our module intakes new data via a [point to point AXI steam interface](https://developer.arm.com/documentation/ihi0051/a/), 
+Internally, our module intakes new data via a [point to point AXI stream interface](https://developer.arm.com/documentation/ihi0051/a/), 
 to which it is connected as a client, and outputs the `message data` to the `ITCH` module.
 
 {{< figure
@@ -122,8 +122,8 @@ As this implementation targets low latency, one of the major design goals is to 
 to accept new data **without any corner case**.
 
 {{< alert >}}
-We will be using an AXI steam data `axis_tdata` width of `64` bits for our illustration, but
-ultimately the goal is to make this parametrizable. 
+We will be using an AXI stream data `axis_tdata` width of `64` bits for our illustration, but
+ultimately the goal is to make this parameterizable. 
 {{< /alert >}}
 
 ## Message overlap 
@@ -148,7 +148,7 @@ Since we could only send one message at a time, we needed to back pressure the
     caption="Back pressure when two messages arrive within the same payload. The purge spreads over multiple cycles"
     >}}
 
-To make matters worst, contrary to the example just above I was also waiting to have 
+To make matters worse, contrary to the example just above I was also waiting to have 
 accumulated a full payload's worth of valid message data **before** sending it out.
  
 The initial motivation for doing so was to simplify the logic on the `ITCH` side as all payloads 
@@ -188,7 +188,7 @@ to have a single `ITCH` message interface connected to the trading algorithm.
 
 This implementation was ultimately scrapped as :
 
-- the demux inside the `MoldUDP64` module, and muxes between the `ITCH` and the `trading alogithm` 
+- the demux inside the `MoldUDP64` module, and muxes between the `ITCH` and the `trading algorithm` 
     module add avoidable logic levels on this critical data feed path.
 
 - the duplicated logic increases wire delay due to its increased size.
@@ -220,7 +220,7 @@ It is called the `ov` for "overlap" interface, and because of its nature, valid 
 
 Because the presence of an overlap coincides with the end of the previous message, and
 because I wanted to have only one `ITCH` module, within the `ITCH` module these bytes are 
-flopped as the finishing message drains. They are then appended to the start of the
+flopped as the finishing message is drained. They are then appended to the start of the
 new `ITCH` message data. In these cases we will be writing more than 8 bytes of data per cycle.
 I will elaborate on this more in a future `ITCH` module write-up. 
 
@@ -233,8 +233,8 @@ I will elaborate on this more in a future `ITCH` module write-up.
 # Conclusion
 
 There is still a lot of room for improvement.
-For instance, there is not guarantee that the payload size will remain 8 bytes.
-If it drops under 4 bytes, some corner cases like the overlap will cease to exit.
+For instance, there is no guarantee that the payload size will remain 8 bytes.
+If it drops under 4 bytes, some corner cases like the overlap will cease to exist.
 
 The next write-up will likely be on the ITCH module. [If you wish to be notified when this article is published shot me a mail.{{<icon "envelope">}}](mailto:julia.desmazes@gmail.com?subject="ITCH")
 
@@ -244,4 +244,4 @@ The next write-up will likely be on the ITCH module. [If you wish to be notified
 
 [TotalView ITCH 5.0 specification](https://www.nasdaqtrader.com/content/technicalsupport/specifications/dataproducts/NQTVITCHspecification.pdf)
 
-[AMBA 4 AXI4 steam protocol specificaiton](https://developer.arm.com/documentation/ihi0051/a/)
+[AMBA 4 AXI4 stream protocol specification](https://developer.arm.com/documentation/ihi0051/a/)

@@ -11,10 +11,9 @@ draft: false
 
 ## Introduction
 
-This project aim's to implement the Ethernet physical layer for 10Gb and 40Gb fiber optics links.
+This project aims to implement the Ethernet physical layer for 10Gb and 40Gb fiber optics links.
 
-This post is a work in progress and currently used as means to more easily share
-schematics.
+This post is a work in progress and currently used as means to more easily share schematics.
 
 {{< github repo="essenceia/ethernet-physical-layer" >}}
 
@@ -34,14 +33,14 @@ High level schematics and design considerations for the 10GBASE-R and 40GBASE-R 
 
 ##### **Optional CDC**
 
-The CDC would be optional, this would make this design better optimized for low latency.
+The CDC is optional. We can configure the design in two ways :
 
--  Reduce latency for our latency optimized designs as we could to get away without having different clock frequencies.
+- Without CDC : Reduce latency for our latency optimized designs as we could to get away without having different clock frequencies.
     Instead, we would simply need to compensate the de-phasing between the SerDes derived clock and the rest of the
     design also running at 161.13MHz. 
     On the flip is all the downstream design I would need to support invalid
     data one cycle every 32 cycles. Because of this we also need to a `signal_ok` signal along side the
-    data to help difference an cycle with no data and a signal loss. 
+    data to help differentiate a cycle with no data and a signal loss. 
 
 - For the default implementation we would still be able to include the optional CDC and allow you to 
     have different clock frequencies and thus not need to support invalid data cycles.
@@ -55,10 +54,9 @@ The CDC would be optional, this would make this design better optimized for low 
 
 #### 40G RX
 
-Because we need all lanes to be predictably valid at the same cycle to complete the
-descrambling I cannot have an design with an optional CDC.
-This is made less consequential as my objective with the 40GBASE-R PCS is not to optimize it 
-for low latency.
+Because I need all lanes to be predictably valid at the same cycle to complete the
+descrambling I cannot have a design with an optional CDC.
+This is made less consequential as I do not have low latency requirements for the 40GBASE-R PCS.
 
 {{< figure
     src="pcs/40g_rx.svg"
@@ -70,6 +68,7 @@ for low latency.
 #### 10G TX
 
 I have decided to select the design with the optional CDC for 10G.
+
 ##### **Optional CDC**
 
 {{< figure
@@ -80,14 +79,14 @@ I have decided to select the design with the optional CDC for 10G.
 
 #### 40G TX
 
-Each lanes `SerDes` block is driven by the common 161,13MHz clock coming from the PCS.
+Each lane `SerDes` block is driven by the common 161,13MHz clock coming from the PCS.
 
-All the lanes are in sync with one another, so are there gearboxes, thus each one should be
-ready to accept a new 66b data block in the same cycles. 
+All lanes are in sync with one another, so are the gearboxes.
+Thus each one should be ready to accept a new 66b data block every cycle.
 
-The ability to accept a new data block is
-signaled by the gearboxes using `ready` and since they are all in sync all theses `ready` signals should
-have the same value, thus was can use either signal interchangeably to the CDC we can accept the 4 lanes worth of data.
+The ability to accept a new data block is signaled by the gearboxes using the `ready` signal.
+Since they are all in sync, all those `ready` signals should have the same value.
+Thus we can connect any of those to the CDC.
 
 {{< figure
     src="pcs/40g_tx.svg"
