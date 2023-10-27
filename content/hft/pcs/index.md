@@ -107,9 +107,24 @@ Thus we can connect any of those to the CDC.
     alt=""
     >}}
 
+**Reset**
+
+The reset signal for the PCS modules is controlled by a reset controller that
+keeps the logic in reset until all `PLL`s and `SerDes`s have achieved lock.
+
+This reset controller runs at a frequency of `50MHz`, so we first need to
+synchronize it with the RX PCS domain. The resulting signal is `nreset`, 
+which is used to reset the RX PCS.
+
+The reset signal for the TX PCS is driven by the `pcs_loopback module`. 
+This module compensates for the phase difference between both PCS clocks while also
+introducing an essential additional cycle delay. This synchronization ensures
+that both PCS gearboxes are aligned concerning when the RX PCS sends valid data and
+when the TX PCS is ready to accept new data.
+
 {{< figure
     src="pcs/reset_loopback_10g.svg"
-    caption="PCS reset framwork"
+    caption="PCS modules reset signals overview."
     alt=""
     >}}
 
