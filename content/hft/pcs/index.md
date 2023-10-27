@@ -13,11 +13,14 @@ draft: false
 
 This project aims to implement the Ethernet physical layer for 10Gb and 40Gb fiber optics links.
 
-This post is a work in progress and currently used as means to more easily share schematics.
+This post is a work in progress and currently used as means to share
+schematics.
 
 {{< github repo="essenceia/ethernet-physical-layer" >}}
 
-### Architecture
+## Architecture
+
+### PCS 
 
 High level schematics and design considerations for the 10GBASE-R and 40GBASE-R RX and TX PCSs.
 
@@ -52,6 +55,18 @@ The CDC is optional. We can configure the design in two ways :
     alt="Svg schematic"
 >}}
 
+#### 10G TX
+
+I have decided to select the design with the optional CDC for 10G.
+##### **Optional CDC**
+
+{{< figure
+    src="pcs/10g_tx.svg"
+    caption="10GBASE-R TX path, optional `xgmii interface` and `CDC`"
+    alt="Svg schematic"
+>}}
+
+
 #### 40G RX
 
 Because I need all lanes to be predictably valid at the same cycle to complete the
@@ -64,18 +79,6 @@ This is made less consequential as I do not have low latency requirements for th
     alt="Svg schematic"
 >}}
 
-
-#### 10G TX
-
-I have decided to select the design with the optional CDC for 10G.
-
-##### **Optional CDC**
-
-{{< figure
-    src="pcs/10g_tx.svg"
-    caption="10GBASE-R TX path, optional `xgmii interface` and `CDC`"
-    alt="Svg schematic"
->}}
 
 #### 40G TX
 
@@ -91,6 +94,22 @@ Thus we can connect any of those to the CDC.
 {{< figure
     src="pcs/40g_tx.svg"
     caption="40GBASE-R TX path, all SerDes blocks are clocked from the same 161.13MHz clock coming from the PCS, optional `xgmii interface`"
+    alt=""
+    >}}
+
+### Testing
+
+#### 10G PCS loopback
+
+{{< figure
+    src="pcs/clk_loopback_10g.svg"
+    caption="Clock framework"
+    alt=""
+    >}}
+
+{{< figure
+    src="pcs/reset_loopback_10g.svg"
+    caption="PCS reset framwork"
     alt=""
     >}}
 
