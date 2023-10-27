@@ -101,9 +101,11 @@ Thus we can connect any of those to the CDC.
 
 #### 10G PCS loopback
 
+**Clock** 
+
 {{< figure
     src="pcs/clk_loopback_10g.svg"
-    caption="Clock framework"
+    caption="Clock framework overview"
     alt=""
     >}}
 
