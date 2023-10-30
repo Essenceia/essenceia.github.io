@@ -1,5 +1,5 @@
 ---
-title: "BLAKE2"
+title: "BLAKE2 RTL implementation"
 date: 2023-07-29
 description: "Partial RTL implementation of the BLAKE-2B encoder and decoder."
 summary: "Learn more about me and why I am starting this blog."

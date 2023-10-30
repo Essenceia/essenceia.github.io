@@ -1,5 +1,5 @@
 ---
-title: "AES 128b"
+title: "AES 128b RTL implementation"
 description: "RTL implementation of the AES 128 encoder and decoder."
 summary: "Learn more about me and why I am starting this blog."
 tags: ["rtl", "verilog", "cryptography", "AES"]
