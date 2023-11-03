@@ -114,6 +114,12 @@ The *overlapping bytes* are the first bytes of this new message.
 [Due the manner in which I have decided to support these overlap cases](/hft/moldudp64) the `ITCH` module
 has two buses by which it can accept new message bytes.
 
+{{< figure
+    src="itch/in_intf.svg"
+    alt=""
+    caption=""
+>}}
+ 
 #### Standard interface
 
 The standard interface is used to transmit all message bytes with the exeption of the
@@ -163,6 +169,12 @@ The second optional, and is an early interface used to indetify the type of the 
 currently being received and what message fields have received all there data.
 
 To include this interface, declare the `EARLY` macro. 
+
+{{< figure
+    src="itch/out_intf.svg"
+    alt=""
+    caption=""
+>}}
  
 #### Standard interface
 
