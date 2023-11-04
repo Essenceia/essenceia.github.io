@@ -5,7 +5,6 @@ description: "RTL implementation of the ITCH module."
 summary: "Design of the ITCH module."
 tags: ["FPGA", "HFT", "ITCH","verilog", "TotalView"]
 showTableOfContents : true
-showSummary: True
 draft: true
 ---
 ## Introduction
@@ -82,7 +81,7 @@ Because there is no single `ITCH` protocol message format, and because the
 generate the majority of the `verilog` code for this module.
 
 
-{{<figure
+{{< figure
     src="itch/gen_flow.svg"
     alt=""
     caption="Generation flow from `XML` to `Verilog` module."
@@ -250,9 +249,9 @@ output logic [<field length>-1:0] itch_<message_type>_<field_name>_o,
 output logic [<field length>-1:0] itch_<message_type>_<field_name>_o, 
 ```
 
-- `itch_<message_type>_v_o` : valid signal, a message of `<message_type>` has
+- `itch_\<message_type\>_v_o` : valid signal, a message of `\<message_type\>` has
     been fully received
-- `itch_<message_type>_<field_name>_o` : message field
+- `itch_\<message_type>\_\<field_name\>_o` : message field
  
 ##### Early interface
 
