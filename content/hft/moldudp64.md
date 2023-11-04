@@ -215,7 +215,7 @@ It is called the `ov` for "overlap" interface, and because of its nature, valid 
 {{< figure
     src="mold_v3.1.svg"
     alt=""
-    caption="Payload containing data of two messages, having its data split onto both outbound `MoldUDP64` interfaces. Because overlap only occurs when there is at least 1 byte of the previous message data in the payload, and the length field is 2 bytes, our overlap data is at most 5 bytes wide for a 8 byte payload."
+    caption="Payload containing data of two messages, having its data split onto both outbound `MoldUDP64` interfaces. Because overlap only occurs when there is at least 1 byte of the previous message data in the payload, and the length field is 2 bytes, our overlap data is at most 5 bytes wide for a 8 byte payload. In this example `N=8`."
     >}}
 
 Because the presence of an overlap coincides with the end of the previous message, and
