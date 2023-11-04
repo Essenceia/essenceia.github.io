@@ -64,7 +64,7 @@ For examples, the `System Event` message used to signal a market or data feed ha
 {{< figure
     src="itch/system_event_msg.svg"
     alt="example message"
-    caption=`System Event` message formal, part of `NASDAQ`'s `TotalView-ITCH` version `5.0`"
+    caption="`System Event` message formal, part of `NASDAQ`'s `TotalView-ITCH` version `5.0`"
 >}}
 
 The fields can be of the one of the following four types :
@@ -249,9 +249,9 @@ output logic [<field length>-1:0] itch_<message_type>_<field_name>_o,
 output logic [<field length>-1:0] itch_<message_type>_<field_name>_o, 
 ```
 
-- `itch_\<message_type\>_v_o` : valid signal, a message of `\<message_type\>` has
+- `itch_<message_type>_v_o` : valid signal, a message of `<message_type>` has
     been fully received
-- `itch_\<message_type>\_\<field_name\>_o` : message field
+- `itch_<message_type>_<field_name>_o` : message field
  
 ##### Early interface
 
