@@ -1,5 +1,5 @@
 ---
-title: "MoldUDP64"
+title: "MoldUDP64 RTL implementation"
 date: 2023-08-02
 description: "RTL implementation of the MoldUDP64 module."
 summary: "Discussing the design of the current MoldUDP64 module."

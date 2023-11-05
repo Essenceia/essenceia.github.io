@@ -1,5 +1,5 @@
 ---
-title: "ITCH"
+title: "ITCH RTL implementation"
 date: 2023-11-01
 description: "RTL implementation of the ITCH module."
 summary: "Design of the ITCH module."
