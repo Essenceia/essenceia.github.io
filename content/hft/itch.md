@@ -3,7 +3,7 @@ title: "ITCH"
 date: 2023-10-03
 description: "RTL implementation of the ITCH module."
 summary: "Design of the ITCH module."
-tags: ["FPGA", "HFT", "ITCH","verilog", "TotalView"]
+tags: ["FPGA", "HFT", "ITCH","Verilog", "TotalView"]
 showTableOfContents : true
 draft: false
 ---
@@ -21,12 +21,12 @@ feed between the exchange's servers and a client's trading infrastructure.
     caption="NASDAQ `ITCH` data feed network stack"
     >}}
 
-This project is a synthesizable Verilog implementation of an ITCH protocol
+This project is a synthesizable `Verilog` implementation of an `ITCH` protocol
 message parser, used on the client end of the link.
 
-Although multiple exchanges use ITCH in their data feeds, the format of these
+Although multiple exchanges use `ITCH` in their data feeds, the format of these
 messages varies. In order to reduce the amount of additional work required to
-add support for new exchanges, the majority of this RTL is procedurally
+add support for new exchanges, the majority of this `RTL` is procedurally
 generated.
 
 By default this module supports `NASDAQ`'s `TotalView ITCH 5.0`
@@ -84,7 +84,7 @@ The fields can belong to one of the following four types :
 
 Because there is no single `ITCH` protocol message format, and because the
 `RTL` code for the decoder is painfully repetitive, I have decided to automatically 
-generate the majority of the `verilog` code for this module.
+generate the majority of the `Verilog` code for this module.
 
 
 {{< figure
@@ -206,7 +206,7 @@ receive message bytes.
 The `message interface` is the standard interface used to transmit all
 message bytes, with the exception of the overlapping bytes. 
 
-```verilog
+```Verilog
 input                  valid_i,
 input                  start_i,
 input [KEEP_LW-1:0]    len_i,
@@ -225,7 +225,7 @@ overlapping bytes. Due to the conditions in which an overlap occurs, there is
 no need for a `start` signal, as the start is implied when we have a valid
 overlap.
 
-```verilog
+```Verilog
 input                  ov_valid_i,
 input [OV_KEEP_LW-1:0] ov_len_i,
 input [OV_DATA_W-1:0]  ov_data_i,
@@ -259,7 +259,7 @@ To include this interface, declare the `EARLY` macro.
 
 Standard outbound decoder interface, contains fully decoded messages.
 
-```verilog
+```Verilog
 output logic itch_<message_type>_v_o,
 output logic [<field length>-1:0] itch_<message_type>_<field_name>_o, 
 ...
@@ -276,7 +276,7 @@ This optional `early` interface is used to start triggering decisions as soon as
 individual data fields have been fully received, eliminating the need to wait for 
 the complete reception of all the message bytes.
 
-```verilog
+```Verilog
 output logic itch_<message_type>_early_v_o,
 output logic itch_<message_type>_<field_name>_early_v_o,
 ...
