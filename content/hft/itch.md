@@ -5,7 +5,7 @@ description: "RTL implementation of the ITCH module."
 summary: "Design of the ITCH module."
 tags: ["FPGA", "HFT", "ITCH","verilog", "TotalView"]
 showTableOfContents : true
-draft: true
+draft: false
 ---
 ## Introduction
 
