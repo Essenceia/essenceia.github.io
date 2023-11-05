@@ -11,8 +11,9 @@ draft: false
 
 `ITCH` is a message protocol used in the application layer of
 financial exchanges that implement the `ITCH/OUCH` feeds.
-It is part of the exchanges direct data feed: a low latency
-feeds between the exchange's servers and a client's trading infrastructure. 
+
+It is part of the exchange's direct data feed, a low latency
+feed between the exchange's servers and a client's trading infrastructure. 
 
 {{< figure
     src="mold_network_stack.svg"
@@ -21,11 +22,11 @@ feeds between the exchange's servers and a client's trading infrastructure.
     >}}
 
 This project is a synthesizable Verilog implementation of an ITCH protocol
-message parser used on the receiving end of the link.
+message parser, used on the client end of the link.
 
 Although multiple exchanges use ITCH in their data feeds, the format of these
 messages varies. In order to reduce the amount of additional work required to
-add support for new exchanges, the majority of this RTL is automatically
+add support for new exchanges, the majority of this RTL is procedurally
 generated.
 
 By default this module supports `NASDAQ`'s `TotalView ITCH 5.0`
@@ -44,7 +45,7 @@ used for outbound market data feeds and does not support order entry.
 The messages comprising the `ITCH` protocol are delivered via `MoldUDP64` packets,
 which ensure proper sequencing and tracking.
 
-It's important to note that there is no universal implementation of `ITCH`;
+It is important to note that there is no universal implementation of `ITCH`;
 instead, each exchange defines its own message formats. For instance, `NASDAQ`'s
 version of `ITCH` is known as `TotalView ITCH`, and the Australian Securities
 Exchange (`ASX`) uses `ASX ITCH`.
@@ -63,27 +64,26 @@ There is a predefined format for each `Message Type` with predefined fields.
 
 For example, the `System Event` message, used to signal a market or data feed
 handler event, has a `Message Type` of `0x53` (`S` in ASCII), a total length of `12`
-bytes, and follows the format :
+bytes, and follows the following format :
 
 {{< figure
     src="itch/system_event_msg.svg"
     alt="example message"
-    caption="`System Event` message formal, part of `NASDAQ`'s `TotalView-ITCH` version `5.0`"
+    caption="`System Event` message format, part of `NASDAQ`'s `TotalView-ITCH` version `5.0`"
 >}}
 
 The fields can belong to one of the following four types :
-- `Unisigned integer` : This is the most common type used for message integer fields in
-    messages, and it is represented in big endian.
+- `Unsigned integer` : This is the most common type, used for message integer fields, and it is represented in big endian.
 - `Price` : Integer fields that need to be converted to a fixed point decimal format.
     There are two sub-type for `Price`: `Price(4)` with `4` decimal places and
     `Price(8)` with `8`.
-- `ASCII` : Text field that are left-justified and padded on the right with spaces.
-- `Timestamp` : A `6`-byte unsigned integer representing nanoseconds elapsed since midnight.
+- `ASCII` : Text fields that are left-justified and padded on the right with spaces.
+- `Timestamp` : A `6`-byte unsigned integer representing the number of nanoseconds elapsed since midnight.
 
 ## Automatic generation
 
 Because there is no single `ITCH` protocol message format, and because the
-`RTL` code for the decoder is painfully repetitive  I have decided to automatically 
+`RTL` code for the decoder is painfully repetitive, I have decided to automatically 
 generate the majority of the `verilog` code for this module.
 
 
@@ -99,7 +99,7 @@ generate the majority of the `verilog` code for this module.
 The `ITCH` message format is described in an `XML` file.
 
 This `XML` file is also used to generate the code for the `C` `ITCH` library
-associated with this project. This library is utilized in the `HFT` project's self-checking test bench
+associated with this project. This library is used in the `HFT` project's self-checking test bench
 and in my custom tools.
 
 The following is the description of the `System Event` message :
@@ -116,20 +116,20 @@ The following is the description of the `System Event` message :
 
 - `Struct.name` : message type
 - `Sturct.len` : total length in bytes of this message 
-- `Struct.id` : asscii code for this message type
+- `Struct.id` : ascii code for this message type
 - `Struct.database` : identifies if we should include this `Struct` in our generation, currently unused
 - `Field.name` : name of the field
 - `Field.offset` : field start position, offset in bytes from the start of the message
 - `Field.len` : length in bytes of this field
-- `Field.type` : type of this field, unused by `ITCH module`, used by `C` library to indicate how to manipulate the data.
+- `Field.type` : type of this field, unused by `ITCH` module, used by `C` libraries to indicate how to manipulate the data.
 
-This `XML` was originally authored by github user `doctorbigtime` for [his own message parser written in `Rust`](https://github.com/doctorbigtime/itch).
-All credit for this `XML` belong to him.
+This `XML` was originally authored by the github user `doctorbigtime` for [his own message parser written in `Rust`](https://github.com/doctorbigtime/itch).
+All credits for this `XML` belong to him.
 
 ### Python script
 
 The `itch_msg_to_rtl.py` `Python` script reads this `XML`  and translates the
-outlined message formats into the necessary `Verilog` code.
+outlined message formats into `Verilog` code.
 
 These generated sequences are then written into multiple `Verilog` files in the
 `gen` folder.
@@ -147,11 +147,11 @@ message type and routing the message field data to the wires associated with the
 {{< figure
     src="itch/arch.svg"
     alt=""
-    caption="`ITCH` module overview. Inbound message bytes are sent from the `MoldUDP64` module and its output is connected to the trading algorithm. The outbound `early` interface is optional."
+    caption="`ITCH` module overview. Inbound message bytes are sent from the `MoldUDP64` module, and its output is connected to the trading algorithm. The outbound `early` interface is optional."
 >}}
 
-Internally, the message decoder accumulates the transmitted message bytes
-received from the` MoldUDP64` module into the internal `data_q` and `ov_data_q`
+Internally, the message decoder accumulates the message bytes
+received from the `MoldUDP64` module into the internal `data_q` and `ov_data_q`
 flops. The contents of the `data_q` flops are connected to the corresponding
 outbound decoded message fields.
 
@@ -166,7 +166,7 @@ is asserted.
 
 ### Overlap
 
-I refer to an `overlap` as cases
+I refer to an `overlap` as a case
 where, from the perspective of the `MoldUDP64` module, the last bytes of a
 message and the first bytes of a new message are transmitted within the same
 `UDP->MoldUDP64` payload.
@@ -179,13 +179,13 @@ message and the first bytes of a new message are transmitted within the same
 
 The **overlapping bytes** are the first bytes of this new message.
  
-[Due to choices made regardint how to handle overlap
+[Due to choices made regarding how to handle overlap
 cases](/hft/moldudp64), the `ITCH` module has two inbound interfaces by which it
 can accept new message bytes.
 
 In order to avoid corrupting the value of the byte count `data_cnt_q` and the
 flopped data `data_q` for the finishing message, data pertaining to these
-overlapping bytes will be stored in dedicated flops `ov_data_q` and `ov_cnt_q`
+overlapping bytes will be stored in dedicated flops `ov_data_q` and `ov_cnt_q`,
 and merged with the remainder of its message in the following cycle.
 
 ### Interfaces
@@ -203,8 +203,8 @@ receive message bytes.
  
 ##### Message interface
 
-The `message interface` is the standard interface used to to transmit all
-message bytes, with the exeption of the overlapping bytes. 
+The `message interface` is the standard interface used to transmit all
+message bytes, with the exception of the overlapping bytes. 
 
 ```verilog
 input                  valid_i,
@@ -213,7 +213,7 @@ input [KEEP_LW-1:0]    len_i,
 input [AXI_DATA_W-1:0] data_i,
 ```
 
-- `valid_i` : data on this interfance is valid. 
+- `valid_i` : signals the validity of data on this interface 
 - `start_i` : signals the start of a new message
 - `len_i` : length of the valid data in bytes
 - `data_i` : data bytes
@@ -221,7 +221,7 @@ input [AXI_DATA_W-1:0] data_i,
 ##### Overlap interface
 
 The `overlap interface` is used exclusively for transmitting the
-overlapping bytes. Due to the conditions in which and overlap occures, there is
+overlapping bytes. Due to the conditions in which an overlap occurs, there is
 no need for a `start` signal, as the start is implied when we have a valid
 overlap.
 
@@ -231,21 +231,21 @@ input [OV_KEEP_LW-1:0] ov_len_i,
 input [OV_DATA_W-1:0]  ov_data_i,
 ```
  
-- `ov_valid_i` : an overlap has occured, data on this interface is valid, implies the
+- `ov_valid_i` : an overlap has occurred, data on this interface is valid. Implies the
     start of a new message
 - `ov_len_i` : length of the valid data in bytes
 - `ov_data_i` : overlapping bytes
 
 #### Output interfaces
 
-The output of this module is intended to connect to a trading algorithm.
+The output of this module is intended to be connected to a trading algorithm.
 
-There are two output interaces. The first the standard output interface that
-activates once all the bytes of the message have been received. 
+There are two output interfaces. The first is the standard output interface, which becomes valid
+ once all the bytes of the message have been received. 
 
-The second interface is optional, it is an early interface used to identify the type of
-the message currently being received and which message fields have received all
-there data.
+The second interface is optional, and is an early interface used to identify the type of
+the message currently being received, and which message fields have received all
+their data.
 
 To include this interface, declare the `EARLY` macro. 
 
@@ -311,19 +311,19 @@ yellow that is using decimal.
     caption="`Add Order` message format, `Message Type=0x41`"
 >}}
 
-Since our `Snapshot` message is `21` bytes long, and since in our `MoldUDP64`
-packet there is a `2` bytes long lenght field before the start of each new
-message's data bytes; the first byte of the `add order` message will overlap.  
+Since our `Snapshot` message is `21` bytes long, and since, in our `MoldUDP64`
+packet, there is a `2` bytes long lenght field before the start of each new
+message's data bytes, the first byte of the `Add Order` message will overlap.  
 
 {{< figure
     src="itch/ov_wave.svg"
     alt=""
-    caption="Last bytes of the `Snapshot` message and the first byte of the `add order` message are overlapping within an `8` byte payload."
+    caption="Last bytes of the `Snapshot` message and the first byte of the `Add Order` message are overlapping within an `8` byte payload."
 >}}
 
-Due to this, the start of the `add order` message will be sent through the
-overlap interface.  We can overberve that the `data_cnt_q` counter will delay
-accounting for this overlapping byte by one cycle, giving us the nedded to finish
+Due to this, the start of the `Add Order` message will be sent through the
+overlap interface.  We can observe that the `data_cnt_q` counter will delay
+accounting for this overlapping byte by one cycle, giving us the needed time to finish
 processing the previous `Snapshot` message.
 
 {{< figure
