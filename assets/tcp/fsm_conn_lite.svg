@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="664" height="464" class="svgbob"><style>.svgbob line, .svgbob path, .svgbob circle, .svgbob rect, .svgbob polygon {
+    stroke: black;
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    stroke-linecap: round;
+    stroke-linejoin: miter;
+}
+.svgbob text {
+    white-space: pre;
+    fill: black;
+    font-family: Iosevka Fixed, monospace;
+    font-size: 14px;
+}
+.svgbob rect.backdrop {
+    stroke: none;
+    fill: white;
+}
+.svgbob .broken {
+    stroke-dasharray: 8;
+}
+.svgbob .filled {
+    fill: black;
+}
+.svgbob .bg_filled {
+    fill: white;
+    stroke-width: 1;
+}
+.svgbob .nofill {
+    fill: white;
+}
+.svgbob .end_marked_arrow {
+    marker-end: url(#arrow);
+}
+.svgbob .start_marked_arrow {
+    marker-start: url(#arrow);
+}
+.svgbob .end_marked_diamond {
+    marker-end: url(#diamond);
+}
+.svgbob .start_marked_diamond {
+    marker-start: url(#diamond);
+}
+.svgbob .end_marked_circle {
+    marker-end: url(#circle);
+}
+.svgbob .start_marked_circle {
+    marker-start: url(#circle);
+}
+.svgbob .end_marked_open_circle {
+    marker-end: url(#open_circle);
+}
+.svgbob .start_marked_open_circle {
+    marker-start: url(#open_circle);
+}
+.svgbob .end_marked_big_open_circle {
+    marker-end: url(#big_open_circle);
+}
+.svgbob .start_marked_big_open_circle {
+    marker-start: url(#big_open_circle);
+}<!--separator--></style><defs><marker id="arrow" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 0,4 4,2 0,0"></polygon></marker><marker id="diamond" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,2 2,0 4,2 2,4 0,2"></polygon></marker><marker id="circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="2" class="filled"></circle></marker><marker id="open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="2" class="bg_filled"></circle></marker><marker id="big_open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="3" class="bg_filled"></circle></marker></defs><rect class="backdrop" x="0" y="0" width="664" height="464"></rect><rect x="12" y="376" width="88" height="64" class="solid nofill" rx="0"></rect><text x="42" y="412" >EST</text><polygon points="72,20 80,20 76,32" class="filled"></polygon><text x="146" y="28" >no</text><text x="170" y="28" >new</text><text x="138" y="44" >connection</text><text x="50" y="140" >connection</text><text x="50" y="156" >server</text><line x1="52" y1="160" x2="52" y2="180" class="solid"></line><polygon points="48,180 56,180 52,192" class="filled"></polygon><polygon points="88,180 96,180 92,192" class="filled"></polygon><text x="154" y="204" >no</text><text x="2" y="316" >received</text><text x="74" y="316" >SYN+ACK</text><text x="10" y="332" >from</text><text x="50" y="332" >server</text><line x1="52" y1="336" x2="52" y2="356" class="solid"></line><polygon points="48,356 56,356 52,368" class="filled"></polygon><text x="34" y="76" >CLOSED</text><text x="10" y="140" >open</text><text x="26" y="156" >to</text><line x1="136" y1="136" x2="144" y2="136" class="solid"></line><polygon points="144,132 152,136 144,140" class="filled"></polygon><text x="162" y="140" >send</text><text x="202" y="140" >SYN</text><path d="M 240,128 A 16,16 0,0,0 240,144" class="nofill"></path><text x="250" y="140" >seq</text><line x1="280" y1="134" x2="288" y2="134" class="solid"></line><line x1="280" y1="138" x2="288" y2="138" class="solid"></line><text x="298" y="140" >x</text><path d="M 312,128 A 16,16 0,0,1 312,144" class="nofill"></path><text x="178" y="204" >SYN+ACK</text><text x="26" y="236" >SYN</text><line x1="48" y1="240" x2="56" y2="240" class="solid"></line><text x="58" y="236" >SENT</text><path d="M 144,304 A 16,16 0,0,0 144,320" class="nofill"></path><text x="154" y="316" >seq</text><line x1="184" y1="310" x2="192" y2="310" class="solid"></line><line x1="184" y1="314" x2="192" y2="314" class="solid"></line><text x="202" y="316" >y,</text><text x="226" y="316" >ack</text><line x1="256" y1="310" x2="264" y2="310" class="solid"></line><line x1="256" y1="314" x2="264" y2="314" class="solid"></line><text x="274" y="316" >x</text><text x="290" y="316" >+</text><text x="306" y="316" >1</text><path d="M 320,304 A 16,16 0,0,1 320,320" class="nofill"></path><line x1="336" y1="312" x2="344" y2="312" class="solid"></line><polygon points="344,308 352,312 344,316" class="filled"></polygon><text x="362" y="316" >send</text><text x="402" y="316" >ACK</text><path d="M 440,304 A 16,16 0,0,0 440,320" class="nofill"></path><text x="450" y="316" >seq</text><line x1="480" y1="310" x2="488" y2="310" class="solid"></line><line x1="480" y1="314" x2="488" y2="314" class="solid"></line><text x="498" y="316" >x</text><text x="514" y="316" >+</text><text x="530" y="316" >1,</text><text x="554" y="316" >ack</text><line x1="584" y1="310" x2="592" y2="310" class="solid"></line><line x1="584" y1="314" x2="592" y2="314" class="solid"></line><text x="602" y="316" >y</text><text x="618" y="316" >+</text><text x="634" y="316" >1</text><path d="M 648,304 A 16,16 0,0,1 648,320" class="nofill"></path><g><line x1="76" y1="8" x2="132" y2="8" class="solid"></line><line x1="76" y1="8" x2="76" y2="20" class="solid"></line><line x1="132" y1="8" x2="132" y2="72" class="solid"></line><line x1="12" y1="40" x2="100" y2="40" class="solid"></line><line x1="12" y1="40" x2="12" y2="104" class="solid"></line><line x1="100" y1="40" x2="100" y2="104" class="solid"></line><line x1="100" y1="72" x2="132" y2="72" class="solid"></line><line x1="12" y1="104" x2="100" y2="104" class="solid"></line><line x1="52" y1="104" x2="52" y2="128" class="solid"></line></g><g><line x1="92" y1="168" x2="148" y2="168" class="solid"></line><line x1="92" y1="168" x2="92" y2="180" class="solid"></line><line x1="148" y1="168" x2="148" y2="232" class="solid"></line><line x1="12" y1="200" x2="100" y2="200" class="solid"></line><line x1="12" y1="200" x2="12" y2="264" class="solid"></line><line x1="100" y1="200" x2="100" y2="264" class="solid"></line><line x1="100" y1="232" x2="148" y2="232" class="solid"></line><line x1="12" y1="264" x2="100" y2="264" class="solid"></line><line x1="52" y1="264" x2="52" y2="304" class="solid"></line></g></svg>
