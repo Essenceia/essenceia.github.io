@@ -197,6 +197,131 @@ stateDiagram-v2
     TIME_WAIT --> CLOSE: timer elapsed
 {{< /mermaid >}}
 
+#### Client -> Server : FIN
+
+```
+Transmission Control Protocol, Src Port: 44586, Dst Port: 443, Seq: 1105, Ack: 1803, Len: 24
+    Source Port: 44586
+    Destination Port: 443
+    [Stream index: 8]
+    [Conversation completeness: Incomplete (28)]
+    [TCP Segment Len: 24]
+    Sequence Number: 1105    (relative sequence number)
+    Sequence Number (raw): 584975814
+    [Next Sequence Number: 1130    (relative sequence number)]
+    Acknowledgment Number: 1803    (relative ack number)
+    Acknowledgment number (raw): 4146131270
+    1000 .... = Header Length: 32 bytes (8)
+    Flags: 0x019 (FIN, PSH, ACK)
+    Window: 501
+    [Calculated window size: 501]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x5d8d [unverified]
+    [Checksum Status: Unverified]
+    Urgent Pointer: 0
+    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+    [Timestamps]
+    [SEQ/ACK analysis]
+    TCP payload (24 bytes)
+```
+```
+0000   ae 2a 01 bb 22 de 05 c6 f7 20 f1 46 80 19 01 f5
+0010   5d 8d 00 00 01 01 08 0a 65 95 cb 64 6a e6 c0 20
+```
+
+#### Server -> Client : ACK
+
+```
+Transmission Control Protocol, Src Port: 443, Dst Port: 44586, Seq: 1803, Ack: 1130, Len: 0
+    Source Port: 443
+    Destination Port: 44586
+    [Stream index: 8]
+    [Conversation completeness: Incomplete (28)]
+    [TCP Segment Len: 0]
+    Sequence Number: 1803    (relative sequence number)
+    Sequence Number (raw): 4146131270
+    [Next Sequence Number: 1803    (relative sequence number)]
+    Acknowledgment Number: 1130    (relative ack number)
+    Acknowledgment number (raw): 584975839
+    1000 .... = Header Length: 32 bytes (8)
+    Flags: 0x010 (ACK)
+    Window: 266
+    [Calculated window size: 266]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x184f [unverified]
+    [Checksum Status: Unverified]
+    Urgent Pointer: 0
+    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+    [Timestamps]
+    [SEQ/ACK analysis]
+```
+```
+0000   01 bb ae 2a f7 20 f1 46 22 de 05 df 80 10 01 0a
+0010   18 4f 00 00 01 01 08 0a 6a e7 92 08 65 95 cb 63
+```
+
+#### Server -> Client : FIN
+
+```
+Transmission Control Protocol, Src Port: 443, Dst Port: 44586, Seq: 1803, Ack: 1130, Len: 0
+    Source Port: 443
+    Destination Port: 44586
+    [Stream index: 8]
+    [Conversation completeness: Incomplete (28)]
+    [TCP Segment Len: 0]
+    Sequence Number: 1803    (relative sequence number)
+    Sequence Number (raw): 4146131270
+    [Next Sequence Number: 1804    (relative sequence number)]
+    Acknowledgment Number: 1130    (relative ack number)
+    Acknowledgment number (raw): 584975839
+    1000 .... = Header Length: 32 bytes (8)
+    Flags: 0x011 (FIN, ACK)
+    Window: 266
+    [Calculated window size: 266]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x184e [unverified]
+    [Checksum Status: Unverified]
+    Urgent Pointer: 0
+    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+    [Timestamps]
+```
+```
+0000   01 bb ae 2a f7 20 f1 46 22 de 05 df 80 11 01 0a
+0010   18 4e 00 00 01 01 08 0a 6a e7 92 08 65 95 cb 63
+```
+
+#### Client -> Server: ACK
+
+```
+Transmission Control Protocol, Src Port: 44586, Dst Port: 443, Seq: 1130, Ack: 1804, Len: 0
+    Source Port: 44586
+    Destination Port: 443
+    [Stream index: 8]
+    [Conversation completeness: Incomplete (28)]
+    [TCP Segment Len: 0]
+    Sequence Number: 1130    (relative sequence number)
+    Sequence Number (raw): 584975839
+    [Next Sequence Number: 1130    (relative sequence number)]
+    Acknowledgment Number: 1804    (relative ack number)
+    Acknowledgment number (raw): 4146131271
+    1000 .... = Header Length: 32 bytes (8)
+    Flags: 0x010 (ACK)
+    Window: 501
+    [Calculated window size: 501]
+    [Window size scaling factor: -1 (unknown)]
+    Checksum: 0x172e [unverified]
+    [Checksum Status: Unverified]
+    Urgent Pointer: 0
+    Options: (12 bytes), No-Operation (NOP), No-Operation (NOP), Timestamps
+    [Timestamps]
+    [SEQ/ACK analysis]
+```
+```
+0000   ae 2a 01 bb 22 de 05 df f7 20 f1 47 80 10 01 f5
+0010   17 2e 00 00 01 01 08 0a 65 95 cb 98 6a e7 92 08
+```
+
+
 ## Resources 
 
 [French wikipedia TCP article](https://fr.wikipedia.org/wiki/Transmission_Control_Protocol)
