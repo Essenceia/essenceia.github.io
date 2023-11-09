@@ -11,7 +11,12 @@
 # ordered by weight from lowest to highest.
 
 [[main]]
-  name = "Other projects"
+  name = "About"
+  pageRef = "about"
+  weight = 30
+
+[[main]]
+  name = "More projects"
   pageRef = "projects"
   weight = 20
 
