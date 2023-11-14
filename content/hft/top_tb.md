@@ -5,7 +5,7 @@ description: "Top level testbench for the ITCH and MoldUPD64 modules."
 summary: "Top level testbench for the ITCH and MoldUPD64 modules."
 tags: ["FPGA", "HFT", "ITCH","MoldUDP64", "Verilog", "TotalView","Testbench", "Testing","Simulation", "C", "iverilog"]
 showTableOfContents : true
-draft: true
+draft: false
 ---
 
 
@@ -13,7 +13,7 @@ draft: true
 
 In this post, I will be going over the testing for the `MoldUDP64` and `ITCH`
 modules. This article is best read after having read the post on designing the
-`MoldUDP64` module and `ITCH` module.
+[`MoldUDP64` module](/hft/moldudp64) and [`ITCH` module](/hft/itch).
 
 Although both the `ITCH` and `MoldUDP64` modules have their own small SystemVerilog
 test benches, these test benches are relatively simple and do not offer
@@ -37,7 +37,7 @@ on `NASDAQ`-provided logs containing `ITCH` messages captured at the exchange.
 
 The `NASDAQ` data feed directly updates participants on changes in the status via
 `ITCH` messages. These messages are delivered by `MoldUDP64` packets. A single
-`MoldUDP64` packet can contain multiple `ITCH` messages."
+`MoldUDP64` packet can contain multiple `ITCH` messages.
 
 The objective of our testbench will be to read this dump file and extract the
 `ITCH` messages. We will then recreate a `MoldUDP64` packet containing multiple
@@ -51,7 +51,7 @@ to the actual `ITCH` module output, completing the self-testing loop.
 {{< figure
     src="top_tb/wave.png"
     alt=""
-    caption="Testbench simulation waves."
+    caption="Testbench simulation wave, displaying the decoding of an `ITCH` `system event` message. We can observe two different `ITCH` message interfaces: the `itch_*` signals are driven by the `ITCH` `RTL` module, while the `tb_itch_*` signals contain the expected `ITCH` decoded values and are driven by our testbench. The values of these two groups are compared during the checking process."
 >}}
 
 ### `NASDAQ` `ITCH` file 
@@ -91,10 +91,11 @@ dequeued later during checking.
 >}}
 
 Once this new `MoldUDP64` packet has been created, we then 'flatten' the
-intermediate `C` structure representation into its binary format. During
-simulation, if the `MoldUDP64` signals it is ready to accept a new payload, the
-testbench will write at most the next 64 bits (or data bus width between the
-`UDP -> MoldUPD64`) onto the bus.
+intermediate `C` structure representation into its binary format. 
+
+During simulation, if the `MoldUDP64` signals it is ready to accept a new
+payload, the testbench will write at most the next 64 bits (or data bus width
+between the `UDP -> MoldUPD64`) onto the bus.
 
 ### Decoded output checking 
 
