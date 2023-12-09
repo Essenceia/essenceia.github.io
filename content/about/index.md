@@ -42,6 +42,4 @@ their own endeavors.
 
 If you like what I do, don't hesitate to give me a star on github.
 
-If you **really** like what I do, I am currently looking for my next position.
-
 
