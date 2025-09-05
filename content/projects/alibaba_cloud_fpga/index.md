@@ -9,11 +9,12 @@ draft": true"
 
 # Introduction
 
-I was recently in the market for a new FPGA to start building a new projects on. 
+I was recently in the market for a new FPGA to start building my upcoming projects on. 
  
 
-Due to the scale of my upcomming projects a Xilinx series 7 UltraScale+ FPGA of the Virtex family would be perfect, but a Kintex series FPGA would be a sufficent for early prototyping.
-Due to the partial reality of not wanting to part ways with the eye watering amounts of money that is
+Due to the scale of my upcomming projects a Xilinx series 7 UltraScale+ FPGA of the Virtex family would be perfect,
+ but a Kintex series FPGA will be a sufficent for early prototyping.
+Due to not wanting to part ways with the eye watering amounts of money that is
 required for an Vivado enterprise edition license
 my choice was effectively narrowed to the FPGA chips available under the WebPack version of Vivado. 
 
@@ -46,22 +47,22 @@ My requirements for the board where that it featured :
 - a PCIe interface at least x8 wide
 
 As to where to get the board from, my options where : 
-    1. Design the board myself
-    2. Get the AXKU5 or AXKU3 from Alinx
-    3. See what I could unearth on the second hand market
+1. Design the board myself
+2. Get the AXKU5 or AXKU3 from Alinx
+3. See what I could unearth on the second hand market
 
 Although option `1` could have likely been the most interesting, designing a 
 dev board with both a high speed PCIe and ethernet interface was not the goal of 
 today's project. 
 
-As for option `2`, Alinx
+As for option `2`,
 Alinx is  newer vendor that is still building up it's credibility in the west, 
-there technical documentation is a bit sparse, but people that have bought them
-are not reporting any issues.
+there technical documentation is a bit sparse, but people that have 
+experimented with them seem to have experienced any issues.
 Most importantly, Alinx provided very fairly priced development boards ranging
 in the 900 to 1050 dollar ranges ( +150$ for the HPC FMC SFP+ extension board ).
-Although these are not cheap by any metric, compared to where there competition 
-price point these good value.
+Although these are not cheap by any metric, compared to the competition 
+price point they are good value.
 
 
 Option `2` was comming up ahead until I stumbled upon this ebay listing : 
@@ -73,10 +74,10 @@ Option `2` was comming up ahead until I stumbled upon this ebay listing :
 >}}
 For 200$ this board featured a `XCKU3P-FFVB676`, 2 SPF+ connector and a x8 PCIe interface. 
 On the flip side it came with no documentation whatsoever, no guaranty it worked, and the 
-faint promise in the listing that there was a JTAG interface. \
+faint promise in the listing that there was a JTAG interface. 
 A sane person would likely have dismissed this as an interesting internet oddity, a remanence 
 of what happens when a generation of accelerator cards gets phased out in favor of the next, 
-or maybe an expensive paperweight. \
+or maybe just an expensive paperweight. 
 
 But I like a challenge, and the appeal of unlocking the 200$ Kintex UltraScale+ development board 
 was to great to ignore. 
@@ -227,10 +228,35 @@ As such, I aim for this article to become the documentation paving the way to th
                 LnkCtl3: LnkEquIntrruptEn- PerformEqu-
                 LaneErrStat: 0
 ```
-
 # JTAG interface 
 
-## FPGA board JLINK interface 
+Xilinx FPGAs can be configured by writing a bitstream to there internal CMOS Configuration Latches (CCL). 
+This memory is volatile, so this configuration must be re-done on every power cycle. 
+For in the field devices this bitstream would typically be read from an external SPI memory during initialisation, 
+but for development purposes overwriting the contents of the CCLs over JTAG is acceptable.
+ 
+This configuration is done by shifting in the entire FPGA configuration bitstream into the JTAG bus. 
+
+## FPGA board JTAG interface 
+
+As promissed by the original ebay listing the board did come with an accessible JTAG interface.
+
+{{< figure
+    src="pcb_jtag.jpg"
+    alt="View of the JTAG interface on the PCB"
+    caption="View of the JTAG interface on the PCB"
+>}} 
+
+
+In addition to a power reference, and ground, it featured the four mandatory signals comprising the JTAG TAP, 
+which are : 
+- **TCK** Test Clock 
+- **TMS** Test Mode Select
+- **TDI** Test Data Input 
+- **TDO** Test Data Output 
+
+That said, since there is not independant reset signal, so we will need to use the JTAG reset state. 
+
 
 {{< figure 
     src="board_jtag_intf.svg"
@@ -238,7 +264,21 @@ As such, I aim for this article to become the documentation paving the way to th
     caption="6 pin board jtag interface"
 >}}
 
+Anoter issue with this layout is that, likely in the intrest on saving on space and 
+manifacturing cost given this accelerator was not desinged as a dev board, this JTAG interface 
+doesn't follow an easily compatible layout on which I can just plug on one of my debug probes. 
+As such, it will require some re-wiring. 
+
 ## Segger JLINK :heart: 
+
+I do not own an AMD approved JTAG programmer. 
+
+So, traditionally speaking, the Segger JLink is suited to debugging embedded CPU's let them be standalone or in a 
+Zynq rather than configuring an FPGA. That being said, all we need to do is use JTAG to shift in a bitstream to the CLLs and 
+technically speaking and programmable device with 4 sufficently fast GPIOs can be used as a JTAG programmer.  
+
+Additionally, the Jlink is well supported by OpenOCD and I happened to own one. 
+I could also have used an USB Blaster, which since this is considered to be a quartus tool would have been hillarious. 
 
 {{< figure 
     src="segger_jlink_conn.svg"
@@ -246,13 +286,223 @@ As such, I aim for this article to become the documentation paving the way to th
     caption="20 pin segger jlink pinnout"
     >}}
 
-## Wiring
+### Wiring
+
+Given my PCBs JTAG interface wasn't out of the box compatible with my JLinks probe 
+it required some small rewiring. 
 
 {{< figure
     src="jtag_wiring.svg"
     alt="very nice jtag wiring driagram to connect jlink jtag probe to fpga board"
     caption="wiring driagram to connect jlink jtag probe to fpga board"
 >}}
+
+## OpenOCD
+
+OpenOCD is an free and open source on-chip debugger software that aims to be compatible with as many 
+probes, boards and chips as possible.
+
+Since OpenOCD has support for the Xilinx version of SVF (XSVF), my plan for my flashing flow will be to use the
+Vivado generate the XSVF and have OpenOCD flash it. 
+
+### Building OpenOCD
+
+By default the version of OpenOCD that I got on my test server via the packet manager was quite outdated and missing features 
+I will need down the line. 
+
+Additionally, given it was unclear if configuring an Xilinx UltraScale+ FPGA's
+had every been attemplted, due to the absence of posts on the matter, I figured I might run into a few issues
+and having the ability to modify OpenOCB's source code could come in handy. 
+ 
+As such, I decided to re-build it from source. 
+
+This explains why, in following logs, I will be running OpenOCD version `0.12.0+dev-02170-gfcff4b712`.
+
+Note : I have additionally re-build the jlink libs from source. 
+
+## Determining the scan chain 
+
+Since I do not have the shematics for the board I do not know how many devices are daisy-chainned on the board JTAG BUS. 
+Additionally, I would like to confirm if the FPGA on the ebay listing is actually the one on the board. 
+In the JTAG standard, each chainned device shall expose an accessible `IDCODE` register. 
+This register is used to identify the manifacturer, device type, and revision number. 
+
+By default, when setting up the JTAG server, one is expected to configure the TAPs on the scan chain with the expected `IDCODE` values
+and the length of the instruction register for each device. 
+Given this is an undocumented board off eaby, I am not sure what the chain looks like. 
+Fortunatly, OpenOCB has an autoprobing functionallity, where it will do a bling interrogation in an **attempt** to discover 
+the available TAPs and report them out. 
+
+As such, my first order of buisness was doing this autoprobing. 
+
+I used the following OpenOCB configuration, the autoprobling will be used as I did not specify any taps. 
+
+```tcl
+source [find interface/jlink.cfg]
+transport select jtag
+
+set SPEED 1
+jtag_rclk $SPEED
+adapter speed $SPEED
+
+reset_config none
+```
+
+The blind interrogation sucessfully discovered a single TAP on the chain with an `IDCODE` of `0x04a63093`. 
+
+```
+gp@workhorse:~/tools/openocd_jlink_test/autoprob$ openocd
+Open On-Chip Debugger 0.12.0+dev-02170-gfcff4b712 (2025-09-04-21:02)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+none separate
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : J-Link V10 compiled Jan 30 2023 11:28:07
+Info : Hardware version: 10.10
+Info : VTarget = 1.812 V
+Info : clock speed 1 kHz
+Warn : There are no enabled taps.  AUTO PROBING MIGHT NOT WORK!!
+Info : JTAG tap: auto0.tap tap/device found: 0x04a63093 (mfg: 0x049 (Xilinx), part: 0x4a63, ver: 0x0)
+Warn : AUTO auto0.tap - use "jtag newtap auto0 tap -irlen 2 -expected-id 0x04a63093"
+Error: IR capture error at bit 2, saw 0x3ffffffffffffff5 not 0x...3
+Warn : Bypassing JTAG setup events due to errors
+Warn : gdb services need one or more targets defined
+```
+
+Comparing against the `UltraScale Architecture Configuration User Guide (UG570)` we see that this `IDCODE` matches up
+perfectly with the expected value for the `KU3P`. 
+
+{{< figure
+    src="idcode.png"
+    alt="JTAG and IDCODE for UltraScale Architecture-based FPGAs"
+    caption="JTAG and IDCODE for UltraScale Architecture-based FPGAs"
+>}}
+
+By default OpenOCB assumes a JTAG instruction lenght of 2 bits while our FPGA actually have an IR length of 6 bits. 
+This is the root cause behind the IR capture error encountered during autoprobing `JTAG and IDCODE for UltraScale Architecture-based FPGAs`.
+We can confirm this was our issues as, when we update our simple probling script to determine the `IDCODE` of a single 
+TAP with an IR length of 6 bits we can re-detert the FPGA with no additional errors. 
+
+```tcl
+source [find interface/jlink.cfg]
+transport select jtag
+
+set SPEED 1
+jtag_rclk $SPEED
+adapter speed $SPEED
+
+reset_config none
+
+jtag newtap auto_detect tap -irlen 6
+```
+
+Output : 
+```
+gp@workhorse:~/tools/openocd_jlink_test/autoprob$ openocd
+Open On-Chip Debugger 0.12.0+dev-02170-gfcff4b712 (2025-09-04-21:02)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+Info : J-Link V10 compiled Jan 30 2023 11:28:07
+Info : Hardware version: 10.10
+Info : VTarget = 1.812 V
+Info : clock speed 1 kHz
+Info : JTAG tap: auto_detect.tap tap/device found: 0x04a63093 (mfg: 0x049 (Xilinx), part: 0x4a63, ver: 0x0)
+Warn : gdb services need one or more targets defined
+```
+
+Thus based on the probing, this is the JTAG scan chain I will be working with : 
+
+{{< figure 
+    src="scan_chain.svg"
+    alt="JTAG scan chain for the alibaba cloud FPGA"
+    caption="JTAG scan chain for the alibaba cloud FPGA"
+>}}
+
+## Systerm Monitor Registers
+
+The xilinx UltraScale+ family has de 
+
+# Pinout 
+
+```
+| Pin Index | Name | IO Standard | Location | Bank |
+|-----------|------|-------------|----------|------|
+| 0 | diff_100mhz_clk_p | LVDS | E18 | BANK67 |
+| 1 | diff_100mhz_clk_n | LVDS | D18 | BANK67 |
+| 2 | sfp_mgt_clk_p | LVDS | K7 | BANK227 |
+| 3 | sfp_mgt_clk_n | LVDS | K6 | BANK227 |
+| 4 | sfp_1_txn | - | B6 | BANK227 |
+| 5 | sfp_1_txp | - | B7 | BANK227 |
+| 6 | sfp_1_rxn | - | A3 | BANK227 |
+| 7 | sfp_1_rxp | - | A4 | BANK227 |
+| 8 | sfp_2_txn | - | D6 | BANK227 |
+| 9 | sfp_2_txp | - | D7 | BANK227 |
+| 10 | sfp_2_rxn | - | B1 | BANK227 |
+| 11 | sfp_2_rxp | - | B2 | BANK227 |
+| 12 | SFP_1_MOD_DEF_0 | LVCMOS18 | D14 | BANK87 |
+| 13 | SFP_1_TX_FAULT | LVCMOS18 | B14 | BANK87 |
+| 14 | SFP_1_LOS | LVCMOS18 | D13 | BANK87 |
+| 15 | SFP_1_LED | LVCMOS18 | B12 | BANK87 |
+| 16 | SFP_2_MOD_DEF_0 | LVCMOS18 | E11 | BANK86 |
+| 17 | SFP_2_TX_FAULT | LVCMOS18 | F9 | BANK86 |
+| 18 | SFP_2_LOS | LVCMOS18 | E10 | BANK86 |
+| 19 | SFP_2_LED | LVCMOS18 | C12 | BANK87 |
+| 20 | IIC_SDA_SFP_1 | LVCMOS18 | C14 | BANK87 |
+| 21 | IIC_SCL_SFP_1 | LVCMOS18 | C13 | BANK87 |
+| 22 | IIC_SDA_SFP_2 | LVCMOS18 | D11 | BANK86 |
+| 23 | IIC_SCL_SFP_2 | LVCMOS18 | D10 | BANK86 |
+| 24 | IIC_SDA_EEPROM_0 | LVCMOS18 | G10 | BANK86 |
+| 25 | IIC_SCL_EEPROM_0 | LVCMOS18 | G9 | BANK86 |
+| 26 | IIC_SDA_EEPROM_1 | LVCMOS18 | J15 | BANK87 |
+| 27 | IIC_SCL_EEPROM_1 | LVCMOS18 | J14 | BANK87 |
+| 28 | GPIO_LED_R | LVCMOS18 | A13 | BANK87 |
+| 29 | GPIO_LED_G | LVCMOS18 | A12 | BANK87 |
+| 30 | GPIO_LED_H | LVCMOS18 | B9 | BANK86 |
+| 31 | GPIO_LED_1 | LVCMOS18 | B11 | BANK86 |
+| 32 | GPIO_LED_2 | LVCMOS18 | C11 | BANK86 |
+| 33 | GPIO_LED_3 | LVCMOS18 | A10 | BANK86 |
+| 34 | GPIO_LED_4 | LVCMOS18 | B10 | BANK86 |
+| 35 | pcie_mgt_clkn | - | T6 | BANK225 |
+| 36 | pcie_mgt_clkp | - | T7 | BANK225 |
+| 37 | pcie_tx0_n | - | R4 | BANK225 |
+| 38 | pcie_tx1_n | - | U4 | BANK225 |
+| 39 | pcie_tx2_n | - | W4 | BANK225 |
+| 40 | pcie_tx3_n | - | AA4 | BANK225 |
+| 41 | pcie_tx4_n | - | AC4 | BANK224 |
+| 42 | pcie_tx5_n | - | AD6 | BANK224 |
+| 43 | pcie_tx6_n | - | AE8 | BANK224 |
+| 44 | pcie_tx7_n | - | AF6 | BANK224 |
+| 45 | pcie_rx0_n | - | P1 | BANK225 |
+| 46 | pcie_rx1_n | - | T1 | BANK225 |
+| 47 | pcie_rx2_n | - | V1 | BANK225 |
+| 48 | pcie_rx3_n | - | Y1 | BANK225 |
+| 49 | pcie_rx4_n | - | AB1 | BANK224 |
+| 50 | pcie_rx5_n | - | AD1 | BANK224 |
+| 51 | pcie_rx6_n | - | AE3 | BANK224 |
+| 52 | pcie_rx7_n | - | AF1 | BANK224 |
+| 53 | pcie_tx0_p | - | R5 | BANK225 |
+| 54 | pcie_tx1_p | - | U5 | BANK225 |
+| 55 | pcie_tx2_p | - | W5 | BANK225 |
+| 56 | pcie_tx3_p | - | AA5 | BANK225 |
+| 57 | pcie_tx4_p | - | AC5 | BANK224 |
+| 58 | pcie_tx5_p | - | AD7 | BANK224 |
+| 59 | pcie_tx6_p | - | AE9 | BANK224 |
+| 60 | pcie_tx7_p | - | AF7 | BANK224 |
+| 61 | pcie_rx0_p | - | P2 | BANK225 |
+| 62 | pcie_rx1_p | - | T2 | BANK225 |
+| 63 | pcie_rx2_p | - | V2 | BANK225 |
+| 64 | pcie_rx3_p | - | Y2 | BANK225 |
+| 65 | pcie_rx4_p | - | AB2 | BANK224 |
+| 66 | pcie_rx5_p | - | AD2 | BANK224 |
+| 67 | pcie_rx6_p | - | AE4 | BANK224 |
+| 68 | pcie_rx7_p | - | AF2 | BANK224 |
+| 69 | pcie_perstn_rst | LVCMOS18 | A9 | BANK86 |
+```
 
 # Ressources 
 
@@ -261,3 +511,5 @@ As such, I aim for this article to become the documentation paving the way to th
 [2] Official Xilinx dev board : https://www.amd.com/en/products/adaptive-socs-and-fpgas/evaluation-boards/ek-u1-kcu116-g.html
 
 [3] Alinx Kintex UltraScale+ dev boards : https://www.en.alinx.com/Product/FPGA-Development-Boards/Kintex-UltraScale-plus.html
+
+UltraScale Architecture Configuration User Guide (UG570) : https://docs.amd.com/r/en-US/ug570-ultrascale-configuration/Device-Resources-and-Configuration-Bitstream-Lengths?section=gyn1703168518425__table_vyh_4hs_szb
