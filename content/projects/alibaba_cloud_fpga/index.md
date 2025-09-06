@@ -305,6 +305,18 @@ probes, boards and chips as possible.
 Since OpenOCD has support for the Xilinx version of SVF (XSVF), my plan for my flashing flow will be to use the
 Vivado generate the XSVF and have OpenOCD flash it. 
 
+Now, some of you might be starting to notice that I diverging quite far from the well lite path of officially 
+supported tools. Not only am I using an not officially supported debug probe, but I am also using some 
+obscure open source software with questonable support for interfacing with Xiling UltraScale+ FPGAs. 
+You might be wonder, given that the officially supported tools can already prove themselves to be a headack to get working properly 
+why I am seemingly making my life even harder ? 
+
+The reason is quite simple: when things inevitably start going wrong, as they will given the nature of the project, 
+having an entirely open toolchain where all the code is accessible and modifiable, allows me to have more visibility 
+as to what is going on. 
+I cannot delve into a black box in the same fashion. 
+
+
 ### Building OpenOCD
 
 By default the version of OpenOCD that I got on my test server via the packet manager was quite outdated and missing features 
@@ -425,11 +437,10 @@ Thus based on the probing, this is the JTAG scan chain I will be working with :
 
 ## Systerm Monitor Registers
 
-The xilinx UltraScale+ family has de 
+The xilinx UltraScale and UltraScale+ family has devices have an on chip ADC logic used to collect not only lost the ADC
 
 # Pinout 
 
-```
 | Pin Index | Name | IO Standard | Location | Bank |
 |-----------|------|-------------|----------|------|
 | 0 | diff_100mhz_clk_p | LVDS | E18 | BANK67 |
@@ -502,7 +513,6 @@ The xilinx UltraScale+ family has de
 | 67 | pcie_rx6_p | - | AE4 | BANK224 |
 | 68 | pcie_rx7_p | - | AF2 | BANK224 |
 | 69 | pcie_perstn_rst | LVCMOS18 | A9 | BANK86 |
-```
 
 # Ressources 
 
