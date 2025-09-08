@@ -447,6 +447,8 @@ but better.
 
 # Pinout 
 
+Src : https://blog.csdn.net/qq_37650251/article/details/145716953
+
 | Pin Index | Name | IO Standard | Location | Bank |
 |-----------|------|-------------|----------|------|
 | 0 | diff_100mhz_clk_p | LVDS | E18 | BANK67 |
@@ -519,6 +521,93 @@ but better.
 | 67 | pcie_rx6_p | - | AE4 | BANK224 |
 | 68 | pcie_rx7_p | - | AF2 | BANK224 |
 | 69 | pcie_perstn_rst | LVCMOS18 | A9 | BANK86 |
+
+## Global clock 
+
+The on an UltraScale the global clock is typically expected to be driven from an 
+external high speed source provided over a differential pair. 
+
+According to this pinnout two such differential pairs.  
+
+My first order of buisness is determining which of these two I can use to 
+easily drive my global clocks. 
+
+These differential pains are provided over the following pins : 
+- 100MHz : {E18, D18} 
+- 156.25MHz : {K7, K6} 
+
+
+Judging by the naming and the frequencies the 156.25MHz clock is likely my SPF reference clock, 
+and the 100MHz can be used as my global clock.
+
+In order to confirm I querried the pin properties of the two presumed masters. 
+
+**K6** properties : 
+```
+Vivado% report_property [get_package_pins K6]
+Property                Type    Read-only  Value
+BANK                    string  true       227
+BUFIO_2_REGION          string  true       TR
+CLASS                   string  true       package_pin
+DIFF_PAIR_PIN           string  true       K7
+IS_BONDED               bool    true       1
+IS_DIFFERENTIAL         bool    true       1
+IS_GENERAL_PURPOSE      bool    true       0
+IS_GLOBAL_CLK           bool    true       0
+IS_LOW_CAP              bool    true       0
+IS_MASTER               bool    true       0
+IS_VREF                 bool    true       0
+IS_VRN                  bool    true       0
+IS_VRP                  bool    true       0
+MAX_DELAY               int     true       38764
+MIN_DELAY               int     true       38378
+NAME                    string  true       K6
+PIN_FUNC                enum    true       MGTREFCLK0N_227
+PIN_FUNC_COUNT          int     true       1
+PKGPIN_BYTEGROUP_INDEX  int     true       0
+PKGPIN_NIBBLE_INDEX     int     true       0
+```
+
+**E18** properties : 
+```
+Vivado% report_property [get_package_pins E18]
+Property                Type    Read-only  Value
+BANK                    string  true       67
+BUFIO_2_REGION          string  true       TL
+CLASS                   string  true       package_pin
+DIFF_PAIR_PIN           string  true       D18
+IS_BONDED               bool    true       1
+IS_DIFFERENTIAL         bool    true       1
+IS_GENERAL_PURPOSE      bool    true       1
+IS_GLOBAL_CLK           bool    true       1
+IS_LOW_CAP              bool    true       0
+IS_MASTER               bool    true       1
+IS_VREF                 bool    true       0
+IS_VRN                  bool    true       0
+IS_VRP                  bool    true       0
+MAX_DELAY               int     true       87126
+MIN_DELAY               int     true       86259
+NAME                    string  true       E18
+PIN_FUNC                enum    true       IO_L11P_T1U_N8_GC_67
+PIN_FUNC_COUNT          int     true       2
+PKGPIN_BYTEGROUP_INDEX  int     true       8
+PKGPIN_NIBBLE_INDEX     int     true       2
+```
+
+We can not confirm the following items : 
+- the differential pairings are correct : {K6, K7}, {E18, D18}
+- we can easily use the 100MHz as a source to drive our global clocking network 
+- the 156.25MHz clock is to be used as the reference clock our high GTY transivers and lands on bank 227 as indicated by the `PIN_FUNC` property
+ `MGTREFCLK0N_227`. 
+- we cannot directly use the 156.25MHz clock to drive our global clock network
+
+### Bank 227 
+
+We have the following pins on bank 227 : 
+```
+Vivado% get_package_pins -of_object [get_iobanks 227]
+K6 K7 D1 D2 F6 F7 H6 H7 C3 C4 E4 E5 B1 B2 D6 D7 A3 A4 B6 B7
+```
 
 # Ressources 
 
