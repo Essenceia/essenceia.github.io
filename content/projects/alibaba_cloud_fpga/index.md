@@ -437,9 +437,13 @@ Thus based on the probing, this is the JTAG scan chain I will be working with :
 
 ## Systerm Monitor Registers
 
-Previous generations of FPGA has a system called the ADC. 
 
-The xilinx UltraScale and UltraScale+ family has devices have an on chip ADC logic used to collect not only lost the ADC
+Previous generations of Xilinx FPGA had a system called the ADC that, amoung other things allowed 
+you to aquire chip temperature and voltage readings. 
+The newer UltraScale and UltraScale+ family have depreciated this ADC module in favor 
+of the SYSMON ( and SYSMON4 ) which, allow you to also get these temperature readings 
+but better. 
+
 
 # Pinout 
 
