@@ -84,9 +84,31 @@ was to great to ignore.
 
 As such, I aim for this article to become the documentation paving the way to though this mirage. 
 
+# The debugger challenge 
+
+Xilinx outlines a list JTAG probes it supports for debugging and configuring there FPGA's. 
+I do not personnally own any of these probes and am not looking to buy yet another vendor specific probe unless necessary. 
+This does mean I will be scarificing the ability to interface with the very handy ILA (Integrated Logic
+Analyzer). That being said nothing is stopping us from building our own ILA equivalent logic, and like the 
+ILA reporting the captured information though JTAG via the available the JTAG user registers  
+
+There is open source project called OpenOCD (Open On-Chip Debugger), it's aim is to provide debugging, in-system programming, 
+and boundary-scan testing for a wide range of embedded targets through various JTAG/SWD adapters.
+It is typically used for programming and debugging embedded SOCs.  
+
+Given it's large library of already supported debug probes and boards, OpenOCB is common run by invoking pre-build configurations. 
+
+That said, openOCD is acctually a very capable and configurable tool which allows us a great 
+degree of control over what the JTAG adapter is going. Additionally, it has support out of the box for 
+standard SVF(Serial Vector Format) format used to describe a sequence of JTAG operations and I know that 
+Vivado can generate a SVF file.
+As such, although there isn't really and documentation of configuring an xilinx FPGA past the 7 series, 
+and most of the most recent developpement are focused more on it's ability to debug embeeded Zync arm cores, I figured it should be doable.  
+ 
 # The plan 
 
-So, to resume the current plan is to buy a second hand hardware accelerator of ebay at a too good to be true price. 
+So, to resume the current plan is to buy a second hand hardware accelerator of ebay at a too good to be true price, and try to configure it 
+with a open  
 The awnser to the obvious question you are thinking if you, like me have been around the block a few times is: so many things can go wrong. 
 
 As such, we need as to how to approach this. 
@@ -109,7 +131,7 @@ available is unclear.
 
 Additionally, we have no indication of what devices are daisy chainned together onto the JTAG scan chain. 
 This is an essential question if we want to use JTAG for flashing, so we will need to figure that out. 
-
+ 
 ## 3 - Figuring out the pinnout 
 
 The next hardest part will be figuring out the FPGA's pinnout and my clock sources. 
@@ -121,6 +143,8 @@ The biggest questions that need awnsering will be :
 ## 4 - Writing a bitstream 
 
 For the time being I will be focusing on writing just temporary configurations over JTAG and not re-writing the flash. 
+
+Simple enogth, right ?
 
 
 # PCIe interface
