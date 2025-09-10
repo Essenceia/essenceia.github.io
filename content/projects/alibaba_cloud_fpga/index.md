@@ -84,6 +84,45 @@ was to great to ignore.
 
 As such, I aim for this article to become the documentation paving the way to though this mirage. 
 
+# The plan 
+
+So, to resume the current plan is to buy a second hand hardware accelerator of ebay at a too good to be true price. 
+The awnser to the obvious question you are thinking if you, like me have been around the block a few times is: so many things can go wrong. 
+
+As such, we need as to how to approach this. 
+The goal of this plan is to outline incremental steps I can follow to build upon themselves with the end goal of being able to use this as a dev board. 
+
+## 1 - Confirming the board works 
+ 
+First order of buisness will be to confirm the board is showing signs of working as intended. 
+
+There is a high probabiliy that the flash wasn't wipped before this board was sold off, as such the pervious bitstream should
+still be in the flash. 
+Given this board was used as an accelerator, we should be able to use that to confirm the board is working by either checking if 
+the board is presenting itself as a PCIe endpoint or if the sfp's are sending the ethernet PHY idle sequence. 
+
+## 2 - Connecting a debugger to it
+
+Next step is to try and get the debugger connected.
+The ebay listing advertized there is a JTAG interface, but the picture is grainy enoght that where that JTAG is and what pins are 
+available is unclear. 
+
+Additionally, we have no indication of what devices are daisy chainned together onto the JTAG scan chain. 
+This is an essential question if we want to use JTAG for flashing, so we will need to figure that out. 
+
+## 3 - Figuring out the pinnout 
+
+The next hardest part will be figuring out the FPGA's pinnout and my clock sources. 
+The biggest questions that need awnsering will be : 
+- what external clocks sources do I have, what are there frequencies and which pins are they connected to 
+- which transivers are the SFPs connected to 
+- which transivers is the PCIe connected to
+
+## 4 - Writing a bitstream 
+
+For the time being I will be focusing on writing just temporary configurations over JTAG and not re-writing the flash. 
+
+
 # PCIe interface
 
 ## Is it alive ? 
@@ -447,7 +486,12 @@ but better.
 
 # Pinout 
 
-Src : https://blog.csdn.net/qq_37650251/article/details/145716953
+To my indescribable joy I happeneed to stumble onto this gold mine, in 
+which we get the board pinout, this probably fell off a truck  : https://blog.csdn.net/qq_37650251/article/details/145716953
+ ( If you cannot access the full article, just inspect the html source )
+
+This gives us the following pinout, so far this pinout makes sense and I havn't spotted any 
+issues with it : 
 
 | Pin Index | Name | IO Standard | Location | Bank |
 |-----------|------|-------------|----------|------|
@@ -527,7 +571,7 @@ Src : https://blog.csdn.net/qq_37650251/article/details/145716953
 The on an UltraScale the global clock is typically expected to be driven from an 
 external high speed source provided over a differential pair. 
 
-According to this pinnout two such differential pairs.  
+According to this pinnout we have two such differential pairs.  
 
 My first order of buisness is determining which of these two I can use to 
 easily drive my global clocks. 
@@ -539,8 +583,7 @@ These differential pains are provided over the following pins :
 
 Judging by the naming and the frequencies the 156.25MHz clock is likely my SPF reference clock, 
 and the 100MHz can be used as my global clock.
-
-In order to confirm I querried the pin properties of the two presumed masters. 
+We can confirm by querring the pin properties. 
 
 **K6** properties : 
 ```
@@ -597,17 +640,9 @@ PKGPIN_NIBBLE_INDEX     int     true       2
 We can not confirm the following items : 
 - the differential pairings are correct : {K6, K7}, {E18, D18}
 - we can easily use the 100MHz as a source to drive our global clocking network 
-- the 156.25MHz clock is to be used as the reference clock our high GTY transivers and lands on bank 227 as indicated by the `PIN_FUNC` property
+- the 156.25MHz clock is to be used as the reference clock for our GTY transivers and lands on bank 227 as indicated by the `PIN_FUNC` property
  `MGTREFCLK0N_227`. 
 - we cannot directly use the 156.25MHz clock to drive our global clock network
-
-### Bank 227 
-
-We have the following pins on bank 227 : 
-```
-Vivado% get_package_pins -of_object [get_iobanks 227]
-K6 K7 D1 D2 F6 F7 H6 H7 C3 C4 E4 E5 B1 B2 D6 D7 A3 A4 B6 B7
-```
 
 # Ressources 
 
