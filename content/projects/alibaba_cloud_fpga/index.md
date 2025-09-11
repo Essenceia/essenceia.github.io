@@ -898,6 +898,66 @@ We can not confirm the following items :
 
 # Writing the bitstream
 
+
+```
+gp@workhorse:~/tools/openocd_jlink_test$ openocd
+Open On-Chip Debugger 0.12.0+dev-02170-gfcff4b712 (2025-09-04-21:02)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+set chipname XCKU3P
+Read temperature sysmon 4
+Info : J-Link V10 compiled Jan 30 2023 11:28:07
+Info : Hardware version: 10.10
+Info : VTarget = 1.812 V
+Info : clock speed 1 kHz
+Info : JTAG tap: XCKU3P.tap tap/device found: 0x04a63093 (mfg: 0x049 (Xilinx), part: 0x4a63, ver: 0x0)
+Warn : gdb services need one or more targets defined
+--------------------
+Sysmon status report :
+TEMP 50.46 C
+MAXTEMP 52.79 C
+VCCINT 0.846 V
+MAXVCC 0.860 V
+VCCAUX 1.799 V
+MAXVCCAUX 1.809 V
+--------------------
+svf processing file: "out/project_prj_checkpoint.svf"
+  0%  TRST OFF;
+  0%  ENDIR IDLE;
+  0%  ENDDR IDLE;
+  0%  STATE RESET;
+  0%  STATE IDLE;
+  0%  FREQUENCY 1.00E+07 HZ;
+adapter speed: 10000 kHz
+  0%  HIR 0 ;
+  0%  TIR 0 ;
+  0%  HDR 0 ;
+  0%  TDR 0 ;
+  0%  SIR 6 TDI (09) ;
+  0%  SDR 32 TDI (00000000) TDO (04a63093) MASK (0fffffff) ;
+  0%  STATE RESET;
+  0%  STATE IDLE;
+  0%  SIR 6 TDI (0b) ;
+  0%  SIR 6 TDI (14) ;
+  0%  RUNTEST 0.100000 SEC;
+  0%  RUNTEST 10000 TCK;
+  0%  SIR 6 TDI (14) TDO (11) MASK (31) ;
+  0%  SIR 6 TDI (05) ;
+ 95%  ffffffffffff) ;
+ 95%  SIR 6 TDI (09) TDO (31) MASK (11) ;
+ 95%  STATE RESET;
+ 95%  RUNTEST 5 TCK;
+ 95%  SIR 6 TDI (05) ;
+ 95%  SDR 160 TDI (0000000400000004800700140000000466aa9955) ;
+ 95%  SIR 6 TDI (04) ;
+ 95%  SDR 32 TDI (00000000) TDO (3f5e0d40) MASK (08000000) ;
+ 95%  STATE RESET;
+ 95%  RUNTEST 5 TCK;
+Info : Listening on port 6666 for tcl connections
+Info : Listening on port 4444 for telnet connections
+```
+
 # Ressources 
 
 [1] Xilinx Vivado Supported Devices : https://docs.amd.com/r/en-US/ug973-vivado-release-notes-install-license/Supported-Devices 
