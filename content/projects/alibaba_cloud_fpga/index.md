@@ -930,6 +930,14 @@ As some readers might have already guessed, visulatising the implementation plac
 
 {{< /alert >}}
 
+## Vivado flow 
+
+// creating the project 
+
+// running the implementation 
+
+// trying it up with a makefile
+
 ## Generating the SVF file 
 
 // some explaination of what the svf file is 
@@ -943,6 +951,11 @@ As some readers might have already guessed, visulatising the implementation plac
 // tcl script presentation 
 
 // why this is now vivado independant 
+
+
+## Configuraing the FPGA using OpenOCD 
+
+// how does svf replay work ? 
 
 
 the next step is now to make an automatized workflow to 
