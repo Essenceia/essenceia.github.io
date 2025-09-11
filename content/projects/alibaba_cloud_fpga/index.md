@@ -525,6 +525,12 @@ it required some small rewiring.
 JTAG is a parallel protocol where `TDI` and `TMS` will be captured on the `TMS` rising edge. 
 Because of this, good JTAG PCB trace length maching is advised in order to minimize skew. 
 
+{{< figure
+    src="jtag_timing.png"
+    alt="Timing Waveform for JTAG Signals (From Target Device Perspective)"
+    caption="Timing Waveform for JTAG Signals (From Target Device Perspective); source : https://www.intel.com/content/www/us/en/docs/programmable/683719/current/jtag-timing-constraints-and-waveforms.html"
+>}} 
+
 Ideally a custom connector with length matched traces to work as an interface between the JLink's 
 probe and a board specific connector would be used. This could be a 20 minute Kicad project
 and be back in under a week using OSHPARK of JLCPCB. 
@@ -687,13 +693,48 @@ The newer UltraScale and UltraScale+ family have depreciated this ADC module in 
 of the SYSMON ( and SYSMON4 ) which, allow you to also get these temperature readings 
 but better. 
 
-Unfortunaly openOCD didn't have support for reading the sysmon out of the box. 
+Unfortunaly openOCD didn't have support for reading the sysmon out of the box, so I will be adding it.  
 
-### Sysmon IR
+In order for the JTAG to interact with the SYSMON we first need to write the 
+`SYSMON_DRP` command to the JTAG instruction register. Looking at the 
+documentation we see that this command has a value of `0x37`. Funnily enoght this has the 
+same command code as the ADC, solidifying the SYSMON as the ADC's decendant. 
 
- 
+The SYSMON offers a lot more additional functionalities than just being used to 
+read voltage and temperature, but for today's use case we will not be using any of that. 
+Rather we will focus only on reading a subset of the SYSMON status registers.
 
- 
+These status registers are located at addresses (00h-3Fh, 80h-BFh) and contain the measurement results of the
+analog-to-digital conversions, the flag registers, and the calibration coefficients. 
+We can select which address we wish to read by writing the address to the data register over JTAG and the 
+data will be read out to `TDO`. 
+
+I then added this sequence to read the current chip temperature, internal and external voltages as well as the 
+maxiumum values for these recorded since FPGA power cycle, to my flashing script output : 
+```
+gp@workhorse:~/tools/openocd_jlink_test$ openocd
+Open On-Chip Debugger 0.12.0+dev-02170-gfcff4b712 (2025-09-04-20:02)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+set chipname XCKU3P
+Read temperature sysmon 4
+Info : J-Link V10 compiled Jan 30 2023 11:28:07
+Info : Hardware version: 10.10
+Info : VTarget = 1.819 V
+Info : clock speed 1 kHz
+Info : JTAG tap: XCKU3P.tap tap/device found: 0x04a63093 (mfg: 0x049 (Xilinx), part: 0x4a63, ver: 0x0)
+Warn : gdb services need one or more targets defined
+--------------------
+Sysmon status report :
+TEMP 31.12 C
+MAXTEMP 34.62 C
+VCCINT 0.852 V
+MAXVCC 0.855 V
+VCCAUX 1.805 V
+MAXVCCAUX 1.807 V
+```
+These reading seem coherent and the external voltage closely resembles the voltage the debug probe is recording. 
 
 # Pinout 
 
@@ -854,6 +895,8 @@ We can not confirm the following items :
 - the 156.25MHz clock is to be used as the reference clock for our GTY transivers and lands on bank 227 as indicated by the `PIN_FUNC` property
  `MGTREFCLK0N_227`. 
 - we cannot directly use the 156.25MHz clock to drive our global clock network
+
+# Writing the bitstream
 
 # Ressources 
 
