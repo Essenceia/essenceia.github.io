@@ -169,10 +169,10 @@ Simple enogth, right ?
 
 After a few days latter my prize arrived via extress mail. 
 
-((< figure
+{{< figure
     src="fpga.jpg"
     alt="fpga"
-    caption="Kintex UltraScale+ FPGA board, decomissioned alibaba cloud accelerator. Jammed transiver now safely removed."
+    caption="My prized Kintex UltraScale\+ FPGA board also know as the decomissioned alibaba cloud accelerator. Jammed transiver now safely removed."
 >}}
 
 Unexpectadly it even came with a free 25G SFP28 Huawei transiver rated for a 300m distance and a single 1m long OS2 fiber patch cable. 
@@ -206,7 +206,7 @@ As a reminder, this next test relied on the flash not having been wipped and som
 being loaded. 
 {{< /alert >}}
 
-Since I didn't want to directly plug this into my very expensive build server, I decided to use a rasperry pi 5 as
+Since I didn't want to directly plug this into my prized build server, I decided to use a rasperry pi 5 as
 my test device and got myself an extern PCIe adapter. 
 
 The Raspberry Pi 5 has a external PCIe Gen 2.0 x1 interface, though our FPGA can have up to a PCIe Gen 3.0 x8 
@@ -219,6 +219,10 @@ plugging our FPGA with this Raspberry Pi should work.
     caption="FPGA board connected to the Raspberry Pi 5 via the PCIe to PCIe x1 adapter"
 >}}
 
+After both the Raspberry and the FPGA where booted, I sshed into my rpi and 
+started looking for the PCIe enumeration sequence logged from the linux 
+PCIe core subsystem. 
+ 
 `dmesg` log : 
 
 ```
@@ -229,7 +233,59 @@ plugging our FPGA with this Raspberry Pi should work.
 [    0.495759] pci 0000:01:00.0: [dabc:1017] type 00 class 0x020000
 ```
 
+### Background infomration 
 
+Since most people might not be intimatly as familiar with PCIe terminology, allow me to 
+take a step back and give more details as to what is going on here. 
+
+`0000:00:00.0`: is the identifier of a specific PCIe device connected through the PCIe network 
+to the kernel, it read as `domain`:`bus`:`device`.`function`.
+
+`[14e4:2712]`: is the device's `[vendor id:device id]`, these vendor id identifiers are 
+assigned by the PCI standard body to hardware vendors. Vendors are then free to define there 
+own vendor id's. The full list of official vendor id's and released device id can be found : https://admin.pci-ids.ucw.cz/read/PC/14e4 or in
+a less user friendly format in the linux kernel code : https://github.com/torvalds/linux/blob/7aac71907bdea16e2754a782b9d9155449a9d49d/include/linux/pci_ids.h#L160-L3256
+
+`type 01`: PCIe has two trypes of devices, bridges allowing the connection of multiple downstream devices to an 
+upstream device, and endpoints.
+Bridges are of type `01` and endpoints of type `00`.
+
+`class 0x60400`: is the PCIe device class and catheogrises what kind of function this device performs. It 
+has the following format `0x[Base Class (8 bits)][Sub Class (8 bits)][Programming Interface (8 bits)]`, 
+though the nasty little secret is that the sub class field is often ignored. 
+A list of class and sub class idenfiers can be found: https://admin.pci-ids.ucw.cz/read/PD or in the linux codebase : https://github.com/torvalds/linux/blob/7aac71907bdea16e2754a782b9d9155449a9d49d/include/linux/pci_ids.h#L15-L158
+
+### Dmesg log 
+
+Of our dmesg content the follow two lines are the most relevant : 
+```
+[    0.388790] pci 0000:00:00.0: [14e4:2712] type 01 class 0x060400
+[    0.495759] pci 0000:01:00.0: [dabc:1017] type 00 class 0x020000
+```
+
+Firstly the PCIe subsystem is logging at `0000:00:00.0` it has discovered a Broadcome ( vendor id `14e4` ) BCM2712 PCIe Bridge ( device id `0x2712` ). 
+As the name suggests and the type of `01` confirms this is a bridge, the class of `0x0604xx` tells us exactly what it bridges too. 
+There it is a PCI-to-PCI bridge, meaning that more devices can be connected downstream of it, as such, the search continues. 
+
+The subsystem then discoveres a second device at `0000:01:00.0`, this is an endpoint device as indicated by it's type of `00`
+and it's class of `0x02000` tells us this is ethernet networking equipement. 
+Our next hint is the `dabc` doesn't correspond to a known vendor id. When designing a PCIe interface in hardware these 
+are parameters we can be set. Additoinally, amoung the different ways linux uses to identify which driver to load for a PCIe device 
+the vendor id and device id can be used. Supposing we are implemnting custom logic, in order to prevent any bug where the wrong driver 
+could be loaded, it is best to use a seperate vendor id. 
+This also helps identify your custom accelerator at a glance. 
+
+As such, it is not suprising to see an unknown vendor id appear for 
+an FPGA, this with the class as an ethernet networking device give us strong indication this is out board. 
+
+
+### Full PCIe device status
+
+The dmesg logs gave us a good overview of the situation but of additional details we can turn to `lspci`.
+The most verbose output gives us a full overview of the devices capabilities and current configuration. 
+
+
+Broadcom bridge: 
 ```
 0000:00:00.0 PCI bridge: Broadcom Inc. and subsidiaries BCM2712 PCIe Bridge (rev 21) (prog-if 00 [Normal decode])
         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
@@ -309,7 +365,9 @@ plugging our FPGA with this Raspberry Pi should work.
                 LnkCtl3: LnkEquIntrruptEn- PerformEqu-
                 LaneErrStat: 0
         Kernel driver in use: pcieport
-
+```
+FPGA board: 
+```
 0000:01:00.0 Ethernet controller: Device dabc:1017
         Subsystem: Red Hat, Inc. Device a001
         Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
@@ -359,18 +417,52 @@ plugging our FPGA with this Raspberry Pi should work.
                 LnkCtl3: LnkEquIntrruptEn- PerformEqu-
                 LaneErrStat: 0
 ```
+
+The `lspci` logs give us a lot of usefull information on the current status of PCIe devices, 
+but I would like to call your focuse on the following particularly intreting lines reported 
+for our FPGA : 
+```
+                LnkCap: Port #0, Speed 8GT/s, Width x8, ASPM not supported
+                        ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp+
+                LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk-
+                        ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+                LnkSta: Speed 5GT/s (downgraded), Width x1 (downgraded)0x060400
+```
+The `LnkCap` tell us about the full capabilities of this PCIe device, here we can see that 
+the current design is a PCIe Gen 3.0 x8. 
+That said the `LnkSta` tells us our speed has been downgraded to that of PCIe Gen 2.0 at 5GT/s and 
+that our width is only of x1. 
+
+When a new PCIe device is plugged in or during startup, PCIe performs a link speed and width negociation 
+where it tries to reach the highest supported stable configuration for the current system. 
+In our current system, although our FPGA is capable of 8GT/s, since it is located downstream of the 
+Broadcom bridge with a maximum link capacity of Gen 2.0, the FPGA has been downgradded to 5GT/s.
+
+As for the width of x1, that is expected since the Broadcome bridge is also only x1 wide, and the other 
+7 PCIe lanes are litterally hangging over the air. 
+
+{{< figure
+    src="pcie_air.jpg"
+    alt="7 PCIe lanes left unconnected and hangging over the air"
+    caption="7 PCIe lanes left unconnected and hangging over the air"
+>}}
+
+Thanks to this we can confirm that our board seems to be working, and we can now move to figuring 
+out how to get the JTAG connection. 
+
 # JTAG interface 
 
 Xilinx FPGAs can be configured by writing a bitstream to there internal CMOS Configuration Latches (CCL). 
 This memory is volatile, so this configuration must be re-done on every power cycle. 
 For in the field devices this bitstream would typically be read from an external SPI memory during initialisation, 
-but for development purposes overwriting the contents of the CCLs over JTAG is acceptable.
+or writting from an external device, like an embedded controller, but for development purposes overwriting the contents of the CCLs over JTAG is acceptable.
  
 This configuration is done by shifting in the entire FPGA configuration bitstream into the JTAG bus. 
 
 ## FPGA board JTAG interface 
 
-As promissed by the original ebay listing the board did come with an accessible JTAG interface.
+As promissed by the original ebay listing the board did come with an accessible JTAG interface, and there
+wasn't even the need for any additional soldering.
 
 {{< figure
     src="pcb_jtag.jpg"
@@ -386,7 +478,9 @@ which are :
 - **TDI** Test Data Input 
 - **TDO** Test Data Output 
 
-That said, since there is not independant reset signal, so we will need to use the JTAG reset state. 
+The JTAG interface can also come with an independant reset signal. 
+That said, since Xilinx JTAG interface do not have this independant reset signal, we will need to use the JTAG FSM reset state
+as our reset signal. 
 
 
 {{< figure 
@@ -408,8 +502,8 @@ So, traditionally speaking, the Segger JLink is suited to debugging embedded CPU
 Zynq rather than configuring an FPGA. That being said, all we need to do is use JTAG to shift in a bitstream to the CLLs and 
 technically speaking and programmable device with 4 sufficently fast GPIOs can be used as a JTAG programmer.  
 
-Additionally, the Jlink is well supported by OpenOCD and I happened to own one. 
-I could also have used an USB Blaster, which since this is considered to be a quartus tool would have been hillarious. 
+Additionally, the Jlink is well supported by OpenOCD, the JLink's libraries are open source, and I happened to own one. 
+( I could also have used an USB Blaster, which since this is considered to be a quartus tool would have been hillarious. )
 
 {{< figure 
     src="segger_jlink_conn.svg"
@@ -428,13 +522,31 @@ it required some small rewiring.
     caption="wiring driagram to connect jlink jtag probe to fpga board"
 >}}
 
+JTAG is a parallel protocol where `TDI` and `TMS` will be captured on the `TMS` rising edge. 
+Because of this, good JTAG PCB trace length maching is advised in order to minimize skew. 
+
+Ideally a custom connector with length matched traces to work as an interface between the JLink's 
+probe and a board specific connector would be used. This could be a 20 minute Kicad project
+and be back in under a week using OSHPARK of JLCPCB. 
+
+{{< figure
+    src="con.jpg"
+    alt="Far from length matched JTAG connections" 
+    caption="Far from length matched JTAG connections" 
+>}}
+
+And yet, here we are shoving breadboard wires between our debugger and the board.
+On the flip side, we can increase the skew tolerance by slowing down the `TCK` clock signal and
+it just so happens that openOCD allows us to easily control the debugger clock speed. As such 
+there is no **need** for a custom connector and can work around this. 
+
 ## OpenOCD
 
 OpenOCD is an free and open source on-chip debugger software that aims to be compatible with as many 
 probes, boards and chips as possible.
 
-Since OpenOCD has support for the Xilinx version of SVF (XSVF), my plan for my flashing flow will be to use the
-Vivado generate the XSVF and have OpenOCD flash it. 
+Since OpenOCD has support for the standard SVF file format, my plan for my flashing flow will be to use the
+Vivado generate the SVF and have OpenOCD flash it. 
 
 Now, some of you might be starting to notice that I diverging quite far from the well lite path of officially 
 supported tools. Not only am I using an not officially supported debug probe, but I am also using some 
@@ -575,6 +687,13 @@ The newer UltraScale and UltraScale+ family have depreciated this ADC module in 
 of the SYSMON ( and SYSMON4 ) which, allow you to also get these temperature readings 
 but better. 
 
+Unfortunaly openOCD didn't have support for reading the sysmon out of the box. 
+
+### Sysmon IR
+
+ 
+
+ 
 
 # Pinout 
 
@@ -745,3 +864,4 @@ We can not confirm the following items :
 [3] Alinx Kintex UltraScale+ dev boards : https://www.en.alinx.com/Product/FPGA-Development-Boards/Kintex-UltraScale-plus.html
 
 UltraScale Architecture Configuration User Guide (UG570) : https://docs.amd.com/r/en-US/ug570-ultrascale-configuration/Device-Resources-and-Configuration-Bitstream-Lengths?section=gyn1703168518425__table_vyh_4hs_szb
+
