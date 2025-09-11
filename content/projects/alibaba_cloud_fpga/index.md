@@ -742,8 +742,9 @@ To my indescribable joy I happeneed to stumble onto this gold mine, in
 which we get the board pinout, this probably fell off a truck  : https://blog.csdn.net/qq_37650251/article/details/145716953
  ( If you cannot access the full article, just inspect the html source )
 
-This gives us the following pinout, so far this pinout makes sense and I havn't spotted any 
-issues with it : 
+This gives us this following pinout. 
+So far this pinout looks correct and I havn't spotted any glarring
+issues with it. 
 
 | Pin Index | Name | IO Standard | Location | Bank |
 |-----------|------|-------------|----------|------|
@@ -896,7 +897,57 @@ We can not confirm the following items :
  `MGTREFCLK0N_227`. 
 - we cannot directly use the 156.25MHz clock to drive our global clock network
 
+
+With all this we have  sufficent information to write a constraint file ( `xdc` ) for this board
+the next challenge is getting the bitsteam onto the FPGA. 
+
 # Writing the bitstream
+
+## Worflow
+
+My personal belief is that one of the most important contributors to design quality is iteration cost. 
+The lower your itteration cost, the higher your design quality is going to be given the 
+same amount of people and time. 
+
+As such I will invest the small upfront cost to have the workflow be as streamlined as efficiently 
+feasable.
+ 
+Additionally, I also have the luxery of owning a very powerfull workstation that serves as my 
+build server onto which I offload all of the heavier compute tasks, this includes
+runnung all differnt flavors of implementation flows ( asic and fpga ) and heavier regression testing. 
+
+In order to accomodate this configuration, my workflow was eveloved into doing practically everything over the command line interaces 
+and only interacting with the tools, vivado in this case, though `tcl` scripts. 
+
+As such, the following paragraphs will present describe how to go from the verilog and the constraint 
+file to an `svf` file using only the vivado tcl interface. 
+
+file to the `svf` 
+{{< alert icon="circle-info" >}}
+
+> "practically everything over the command line interaces"\
+As some readers might have already guessed, visulatising the implementation placement results is the execption. 
+
+{{< /alert >}}
+
+## Generating the SVF file 
+
+// some explaination of what the svf file is 
+
+// some explaination as to why we needed to know the scan chain 
+
+// why we need the bitstream 
+
+// what the output looks like 
+
+// tcl script presentation 
+
+// why this is now vivado independant 
+
+
+the next step is now to make an automatized workflow to 
+translate a simple design onto something flashed onto the FPGA. 
+
 
 
 ```
