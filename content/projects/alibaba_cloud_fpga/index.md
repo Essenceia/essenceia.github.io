@@ -686,31 +686,43 @@ Thus based on the probing, this is the JTAG scan chain I will be working with :
 
 ## Systerm Monitor Registers
 
+Previous generations of Xilinx FPGA had a system called the XADC that, among other things, 
+allowed you to acquire chip temperature and voltage readings. The newer UltraScale and UltraScale+ 
+family have deprecated this XADC module in favor of the SYSMON (and SYSMON4) which allows you to also 
+get these temperature readings but better.
 
-Previous generations of Xilinx FPGA had a system called the ADC that, amoung other things allowed 
-you to aquire chip temperature and voltage readings. 
-The newer UltraScale and UltraScale+ family have depreciated this ADC module in favor 
-of the SYSMON ( and SYSMON4 ) which, allow you to also get these temperature readings 
-but better. 
+Unfortunately, openOCD didn't have support for reading the SYSMON over JTAG out of the box, so I will be adding it.
 
-Unfortunaly openOCD didn't have support for reading the sysmon out of the box, so I will be adding it.  
+{{< alert icon="circle-info" >}}
 
-In order for the JTAG to interact with the SYSMON we first need to write the 
-`SYSMON_DRP` command to the JTAG instruction register. Looking at the 
-documentation we see that this command has a value of `0x37`. Funnily enoght this has the 
-same command code as the ADC, solidifying the SYSMON as the ADC's decendant. 
+To be more precise, the Kintex UltraScale+ has a SYSMON4 and not a SYSMON. 
+For full context, there are 3 flavors of SYSMON:
 
-The SYSMON offers a lot more additional functionalities than just being used to 
-read voltage and temperature, but for today's use case we will not be using any of that. 
-Rather we will focus only on reading a subset of the SYSMON status registers.
+- `SYSMON1` used in the Kintex and Virtex UltraScale series
+- `SYSMON4` used in the Kintex, Virtex and in the Zynq programmable logic for the UltraScale+ series 
+- `SYSMON` used in the Zynq in the processing system of the UltraScale+ series. \
+Yes, you read that correctly the Zynq of the UltraScale+ series feature not one, but at least two unique sysmon instances. 
 
-These status registers are located at addresses (00h-3Fh, 80h-BFh) and contain the measurement results of the
-analog-to-digital conversions, the flag registers, and the calibration coefficients. 
-We can select which address we wish to read by writing the address to the data register over JTAG and the 
-data will be read out to `TDO`. 
+Ultimately, for the purpose of this article, all these instances are similar enough that I will be using the terms SYSMON4 and SYSMON interchangeably.
 
-I then added this sequence to read the current chip temperature, internal and external voltages as well as the 
-maxiumum values for these recorded since FPGA power cycle, to my flashing script output : 
+{{< /alert >}} 
+
+In order for the JTAG to interact with the SYSMON, we first need to write the `SYSMON_DRP` command to the 
+JTAG Instruction Register (IR). 
+Looking at the documentation, we see that this command has a value of `0x37`. Funnily enough, 
+this has the same command code as the XADC, solidifying the SYSMON as the XADC's descendant.
+
+The SYSMON offers a lot more additional functionalities than just being used to read voltage and temperature, 
+but for today's use case we will not be using any of that. Rather, we will focus only on reading a 
+subset of the SYSMON status registers.
+
+These status registers are located at addresses `(00h-3Fh, 80h-BFh)`, 
+and contain the measurement results of the analog-to-digital conversions, the flag registers,
+ and the calibration coefficients. We can select which address we wish to read by writing the 
+address to the Data Register (DR) over JTAG and the data will be read out of `TDO`.
+
+I then added this sequence to read the current chip temperature, internal and external 
+voltages as well as the maximum values for these recorded since FPGA power cycle, to my flashing script output:
 ```
 gp@workhorse:~/tools/openocd_jlink_test$ openocd
 Open On-Chip Debugger 0.12.0+dev-02170-gfcff4b712 (2025-09-04-20:02)
@@ -905,30 +917,20 @@ the next challenge is getting the bitsteam onto the FPGA.
 
 ## Worflow
 
+
 My personal belief is that one of the most important contributors to design quality is iteration cost. 
-The lower your itteration cost, the higher your design quality is going to be given the 
-same amount of people and time. 
+The lower your iteration cost, the higher your design quality is going to be given the same amount of people and time.
 
-As such I will invest the small upfront cost to have the workflow be as streamlined as efficiently 
-feasable.
- 
-Additionally, I also have the luxery of owning a very powerfull workstation that serves as my 
-build server onto which I offload all of the heavier compute tasks, this includes
-runnung all differnt flavors of implementation flows ( asic and fpga ) and heavier regression testing. 
+As such I will invest the small upfront cost to have the workflow be as streamlined as efficiently feasible.
 
-In order to accomodate this configuration, my workflow was eveloved into doing practically everything over the command line interaces 
-and only interacting with the tools, vivado in this case, though `tcl` scripts. 
+Additionally, I own a dedicated build server onto which I can offload the heavier compute tasks. 
+This including running all different flavors of implementation flows (ASIC and FPGA) and regression testing.
 
-As such, the following paragraphs will present describe how to go from the verilog and the constraint 
-file to an `svf` file using only the vivado tcl interface. 
+In order to accommodate these contraints, my workflow evolved into doing practically everything over 
+the command line interfaces and only interacting with the tools, Vivado in this case, through tcl scripts.
 
-file to the `svf` 
-{{< alert icon="circle-info" >}}
-
-> "practically everything over the command line interaces"\
-As some readers might have already guessed, visulatising the implementation placement results is the execption. 
-
-{{< /alert >}}
+As such, the following paragraphs will describe how to go from the Verilog and the constraint file to an SVF
+ file using only the Vivado TCL interface.
 
 ## Vivado flow 
 
