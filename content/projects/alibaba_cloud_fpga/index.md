@@ -26,7 +26,7 @@ my choice was effectively narrowed to the FPGA chips available under the WebPack
 
 
 Unsurprisingly Xilinx are well aware of how top of the range the Virtex series are, 
-as such they doesn't offer any Virtex chips with the webpack license. 
+and doesn't offer any Virtex UltraScale+ chips with the webpack license. 
 That said, they do offer support for two very respectable Kintex UltraScale+ FPGA models, the `XCKU3P` and the `XCKU5P`. [1]
 
 {{< figure
@@ -676,7 +676,7 @@ Info : JTAG tap: auto_detect.tap tap/device found: 0x04a63093 (mfg: 0x049 (Xilin
 Warn : gdb services need one or more targets defined
 ```
 
-Thus based on the probing, this is the JTAG scan chain I will be working with : 
+Thus based on the probing, this is the JTAG scan chain for our board : 
 
 {{< figure 
     src="scan_chain.svg"
@@ -746,17 +746,18 @@ MAXVCC 0.855 V
 VCCAUX 1.805 V
 MAXVCCAUX 1.807 V
 ```
-These reading seem coherent and the external voltage closely resembles the voltage the debug probe is recording. 
+These readings seem coherent and the external voltage closely resembles the voltage the debug probe is recording.
 
 # Pinout 
 
-To my indescribable joy I happeneed to stumble onto this gold mine, in 
-which we get the board pinout, this probably fell off a truck  : https://blog.csdn.net/qq_37650251/article/details/145716953
- ( If you cannot access the full article, just inspect the html source )
 
-This gives us this following pinout. 
-So far this pinout looks correct and I havn't spotted any glarring
-issues with it. 
+To my indescribable joy I happened to stumble onto this gold mine, in which we get the board pinout.
+This most likely fell off a truck: https://blog.csdn.net/qq_37650251/article/details/145716953 
+(If you cannot access the full article, inspect the html source)
+
+This gives us the following pinout. 
+So far this pinout looks correct and I haven't spotted any glaring issues with it.
+
 
 | Pin Index | Name | IO Standard | Location | Bank |
 |-----------|------|-------------|----------|------|
@@ -833,22 +834,23 @@ issues with it.
 
 ## Global clock 
 
-The on an UltraScale the global clock is typically expected to be driven from an 
-external high speed source provided over a differential pair. 
+On an UltraScale+, high-speed global clocks are typically driven from external sources, 
+often using differential pairs for better signal integrity.
 
-According to this pinnout we have two such differential pairs.  
 
-My first order of buisness is determining which of these two I can use to 
-easily drive my global clocks. 
+According to the pinout we have two such differential pairs.
 
-These differential pains are provided over the following pins : 
+My first order of business is determining which of these two I can use to easily drive my global clocks.
+
+These differential pairs are provided over the following pins:
 - 100MHz : {E18, D18} 
 - 156.25MHz : {K7, K6} 
 
 
-Judging by the naming and the frequencies the 156.25MHz clock is likely my SPF reference clock, 
-and the 100MHz can be used as my global clock.
-We can confirm by querring the pin properties. 
+Judging by the naming and the frequencies, the 156.25MHz clock is likely my SFP reference clock, 
+and the 100MHz can be used as my global clock. 
+
+We can confirm by querying the pin properties.
 
 **K6** properties : 
 ```
@@ -901,17 +903,13 @@ PIN_FUNC_COUNT          int     true       2
 PKGPIN_BYTEGROUP_INDEX  int     true       8
 PKGPIN_NIBBLE_INDEX     int     true       2
 ```
+We can now confirm the following items:
+* The differential pairings are correct: {K6, K7}, {E18, D18}
+* We can easily use the 100MHz as a source to drive our global clocking network
+* The 156.25MHz clock is to be used as the reference clock for our GTY transceivers and lands on bank 227 as indicated by the `PIN_FUNC` property `MGTREFCLK0N_227`
+* We cannot directly use the 156.25MHz clock to drive our global clock network
 
-We can not confirm the following items : 
-- the differential pairings are correct : {K6, K7}, {E18, D18}
-- we can easily use the 100MHz as a source to drive our global clocking network 
-- the 156.25MHz clock is to be used as the reference clock for our GTY transivers and lands on bank 227 as indicated by the `PIN_FUNC` property
- `MGTREFCLK0N_227`. 
-- we cannot directly use the 156.25MHz clock to drive our global clock network
-
-
-With all this we have  sufficent information to write a constraint file ( `xdc` ) for this board
-the next challenge is getting the bitsteam onto the FPGA. 
+With all this we have sufficient information to write a constraint file (`xdc`) for this board. The next challenge is getting the bitstream onto the FPGA.
 
 # Writing the bitstream
 
@@ -923,7 +921,7 @@ The lower your iteration cost, the higher your design quality is going to be giv
 
 As such I will invest the small upfront cost to have the workflow be as streamlined as efficiently feasible.
 
-Additionally, I own a dedicated build server onto which I can offload the heavier compute tasks. 
+Additionally, I have access to a build server onto which I can offload the heavier compute tasks. 
 This including running all different flavors of implementation flows (ASIC and FPGA) and regression testing.
 
 In order to accommodate these contraints, my workflow evolved into doing practically everything over 
