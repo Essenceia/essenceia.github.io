@@ -103,7 +103,8 @@ degree of control over what the JTAG adapter is going. Additionally, it has supp
 standard SVF(Serial Vector Format) format used to describe a sequence of JTAG operations and I know that 
 Vivado can generate a SVF file.
 As such, although there isn't really and documentation of configuring an xilinx FPGA past the 7 series, 
-and most of the most recent developpement are focused more on it's ability to debug embeeded Zync arm cores, I figured it should be doable.
+and most of the most recent developpement are focused more on it's ability to debug embeeded Zync arm cores, 
+I figured it should be doable.
 
 Wish me luck.   
  
@@ -498,13 +499,15 @@ As such, it will require some re-wiring.
 
 I do not own an AMD approved JTAG programmer. 
 
-So, traditionally speaking, the Segger JLink is suited to debugging embedded CPU's let them be standalone or in a 
+So, traditionally speaking, the Segger JLink is used to debugging embedded CPU's let them be standalone or in a 
 Zynq rather than configuring an FPGA. That being said, all we need to do is use JTAG to shift in a bitstream to the CLLs and 
 technically speaking and programmable device with 4 sufficently fast GPIOs can be used as a JTAG programmer.  
 
-Additionally, the Jlink is well supported by OpenOCD, the JLink's libraries are open source, and I happened to own one. 
-( I could also have used an USB Blaster, which since this is considered to be a quartus tool would have been hillarious. )
+Additionally, the Jlink is well supported by OpenOCD, the JLink's libraries are open source, and I happened to own one.
 
+{{< alert icon="circle-info" >}} 
+Note : I could also have used an USB Blaster, which considereing it is litterally an Altera tool would have made it hillarious.
+{{< /alert >}}
 {{< figure 
     src="segger_jlink_conn.svg"
     alt="very nice 20 pin segger jlink pinnout interface documentation"
@@ -913,55 +916,176 @@ With all this we have sufficient information to write a constraint file (`xdc`) 
 
 # Writing the bitstream
 
-## Worflow
-
-
 My personal belief is that one of the most important contributors to design quality is iteration cost. 
 The lower your iteration cost, the higher your design quality is going to be given the same amount of people and time.
 
 As such I will invest the small upfront cost to have the workflow be as streamlined as efficiently feasible.
 
-Additionally, I have access to a build server onto which I can offload the heavier compute tasks. 
-This including running all different flavors of implementation flows (ASIC and FPGA) and regression testing.
-
-In order to accommodate these contraints, my workflow evolved into doing practically everything over 
+Thus, my workflow evolved into doing practically everything over 
 the command line interfaces and only interacting with the tools, Vivado in this case, through tcl scripts.
-
-As such, the following paragraphs will describe how to go from the Verilog and the constraint file to an SVF
- file using only the Vivado TCL interface.
 
 ## Vivado flow 
 
-// creating the project 
 
-// running the implementation 
+The goal of this flow is to, given a few verilog design and constraint files produce a SVF file. 
+We will breaking this down into 3 steps : 
+1. creating the vivado project
+2. running the implementation 
+3. generating the bitstream and the SVF 
 
-// trying it up with a makefile
+Although I recognist this isn't a widespead practice for hardware projects, 
+I will be using a makefile order to corrdinate and manage the dependancies between the different step.
 
-## Generating the SVF file 
+We will be invoking vivado in batch mode, this allows us to provide a tcl script alongside script arguments, the 
+format is as following : 
 
-// some explaination of what the svf file is 
+```bash
+vivado -mode batch <path to tcl script> -tclargs <script args>
+```
 
-// some explaination as to why we needed to know the scan chain 
+Although this allows us to easily break down our flow into incremental stages, proceeding in this manner has the 
+drawback of restarting vivado and needing to re-load the project or the project checkpoint on each invokation. 
 
-// why we need the bitstream 
+As such, as the project size and complexity grows so will the project load time, so segmenting the
+flow into a large number of independant scripts and invoking them in batch mode does come at an increasing cost. 
+But for small scale projects this added flexibility doesn't come at a significiant cost. 
 
-// what the output looks like 
+I will not go though the entire build flow in detail and will directly jump towards genreating the SVF file. 
 
-// tcl script presentation 
+### Generating the SVF file
 
-// why this is now vivado independant 
+The SVF for Serial Vector Format is a human readable, vendor agnositc speficiation used to specify JTAG bus operations.
+ 
+Example SVF file containing a simple test program: 
+```svf 
+! Initialize UUT
+STATE RESET;
+! End IR scans in DRPAUSE
+ENDIR DRPAUSE;
+! End DR scans in DRPAUSE
+ENDDR DRPAUSE;
+! 24 bit IR header
+HIR 24 TDI (FFFFFF);
+! 3 bit DR header
+HDR 3 TDI (7);
+! 16 bit IR trailer
+TIR 16 TDI (FFFF);
+! 2 bit DR trailer
+TDR 2 TDI (3);
+! 8 bit IR scan, load BIST opcode
+SIR 8 TDI (41) TDO (81) MASK (FF);
+! 16 bit DR scan, load BIST seed
+SDR 16 TDI (ABCD);
+! RUNBIST for 95 TCK Clocks
+RUNTEST 95 TCK ENDSTATE IRPAUSE;
+! 16 bit DR scan, check BIST status
+SDR 16 TDI (0000) TDO(1234) MASK(FFFF);
+! Enter Test-Logic-Reset
+STATE RESET;
+! End Test Program
+``` 
 
+Vivado has the possibility of generating a hardware aware SVF file for configuring our FPGA, allowing us to program
+it independantly of any vendor tooling.
+
+Since the SVF file litterally contains the bitstream written in clear hexademical, in the file, our first step is to generate
+our design's bitstream. 
+
+Vivado proper isn't the software that generates the SVF file, rather this task is done by the hardware manager,
+this program handles the all flashing sequences.
+  
+Using the tcl commenad line we can launch a new instance `open_hw_manager` and connect to it `connect_hw_server`. 
+Then, since JTAG is a daisy chainned bus, and given the SVF file is just a standardised way of specifying 
+JTAG bus operations, in order to genreate a correct JTAG configuratoin sequence, we must inform the hardware manger 
+of what our JTAG chain looks like. 
+
+Thanks to our ealier probing of the scan chain, have established that out FPGA is the only device on the chain. 
+To inform the hardware manager we must create a new device configureation ( the term "device" refers to the "board"
+in this case ) and add our fpga to the chain using the `create_hw_device -part <device name>`. If we had multiple
+devices we should register them following the order they appear on the chain. 
+
+Finally to genereate the svf file, we must first select the device we wish to program `program_hw_device <hw_device>`, in our case we will select the
+device we have just created, the we can write out the svf to the file using `write_hw_svf <path to svf file>`.
+
+```tcl
+set checkpoint_path [lindex $argv 0]
+set out_dir [lindex $argv 1]
+puts "SVF generation script called with checkpoint path $checkpoint_path, generating to $out_dir"
+
+open_checkpoint $checkpoint_path
+
+# defines
+set hw_target "alibaba_board_svf_target"
+set fpga_device "xcku3p"
+set bin_path "$out_dir/[current_project]"
+
+write_bitstream "$bin_path.bit" -force
+
+open_hw_manager
+
+# connect to hw server with default config
+connect_hw_server
+puts "connected to hw server at [current_hw_server]"
+
+create_hw_target $hw_target
+puts "current hw target [current_hw_target]"
+
+open_hw_target
+
+# single device on scan chain
+create_hw_device -part $fpga_device
+puts "scan chain : [get_hw_devices]"
+
+set_property PROGRAM.FILE "$bin_path.bit" [get_hw_device]
+
+#select device to program
+program_hw_device [get_hw_device]
+
+# generate svf file
+write_hw_svf -force "$bin_path.svf"
+
+close_hw_manager
+exit 0
+```
 
 ## Configuraing the FPGA using OpenOCD 
 
-// how does svf replay work ? 
+At this point we have both a raw bitstream and the bitstream wrapped with the programming sequence 
+in the SVF file. 
 
+Although not very widespread openOCD has a very nice `svf` replay command :
 
-the next step is now to make an automatized workflow to 
-translate a simple design onto something flashed onto the FPGA. 
+```
+18.1 SVF: Serial Vector Format
 
+The Serial Vector Format, better known as SVF, is a way to represent JTAG test patterns
+in text files. In a debug session using JTAG for its transport protocol, OpenOCD supports
+running such test files.
 
+[Command]svf filename [-tap tapname] [[-]quiet] [[-]nil] [[-]progress]
+[[-]ignore_error]
+
+This issues a JTAG reset (Test-Logic-Reset) and then runs the SVF script from
+filename.
+Arguments can be specified in any order; the optional dash doesn’t affect their se-
+mantics.
+
+Command options:
+− -tap tapname ignore IR and DR headers and footers specified by the SVF file
+with HIR, TIR, HDR and TDR commands; instead, calculate them automatically
+according to the current JTAG chain configuration, targeting tapname;
+− [-]quiet do not log every command before execution;
+− [-]nil “dry run”, i.e., do not perform any operations on the real interface;
+− [-]progress enable progress indication;
+− [-]ignore_error continue execution despite TDO check errors.
+``` 
+
+We invoke it in our openOCD script as : 
+```
+svf $svf_path -progress
+```
+
+Full flashing sequence log : 
 
 ```
 gp@workhorse:~/tools/openocd_jlink_test$ openocd
@@ -1021,6 +1145,23 @@ adapter speed: 10000 kHz
 Info : Listening on port 6666 for tcl connections
 Info : Listening on port 4444 for telnet connections
 ```
+Restulting in a sucessful flashing of our FPGA. 
+
+If we where to take example on the SVF we should be able to replicate the programming sequence with openOCD
+, allowing us to directly read out the bitstream content and remove the need for a SVF file. 
+
+# Conclusion
+
+In the end, our seemingly bad idea turned out to be a rather worth while endevour.  
+
+For 200$ we got a fully working decomissioned Alibaba Cloud accelerator featuring a Kintex UltraScale+ FPGA
+with an easily accessisble debugging/programming interface and enogth pinnout information to define our 
+own constraint files. 
+
+We also have a fully automatized vivado workflow to implement our designs and the ability to write the bitstream, 
+and interface with the FPGA's internal JTAG accessible registers using
+an open source programming tool without the need for an official Xilinx programmer. 
+
 
 # Ressources 
 
