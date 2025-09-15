@@ -546,6 +546,14 @@ On the flip side, we can increase the skew tolerance by slowing down the TCK clo
 it just so happens that OpenOCD allows us to easily control the debugger clock speed. As such
 there is no need for a custom connector and we can work around this.
 
+{{< alert >}}
+If no clock speed is specified OpenOCD sets the clock speed at 100MHz. 
+This is to high for our case. 
+As such, latter in the article, I will be setting the JTAG clock down to 1MHz for probing and 
+programming will be done at 10MHz.
+Both speeds show no issues. 
+{{< /alert >}}
+
 ## OpenOCD
 
 OpenOCD is a free and open source on-chip debugger software that aims to be compatible with as many
@@ -1142,8 +1150,12 @@ Info : Listening on port 4444 for telnet connections
 ```
 Restulting in a sucessful flashing of our FPGA. 
 
-If we where to take example on the SVF we should be able to replicate the programming sequence with openOCD
-, allowing us to directly read out the bitstream content and remove the need for a SVF file. 
+I will spare you the christmas light demonstration video and will come back to edit this 
+article if I spot any issues with the pinnout for the PCIe and SFP+ in the future. 
+
+If we where to take example on the Vivado generated programming sequence in the SVF file, 
+we should be able to replicate the programming sequence with openOCD
+, allowing us to directly read out the bitstream content and remove the need for a SVF file altogether. 
 
 # Conclusion
 
