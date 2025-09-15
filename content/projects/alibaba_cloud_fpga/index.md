@@ -1152,7 +1152,6 @@ If we where to take example on the SVF we should be able to replicate the progra
 
 # Conclusion
 
-In the end, our seemingly bad idea turned out to be a rather worth while endevour.  
 
 For 200$ we got a fully working decomissioned Alibaba Cloud accelerator featuring a Kintex UltraScale+ FPGA
 with an easily accessisble debugging/programming interface and enogth pinnout information to define our 
@@ -1161,6 +1160,9 @@ own constraint files.
 We also have a fully automatized vivado workflow to implement our designs and the ability to write the bitstream, 
 and interface with the FPGA's internal JTAG accessible registers using
 an open source programming tool without the need for an official Xilinx programmer. 
+
+In the end, our seemingly bad idea turned out to be a rather worth while endevour
+making this perhapse the most cost effective entrypoints for a  Kintex UltraScale+ board. 
 
 
 # Ressources 
