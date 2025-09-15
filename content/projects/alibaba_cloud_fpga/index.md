@@ -142,7 +142,7 @@ SYSMON, which for example allows us to get real time temperature and voltage rea
 Although openOCD doesn't have sysmon support out of the box it would be worth while to build it to : 
 1. Familize myself with openOCD scripting, usefull for building my ILA replacement down the line and when debugging
 2. Having an easy side channel to monitor FPGA operating parameters 
-3. openOCD did have support for interfacing with the sysmon's ancestor, the ADC on the series 7, so it would be a nice contribution to add 
+3. openOCD did have support for interfacing with the sysmon's ancestor, the XADC on the series 7, so it would be a nice contribution to add 
 
 ## 3 - Figuring out the pinnout 
 
@@ -168,7 +168,7 @@ Simple enogth, right ?
 
 # Livness test
 
-After a few days latter my prize arrived via extress mail. 
+A few days latter my prize arrived via extress mail. 
 
 {{< figure
     src="fpga.jpg"
@@ -176,9 +176,9 @@ After a few days latter my prize arrived via extress mail.
     caption="My prized Kintex UltraScale\+ FPGA board also know as the decomissioned alibaba cloud accelerator. Jammed transiver now safely removed."
 >}}
 
-Unexpectadly it even came with a free 25G SFP28 Huawei transiver rated for a 300m distance and a single 1m long OS2 fiber patch cable. 
-This might have not been intentional as the transiver was jammed in the SFP cage, but 
-it was still very generous of them to include the fiber patch cable, and who doesn't like free stuff ?     
+Unexpectedly it even came with a free 25G SFP28 Huawei transceiver rated for a 300m distance and a single 1m long OS2 fiber patch cable. 
+This might not have been intentional as the transceiver was jammed in the SFP cage, but it was still very generous of them to include the fiber patch cable.
+After all who doesn't like free stuff?
 
 {{< figure
     src="free_stuff.jpg"
@@ -186,33 +186,31 @@ it was still very generous of them to include the fiber patch cable, and who doe
     caption="Free additional SFP28-25G-1310nm-300m-SM Huawei transiver, and 1m long OS2 patch cable" 
 >}}
 
-The board also came with travel case and half of a PCIe to USB adapter and a 12V power supply that one could use to power the board 
-as a standalone device. Although this standalone configuration will not be of any use to me, for thoughs looking to develop
-just networking interface without any PCIe interface, this could come in handy.  
- 
-Overall the board looked a little worn, but both the transiver cages and PCIe connectors didn't look 
-to be damaged. 
+The board also came with a travel case and half of a PCIe to USB adapter and a 12V power supply that one could use to power the board as a standalone device. Although this standalone configuration will not be of any use to me, for those looking to develop just networking interfaces without any PCIe interface, this could come in handy.
+
+Overall the board looked a little worn, but both the transceiver cages and PCIe connectors didn't look to be damaged.
 
 ## Standalone configuration 
 
-Before real testing could start I first did a small power up test using the PCIe to USB adapter that
-the seller provided. This allow us to power up the board and using the LEDs on the board and the 
-heat produced by the FPGA I was able to do a quick check that the board seemed to be powering up 
-at a surface level. 
+Before real testing could start I first did a small power-up test using the PCIe to USB adapter that the seller provided. 
+
+This allowed me to power up the board and using the LEDs on the board and the heat produced by the FPGA 
+I was able to do a quick check that the board seemed to be powering up at a surface level (pun intended).
 
 ## PCIe interface
 
 {{< alert >}}
-As a reminder, this next test relied on the flash not having been wipped and someone else design still 
-being loaded. 
+As a reminder, this next test relied on the flash not having been wiped and someone else's design still
+being loaded.
 {{< /alert >}}
 
-Since I didn't want to directly plug this into my prized build server, I decided to use a rasperry pi 5 as
-my test device and got myself an extern PCIe adapter. 
+Since I didn't want to directly plug this into my prized build server, I decided to use a Raspberry Pi 5 as
+my test device and got myself an external PCIe adapter.
 
-The Raspberry Pi 5 has a external PCIe Gen 2.0 x1 interface, though our FPGA can have up to a PCIe Gen 3.0 x8 
-interface, since PCIe is backwards compatible and the number of lanes on the interface can be downgraded 
-plugging our FPGA with this Raspberry Pi should work. 
+It just so happened that the latest Raspberry Pi 5 now features an external PCIe Gen 2.0 x1 interface.
+Though our FPGA can handle up to a PCIe Gen 3.0 and the board had a x8 wide interface,
+since PCIe standard is backwards compatible and the number of lanes on the interface can be downgraded,
+plugging our FPGA with this Raspberry Pi should work.
 
 {{< figure 
     src="pi.jpg"
@@ -220,9 +218,9 @@ plugging our FPGA with this Raspberry Pi should work.
     caption="FPGA board connected to the Raspberry Pi 5 via the PCIe to PCIe x1 adapter"
 >}}
 
-After both the Raspberry and the FPGA where booted, I sshed into my rpi and 
-started looking for the PCIe enumeration sequence logged from the linux 
-PCIe core subsystem. 
+After both the Raspberry and the FPGA were booted, I SSHed into my rpi and
+started looking for the PCIe enumeration sequence logged from the Linux
+PCIe core subsystem.
  
 `dmesg` log : 
 
@@ -264,26 +262,25 @@ Of our dmesg content the follow two lines are the most relevant :
 [    0.495759] pci 0000:01:00.0: [dabc:1017] type 00 class 0x020000
 ```
 
-Firstly the PCIe subsystem is logging at `0000:00:00.0` it has discovered a Broadcome ( vendor id `14e4` ) BCM2712 PCIe Bridge ( device id `0x2712` ). 
-As the name suggests and the type of `01` confirms this is a bridge, the class of `0x0604xx` tells us exactly what it bridges too. 
-There it is a PCI-to-PCI bridge, meaning that more devices can be connected downstream of it, as such, the search continues. 
+Firstly the PCIe subsystem is logging at `0000:00:00.0` it has discovered a Broadcom ( vendor id `14e4` ) BCM2712 PCIe Bridge ( device id `0x2712` ). 
+As the name suggests and the type of `01` confirms this is a bridge, the class of `0x0604xx` tells us exactly what it bridges to. 
+Here it is a PCI-to-PCI bridge, meaning that more devices can be connected downstream of it, as such, the search continues. 
 
-The subsystem then discoveres a second device at `0000:01:00.0`, this is an endpoint device as indicated by it's type of `00`
-and it's class of `0x02000` tells us this is ethernet networking equipement. 
+The subsystem then discovers a second device at `0000:01:00.0`, this is an endpoint device as indicated by its type of `00`
+and its class of `0x02000` tells us this is ethernet networking equipment. 
 Our next hint is the `dabc` doesn't correspond to a known vendor id. When designing a PCIe interface in hardware these 
-are parameters we can be set. Additoinally, amoung the different ways linux uses to identify which driver to load for a PCIe device 
-the vendor id and device id can be used. Supposing we are implemnting custom logic, in order to prevent any bug where the wrong driver 
-could be loaded, it is best to use a seperate vendor id. 
+are parameters we can set. Additionally, among the different ways Linux uses to identify which driver to load for a PCIe device 
+the vendor id and device id can be used. Supposing we are implementing custom logic, in order to prevent any bug where the wrong driver 
+could be loaded, it is best to use a separate vendor id. 
 This also helps identify your custom accelerator at a glance. 
 
-As such, it is not suprising to see an unknown vendor id appear for 
-an FPGA, this with the class as an ethernet networking device give us strong indication this is out board. 
-
+As such, it is not surprising to see an unknown vendor id appear for 
+an FPGA, this with the class as an ethernet networking device give us strong indication this is our board.
 
 ### Full PCIe device status
 
-The dmesg logs gave us a good overview of the situation but of additional details we can turn to `lspci`.
-The most verbose output gives us a full overview of the devices capabilities and current configuration. 
+The dmesg logs gave us a good overview of the situation but for additional details we can turn to `lspci`.
+The most verbose output gives us a full overview of the devices capabilities and current configuration.
 
 
 Broadcom bridge: 
@@ -419,8 +416,8 @@ FPGA board:
                 LaneErrStat: 0
 ```
 
-The `lspci` logs give us a lot of usefull information on the current status of PCIe devices, 
-but I would like to call your focuse on the following particularly intreting lines reported 
+The `lspci` logs give us a lot of useful information on the current status of PCIe devices, 
+but I would like to call your focus on the following particularly interesting lines reported 
 for our FPGA : 
 ```
                 LnkCap: Port #0, Speed 8GT/s, Width x8, ASPM not supported
@@ -429,18 +426,18 @@ for our FPGA :
                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
                 LnkSta: Speed 5GT/s (downgraded), Width x1 (downgraded)0x060400
 ```
-The `LnkCap` tell us about the full capabilities of this PCIe device, here we can see that 
+The `LnkCap` tells us about the full capabilities of this PCIe device, here we can see that 
 the current design is a PCIe Gen 3.0 x8. 
 That said the `LnkSta` tells us our speed has been downgraded to that of PCIe Gen 2.0 at 5GT/s and 
-that our width is only of x1. 
+that our width is only x1. 
 
-When a new PCIe device is plugged in or during startup, PCIe performs a link speed and width negociation 
+When a new PCIe device is plugged in or during startup, PCIe performs a link speed and width negotiation 
 where it tries to reach the highest supported stable configuration for the current system. 
 In our current system, although our FPGA is capable of 8GT/s, since it is located downstream of the 
-Broadcom bridge with a maximum link capacity of Gen 2.0, the FPGA has been downgradded to 5GT/s.
+Broadcom bridge with a maximum link capacity of Gen 2.0, the FPGA has been downgraded to 5GT/s.
 
-As for the width of x1, that is expected since the Broadcome bridge is also only x1 wide, and the other 
-7 PCIe lanes are litterally hangging over the air. 
+As for the width of x1, that is expected since the Broadcom bridge is also only x1 wide, and the other 
+7 PCIe lanes are literally hanging over the side. 
 
 {{< figure
     src="pcie_air.jpg"
@@ -453,16 +450,16 @@ out how to get the JTAG connection.
 
 # JTAG interface 
 
-Xilinx FPGAs can be configured by writing a bitstream to there internal CMOS Configuration Latches (CCL). 
-This memory is volatile, so this configuration must be re-done on every power cycle. 
-For in the field devices this bitstream would typically be read from an external SPI memory during initialisation, 
-or writting from an external device, like an embedded controller, but for development purposes overwriting the contents of the CCLs over JTAG is acceptable.
- 
-This configuration is done by shifting in the entire FPGA configuration bitstream into the JTAG bus. 
+Xilinx FPGAs can be configured by writing a bitstream to their internal CMOS Configuration Latches (CCL).
+This memory is volatile, so this configuration must be re-done on every power cycle.
+For in the field devices this bitstream would typically be read from an external SPI memory during initialization,
+or written from an external device, like an embedded controller, but for development purposes overwriting the contents of the CCLs over JTAG is acceptable.
+
+This configuration is done by shifting in the entire FPGA configuration bitstream into the JTAG bus.
 
 ## FPGA board JTAG interface 
 
-As promissed by the original ebay listing the board did come with an accessible JTAG interface, and there
+As promised by the original eBay listing the board did come with an accessible JTAG interface, and there
 wasn't even the need for any additional soldering.
 
 {{< figure
@@ -479,10 +476,9 @@ which are :
 - **TDI** Test Data Input 
 - **TDO** Test Data Output 
 
-The JTAG interface can also come with an independant reset signal. 
-That said, since Xilinx JTAG interface do not have this independant reset signal, we will need to use the JTAG FSM reset state
-as our reset signal. 
-
+The JTAG interface can also come with an independent reset signal. 
+That said, since Xilinx JTAG interfaces do not have this independent reset signal, we will need to use the JTAG FSM reset state
+as our reset signal.
 
 {{< figure 
     src="board_jtag_intf.svg"
@@ -490,23 +486,24 @@ as our reset signal.
     caption="6 pin board jtag interface"
 >}}
 
-Anoter issue with this layout is that, likely in the intrest on saving on space and 
-manifacturing cost given this accelerator was not desinged as a dev board, this JTAG interface 
-doesn't follow an easily compatible layout on which I can just plug on one of my debug probes. 
-As such, it will require some re-wiring. 
+Another issue with this layout is that, likely in the interest of saving on space and
+manufacturing cost given this accelerator was not designed as a dev board, this JTAG interface
+doesn't follow an easily compatible layout on which I can just plug in one of my debug probes.
+As such, it will require some re-wiring.
 
 ## Segger JLINK :heart: 
 
 I do not own an AMD approved JTAG programmer. 
 
-So, traditionally speaking, the Segger JLink is used to debugging embedded CPU's let them be standalone or in a 
-Zynq rather than configuring an FPGA. That being said, all we need to do is use JTAG to shift in a bitstream to the CLLs and 
-technically speaking and programmable device with 4 sufficently fast GPIOs can be used as a JTAG programmer.  
+Traditionally speaking, the Segger JLink is used for debugging embedded CPUs let them be standalone or in a
+Zynq, rather than for configuring FPGAs.
 
-Additionally, the Jlink is well supported by OpenOCD, the JLink's libraries are open source, and I happened to own one.
+That being said, all we need to do is use JTAG to shift in a bitstream to the CCLs and
+technically speaking any programmable device with 4 sufficiently fast GPIOs can be used as a JTAG programmer.
+Additionally, the JLink is well supported by OpenOCD, the JLink's libraries are open source, and I happened to own one.
 
 {{< alert icon="circle-info" >}} 
-Note : I could also have used an USB Blaster, which considereing it is litterally an Altera tool would have made it hillarious.
+Note : I could also have used a USB Blaster, which considering it is literally an Altera tool would have made it hilarious.
 {{< /alert >}}
 {{< figure 
     src="segger_jlink_conn.svg"
@@ -516,8 +513,8 @@ Note : I could also have used an USB Blaster, which considereing it is litterall
 
 ### Wiring
 
-Given my PCBs JTAG interface wasn't out of the box compatible with my JLinks probe 
-it required some small rewiring. 
+Given my PCB's JTAG interface wasn't out of the box compatible with my JLink's probe
+it required some small rewiring.
 
 {{< figure
     src="jtag_wiring.svg"
@@ -525,8 +522,8 @@ it required some small rewiring.
     caption="wiring driagram to connect jlink jtag probe to fpga board"
 >}}
 
-JTAG is a parallel protocol where `TDI` and `TMS` will be captured on the `TMS` rising edge. 
-Because of this, good JTAG PCB trace length maching is advised in order to minimize skew. 
+JTAG is a parallel protocol where `TDI` and `TMS` will be captured on the `TCK` rising edge. 
+Because of this, good JTAG PCB trace length matching is advised in order to minimize skew. 
 
 {{< figure
     src="jtag_timing.png"
@@ -534,9 +531,9 @@ Because of this, good JTAG PCB trace length maching is advised in order to minim
     caption="Timing Waveform for JTAG Signals (From Target Device Perspective); source : https://www.intel.com/content/www/us/en/docs/programmable/683719/current/jtag-timing-constraints-and-waveforms.html"
 >}} 
 
-Ideally a custom connector with length matched traces to work as an interface between the JLink's 
-probe and a board specific connector would be used. This could be a 20 minute Kicad project
-and be back in under a week using OSHPARK of JLCPCB. 
+Ideally a custom connector with length matched traces to work as an interface between the JLink's
+probe and a board specific connector would be used. This could be a 20 minute KiCad project
+and be back in under a week using OSH Park or JLCPCB.
 
 {{< figure
     src="con.jpg"
@@ -545,29 +542,27 @@ and be back in under a week using OSHPARK of JLCPCB.
 >}}
 
 And yet, here we are shoving breadboard wires between our debugger and the board.
-On the flip side, we can increase the skew tolerance by slowing down the `TCK` clock signal and
-it just so happens that openOCD allows us to easily control the debugger clock speed. As such 
-there is no **need** for a custom connector and can work around this. 
+On the flip side, we can increase the skew tolerance by slowing down the TCK clock signal and
+it just so happens that OpenOCD allows us to easily control the debugger clock speed. As such
+there is no need for a custom connector and we can work around this.
 
 ## OpenOCD
 
-OpenOCD is an free and open source on-chip debugger software that aims to be compatible with as many 
+OpenOCD is a free and open source on-chip debugger software that aims to be compatible with as many
 probes, boards and chips as possible.
 
-Since OpenOCD has support for the standard SVF file format, my plan for my flashing flow will be to use the
-Vivado generate the SVF and have OpenOCD flash it. 
+Since OpenOCD has support for the standard SVF file format, my plan for my flashing flow will be to use
+Vivado to generate the SVF and have OpenOCD flash it.
+Now, some of you might be starting to notice that I am diverging quite far from the well lit path of officially
+supported tools. Not only am I using a not officially supported debug probe, but I am also using some
+obscure open source software with questionable support for interfacing with Xilinx UltraScale+ FPGAs.
+You might be wondering, given that the officially supported tools can already prove themselves to be a headache to get working properly,
+why I am seemingly making my life even harder?
 
-Now, some of you might be starting to notice that I diverging quite far from the well lite path of officially 
-supported tools. Not only am I using an not officially supported debug probe, but I am also using some 
-obscure open source software with questonable support for interfacing with Xiling UltraScale+ FPGAs. 
-You might be wonder, given that the officially supported tools can already prove themselves to be a headack to get working properly 
-why I am seemingly making my life even harder ? 
-
-The reason is quite simple: when things inevitably start going wrong, as they will given the nature of the project, 
-having an entirely open toolchain where all the code is accessible and modifiable, allows me to have more visibility 
-as to what is going on. 
-I cannot delve into a black box in the same fashion. 
-
+The reason is quite simple: when things inevitably start going wrong, as they will given the nature of the project,
+having an entirely open toolchain where all the code is accessible and modifiable, allows me to have more visibility
+as to what is going on.
+I cannot delve into a black box in the same fashion.
 
 ### Building OpenOCD
 
