@@ -11,3 +11,51 @@ Currently the OpenROAD power delievery network grid builder doesn't find the pad
 [09:20:27] WARNING  [PDN-0232] The grid "macro - m_ihp_sram" (Instance) does not contain any shapes or vias.                                                                                                                                                       openroad.py:297
 [09:20:27] ERROR    [PDN-0233] Failed to generate full power grid.  
 ```
+
+This is only made more puzzling to me as I think I am already creating a connection: 
+```
+            add_global_connection \
+                -net $power_net \
+                -inst_pattern $instance_name \
+                -pin_pattern $power_pin \
+                -power
+```
+Global connection might not mean what I think it means... 
+
+
+I asked for help un-stupidding myself on the Tiny Tapeout discord and tnt jumped in pointing me to this missmatch in power connection layers. 
+Then mole99 also dropped by and pointed me to the crown jewel I was looking for: an example of an full IHP chip (using the new librelane chip flow) that just so happened to be using the SAME SRAM MACRO !!!! 
+Alright, calm my exitement, not exactly the same macro, but of the same family, aka: Close enogth !  
+
+And guess what, he has a custon PDN tcl script for setting the power delivery to these STAM MACROS, which I will now proceed to unshamfully wripe off. 
+https://github.com/IHP-GmbH/ihp-sg13g2-librelane-template/blob/da17746e19984826dd780ce778b6bb40dbf54544/librelane/config.yaml#L196
+
+
+Oh yeah baby, here we go! We have found the magical missing ingrediant: 
+```tcl
+define_pdn_grid \
+    -macro \
+    -instances "\
+    i_chip_core.sram_0" \
+    -name sram_NS \
+    -starts_with POWER
+
+add_pdn_stripe \
+    -grid sram_NS \
+    -layer Metal5 \
+    -width 2.81 \
+    -pitch 11.24 \
+    -offset 2.81 \
+    -spacing 2.81 \
+    -nets "VSS VDD" \
+    -starts_with POWER
+
+add_pdn_connect \
+    -grid sram_NS \
+    -layers "Metal4 Metal5"
+add_pdn_connect \
+    -grid sram_NS \
+    -layers "Metal5 TopMetal1"
+```
+
+

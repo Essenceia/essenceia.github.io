@@ -164,7 +164,7 @@ For those not already familiar with Tiny Tapeout, Librelane and OpenROAD, you ca
 OpenROAD, Yoysy, ABC, Magic, and many more amazing open source tools, building on top of this philosophy. 
 Creating a process that takes you from your verilog and a few configurations all the way to the tapeout ready artifacts, in an extremely streamlined and fast fashion, requiring minimal human intervention.
 
-Tiny Tapeout then completes the loop, running your testbenches, both the classic and the timing annotated post implementation versions (using the free to use but not open source CVC simulator), on top of the entire implementation, and then allowing you to automatically   upload your GDSII for integration into the shuttle chip.
+Tiny Tapeout then completes the loop, running your testbenches on top of the entire implementation, and then allowing you to automatically   upload your GDSII for integration into the shuttle chip.
 
 This deeply resonates with my personal beliefs that faster iteration times are central to higher quality and more efficient design :
 
