@@ -57,5 +57,16 @@ add_pdn_connect \
     -grid sram_NS \
     -layers "Metal5 TopMetal1"
 ```
+So what is this party all about ? 
+
+#### Adding a new power grid 
 
 
+```
+define_pdn_grid \
+    -macro \
+    -instances "\
+    i_chip_core.sram_0" \
+    -name sram_NS \
+    -starts_with POWER
+```
