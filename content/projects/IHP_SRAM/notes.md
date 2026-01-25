@@ -57,16 +57,124 @@ add_pdn_connect \
     -grid sram_NS \
     -layers "Metal5 TopMetal1"
 ```
-So what is this party all about ? 
 
-#### Adding a new power grid 
-
-
+My version : 
 ```
 define_pdn_grid \
     -macro \
-    -instances "\
-    i_chip_core.sram_0" \
+    -instances "m_ihp_sram" \
+    -name sram_NS \
+    -starts_with POWER
+
+add_pdn_stripe \
+    -grid sram_NS \
+    -layer Metal5 \
+    -width 2.81 \
+    -pitch 11.24 \
+    -offset 2.81 \
+    -spacing 2.81 \
+    -nets "VGND VPWR" \
+    -starts_with POWER
+
+add_pdn_connect \
+    -grid sram_NS \
+    -layers "Metal4 Metal5"
+
+add_pdn_connect \
+    -grid sram_NS \
+    -layers "Metal5 TopMetal1"
+```
+So what is this party all about ? 
+
+#### Defining a new power grid 
+
+Create a new power grid over the `m_ihp_sram` macro called `sram_NS`, with the first strap being `POWER` (default is `GROUND`). 
+The reference to the macro instance allows the definition of this new power grid's area. 
+```
+define_pdn_grid \
+    -macro \
+    -instances "m_ihp_sram" \
     -name sram_NS \
     -starts_with POWER
 ```
+
+#### Adding stripes
+
+Recall how the macro expects power on `Metal4` and we have power on `TopMetal1` ? 
+This step adds a power grid to the intermediary `Metal5` layer to help bridge the gap. 
+
+Define a pattern of the power and ground stripes to be added to `Metal5` in the `sram_NS` grid.
+The `width`, `pitch`, `offset` and `spacing` parameters are used to define the straps topology. 
+They must be sized wide enoght and be plentifull enoght to provide sufficient power accross the
+entire maco, even during heavy load. These stripes are likely oversized to prevent any headacks. 
+```
+add_pdn_stripe \
+    -grid sram_NS \
+    -layer Metal5 \
+    -width 2.81 \
+    -pitch 11.24 \
+    -offset 2.81 \
+    -spacing 2.81 \
+    -nets "VGND VPWR" \
+    -starts_with POWER
+```
+
+
+Static IR drop analysis shows we are A OK, though I am forced to recognise a complete analysis would also encoupase a IR dynamic drop analysis.
+
+`VPWR` report : 
+```
+########## IR report #################
+Net              : VPWR
+Corner           : nom_typ_1p20V_25C
+Total power      : 3.05e-04 W
+Supply voltage   : 1.20e+00 V
+Worstcase voltage: 1.20e+00 V
+Average voltage  : 1.20e+00 V
+Average IR drop  : 1.25e-06 V
+Worstcase IR drop: 9.84e-05 V
+Percentage drop  : 0.01 %
+######################################
+```
+
+`VGND` report : 
+```
+########## IR report #################
+Net              : VGND
+Corner           : nom_typ_1p20V_25C
+Total power      : 3.05e-04 W
+Supply voltage   : 0.00e+00 V
+Worstcase voltage: 9.42e-05 V
+Average voltage  : 1.22e-06 V
+Average IR drop  : 1.22e-06 V
+Worstcase IR drop: 9.42e-05 V
+Percentage drop  : 0.01 %
+######################################
+```
+
+#### Connecting the sram power grid to main power grid 
+
+In this process, there is no district level authority to inspect my installation before 
+connecting it to the grid. 
+All that is left is to call `add_pdn_connection` to hook up the `VPWR` and `VGND` power nets from my 
+newly defined `sram_NS` grid to the corresponding power nets on `Metal4` and `TopMetal1`. 
+
+```
+add_pdn_connect \
+    -grid sram_NS \
+    -layers "Metal4 Metal5"
+
+add_pdn_connect \
+    -grid sram_NS \
+    -layers "Metal5 TopMetal1"
+```
+
+#### Results 
+
+`TopMetal1`, represented in light blue, is the project's main power grid extending over all of the core 
+is now connected to our newly defined `sram_NS` grid.
+
+In red we can see the custom straps we have added to `Metal5` now briding `TopMetal1` and the SRAMs macro's own 
+backed in power straps in green on `Metal4`. 
+
+![final power grid](final_power_grid.png)
