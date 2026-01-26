@@ -4,12 +4,12 @@ Fighthing my dragons: floating point scares me.
 
 For the IEEE 754 standard 32 bit float : 
 
-- *significant* $S$ 1 bit, sign, positive `0`, negative `1`
+- *sign* $S$ 1 bit, positive `0`, negative `1`
 - *exponent* $E$ 8 bits,
-- *mantissa* $M$ 23 bits,
+- *mantissa* $M$ 23 bits, also reffered to as the significant
 
 $$
-(-1)^{S}*1.M*2^{E-127}
+(-1)^{S}*1.M*2^{E-1023}
 $$
 
 Analogy: [https://fabiensanglard.net/floating_point_visually_explained/](https://fabiensanglard.net/floating_point_visually_explained/)
