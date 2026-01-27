@@ -17,11 +17,13 @@ by canceling any common factor in the numerator and denominator.
 
 ## Representations
 
-$\mathbb{Q}$ can be represented by a ratio of integers $\mathbb{Z}$: a numerator and a denominator, let $x \in \mathbb{Q}: 
+$\mathbb{Q}$ can be represented by a ratio of integers $\mathbb{Z}$: a numerator and a denominator, let $x \in \mathbb{Q}$: 
+
 $$
-x = \drafc{a}{b} 
+x = \dfrac{a}{b} 
 $$
-with $a, b \in \mathbb{Z}$ and $b \not 0$.
+
+with $a, b \in \mathbb{Z}$ and $b \not= 0$.
 
 ### Fixed point 
 
@@ -33,12 +35,13 @@ Data stored is divided into 3 fields :
 
 - **sign** $S$ 1 bit, positive `0`, negative `1`
 - $E$  (*partie entiere*) 
-- $F$ (*partie fractionaire*) each deminal binary corresponds to an inverse of the power of 2. The first term (LMB) is $\drafc{1}{2}$
-, second $\drafc{1}{4}$, $n^{th}$ is $\drafc{1}{2^{n}}$. 
+- $F$ (*partie fractionaire*) each deminal binary corresponds to an inverse of the power of 2. The first term (LMB) is $\dfrac{1}{2}$
+, second $\dfrac{1}{4}$, $n^{th}$ is $\dfrac{1}{2^{n}}$. 
 
-Let $e$ be the number of bits in the *partie entiere* and $f$ in the *partie fractionaire*, the range of a fixed point number with is within
+Let $e$ be the number of bits in the *partie entiere* and $f$ in the *partie fractionaire*, the range of a fixed point number with is within range:
+
 $$
-\lbrack 2^{e-1} - \drafc{1}{2^{f}}: -2^{e-1} \rbrack
+[2^{e-1} - \dfrac{1}{2^{f}}:-2^{e-1}]
 $$
 
 ## Parts 
