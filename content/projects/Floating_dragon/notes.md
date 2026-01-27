@@ -52,7 +52,7 @@ $$
 
 Fixed points numbers are intrensincly limited in the range and precision of numbers they can store. 
 
-#### Example
+**Eg**
 
 $\dfrac{11}{2} (5,5)$ with $e = 15$ and $f = 16$ would written as : 
 ```
@@ -62,6 +62,48 @@ S        E                F
  
 ### Floating point 
 
+The floating point representation is based on the exponential (scientific) notation: 
+
+$$
+x = \pm S \times 10^{E}
+$$
+
+where numbers are normalized such that $1 \leq S < 10$, $S \in \mathbb{D}$ and $E \in \mathbb{Z}$. 
+
+Analogy: [https://fabiensanglard.net/floating_point_visually_explained/](https://fabiensanglard.net/floating_point_visually_explained/)
+- *exponent* == window
+- *mantissa* == offset 
+
+**Eg** 
+
+$0.00036525$ is written as $3.6525\times10^{-4}$ using the scientific notation.
+
+We can imagine that the **decimal point floats to the position** immediately after the first nonzero digit 
+in the decimal expansion of the number: hence the name floating point.
+
+#### Base 2
+
+In base 2: 
+
+$$
+x = \pm S \times 2^{E}
+$$
+
+let $1 \leq S < 2$ ($S \in \mathbb{D}$ and $E \in \mathbb{Z}$).
+
+Consequently the binary expansion of $S$ is : 
+$$
+S =  (b_{0} , b_{1} b_{2} b_{3} ...)_{2} with b_{0} = 1
+$$
+
+**Eg** 
+
+Using the same example as for fixed point:
+$$
+\dfrac{11}{2} = (1 , 011)_{2} \times 2^{2}
+$$
+
+#### IEEE 754
 
 For the IEEE 754 standard 32 bit float : 
 
@@ -73,9 +115,6 @@ $$
 (-1)^{S} \times 1.M \times 2^{E-127}
 $$
 
-Analogy: [https://fabiensanglard.net/floating_point_visually_explained/](https://fabiensanglard.net/floating_point_visually_explained/)
-- *exponent* == window
-- *mantissa* == offset 
 
 ## Ressources 
 
