@@ -35,20 +35,16 @@ Data stored is divided into 3 fields :
 
 - **sign** $S$ 1 bit, positive `0`, negative `1`
 - $E$  (*partie entiere*) 
-- $F$ (*partie fractionaire*) each deminal binary corresponds to an inverse of the power of 2. The first term (LMB) is $\dfrac{1}{2}$
+- $F$ (*partie fractionaire*) each deminal binary corresponds to an inverse of the power of 2. The first term (LMB, reading left to right) is $\dfrac{1}{2}$
 , second $\dfrac{1}{4}$, $n^{th}$ is $\dfrac{1}{2^{n}}$. 
 
-Let $e$ be the number of bits in the *partie entiere* and $f$ in the *partie fractionaire*, the range of a fixed point number with is within range:
-
-- $F$ (*partie fractionaire*) each deminal binary corresponds to an inverse of the power of 2. The first term (LMB, reading left to right) is $\drafc{1}{2}$
-, second $\drafc{1}{4}$, $n^{th}$ is $\drafc{1}{2^{n}}$. 
-
 A fixed point number is: 
+
 $$
-(-1)^{S} \times (( \sum_{i=0}^{e-1} 2^{i} ) + \sum_{j=1}^{f} \dfrac{1}{2^{f-j+1}})
+(-1)^{S} \times (\sum_{i=0}^{e-1} 2^{i} +\sum_{j=1}^{f} \dfrac{1}{2^{f-j+1}})
 $$
 
-Let $e$ be the number of bits in the *partie entiere* and $f$ in the *partie fractionaire*, the range of a fixed point number with is within
+Let $e$ be the number of bits in the *partie entiere* and $f$ in the *partie fractionaire*, the range of a fixed point number with is within range:
 
 $$
 [2^{e-1} - \dfrac{1}{2^{f}}:-2^{e-1}]
@@ -58,7 +54,7 @@ Fixed points numbers are intrensincly limited in the range and precision of numb
 
 #### Example
 
-$\drafc{11}{2} (5,5)$ with $e = 15$ and $f = 16$ would written as : 
+$\dfrac{11}{2} (5,5)$ with $e = 15$ and $f = 16$ would written as : 
 ```
 0 000000000000101 1000000000000000
 S        E                F
