@@ -96,12 +96,46 @@ $$
 S =  (b_{0} , b_{1} b_{2} b_{3} ...)_{2} with b_{0} = 1
 $$
 
+Given $b_{0} = 1$ we can omit it from being stored and save on 1 bit, this is the hidden bit. 
+
 **Eg** 
 
 Using the same example as for fixed point:
 $$
 \dfrac{11}{2} = (1 , 011)_{2} \times 2^{2}
 $$
+
+#### Precision 
+
+The precision, denoted as $p$ in the floating point system, is the number of bits in the significant $S$, including the hidden bit. 
+
+Any normalized floating point number with precision $p$ can be written as: 
+$$
+x = \pm (1, b_{1} b_{2} ... b_{p-1})_{2} \times 2^{E}
+$$
+
+Note: the smallest $x$ that is greater than $1$ is: 
+
+$$
+(1,000...1)_{2} = 1 + 2^{-(p-1)}
+$$
+
+we call this smallest step the machine epsilon, notation $\epsilon$ : the gap between this smallest number and 1
+
+$$
+\epsilon = (0,000...1)_{2} = 2^{-(p-1)}
+$$
+
+Let us now define $ulp(x)$, as the gap between $x$ and the next larger/smaller floating point number ($x > 0$/$x < 0$). 
+
+$$
+ulp(x) = (0,000...1)_{2} \times 2^{E} = \epsilon \times 2^{E}
+$$
+
+Note: $ulp(x)$ grows exponentially with $E$, aka: the furter we go from 0, the larger the gap. 
+
+![ulp, source: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html](ulp.gif)
+
 
 #### IEEE 754
 
