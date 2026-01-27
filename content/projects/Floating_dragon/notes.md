@@ -2,17 +2,17 @@ Fighthing my dragons: floating point scares me.
 
 ## Def
 
-(ensemble des entiers naturels $\mathbb{N}$, tel que $0$ est le plus petit entire naturel)
+(*ensemble des entiers naturels* $\mathbb{N}$*, tel que* $0$ *est le plus petit entire naturel*)
 
-*real numbers*: $\mathbb{Z}$ (ensemble des entiers relatifs), integers, infinit but countable (numberable) 
+**real numbers**: $\mathbb{Z}$ (*ensemble des entiers relatifs*), integers, infinit but countable (*numberable*) 
 
-(ensemble des nombre decimaux relatif, $\mathbb{D}$, est un nombre relatid qui peut s'ecrire avec une ecriture decimale
-limitee, c'est a dire avec une partie entiere et une partie decimale ayant un nombre fini de chiffres apres la virgule.)
+(*ensemble des nombre decimaux relatif,* $\mathbb{D}$ *, est un nombre relatid qui peut s'ecrire avec une ecriture decimale
+limitee, c'est a dire avec une partie entiere et une partie decimale ayant un nombre fini de chiffres apres la virgule.*)
 
-*rational numbers*: $\mathbb(Q)$, ratio of two real numbers, every rational numbe has a unique representation in lowest term (fraction irreductible),achieved
+**rational numbers**: $\mathbb{Q}$, ratio of two real numbers, every rational numbe has a unique representation in lowest term (*fraction irreductible*),achieved
 by canceling any common factor in the numerator and denominator.
 
-(ensemble des reels $\mathbb{R}$, incluse les irratonelles, indenombrable) 
+(*ensemble des reels* $\mathbb{R}$ *incluse les irratonelles, indenombrable*) 
 
 ## Parts 
 
