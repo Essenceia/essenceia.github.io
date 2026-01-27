@@ -6,13 +6,40 @@ Fighthing my dragons: floating point scares me.
 
 **real numbers**: $\mathbb{Z}$ (*ensemble des entiers relatifs*), integers, infinit but countable (*numberable*) 
 
-(*ensemble des nombre decimaux relatif,* $\mathbb{D}$ *, est un nombre relatid qui peut s'ecrire avec une ecriture decimale
+(*ensemble des nombre decimaux relatif,* $\mathbb{D}$ *, est un nombre relle qui peut s'ecrire avec une ecriture decimale
 limitee, c'est a dire avec une partie entiere et une partie decimale ayant un nombre fini de chiffres apres la virgule.*)
 
-**rational numbers**: $\mathbb{Q}$, ratio of two real numbers, every rational numbe has a unique representation in lowest term (*fraction irreductible*),achieved
+**rational numbers**: $\mathbb{Q}$ (`q` for quotient) , ratio of two real numbers, every rational numbe has a unique representation in lowest term (*fraction irreductible*),achieved
 by canceling any common factor in the numerator and denominator.
 
 (*ensemble des reels* $\mathbb{R}$ *incluse les irratonelles, indenombrable*) 
+
+
+## Representations
+
+$\mathbb{Q}$ can be represented by a ratio of integers $\mathbb{Z}$: a numerator and a denominator, let $x \in \mathbb{Q}: 
+$$
+x = \drafc{a}{b} 
+$$
+with $a, b \in \mathbb{Z}$ and $b \not 0$.
+
+### Fixed point 
+
+Fixed = fixed number of numbers after the decimal point. 
+eg: US securities have a per security fixed tick size
+
+
+Data stored is divided into 3 fields : 
+
+- **sign** $S$ 1 bit, positive `0`, negative `1`
+- $E$  (*partie entiere*) 
+- $F$ (*partie fractionaire*) each deminal binary corresponds to an inverse of the power of 2. The first term (LMB) is $\drafc{1}{2}$
+, second $\drafc{1}{4}$, $n^{th}$ is $\drafc{1}{2^{n}}$. 
+
+Let $e$ be the number of bits in the *partie entiere* and $f$ in the *partie fractionaire*, the range of a fixed point number with is within
+$$
+\lbrack 2^{e-1} - \drafc{1}{2^{f}}: -2^{e-1} \rbrack
+$$
 
 ## Parts 
 
