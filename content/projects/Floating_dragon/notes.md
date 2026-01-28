@@ -165,7 +165,7 @@ For the IEEE 754 standard 32 bit float :
 
 - *sign* $S$ 1 bit, positive `0`, negative `1`
 - *exponent* $E$ 8 bits, 
-- *mantissa* $M$ 23 bits, also reffered to as the fractional part or significant
+- *mantissa* $M$ 23 bits, also reffered to as the fractional part, and if we where being pedantic, since this isn't a logarythmic representation is should really be called a significant
 
 ##### Exponent 
 
@@ -216,8 +216,39 @@ does not fit in the field.
 They allow us to represent numbers in the range immediatly bellow the smallest positive
 normalized number. 
 
+## Minifloats
+
+Because I have an I/O problem and I like the name, we are going to be doing minifloats, so cute <3 *pat pat*. 
+
+Minifloats commonly describe a floating point number stored on less than 32 bits, this includes the half precision
+IEEE 754 float (`fp16`), bfloat16, pixars 24b floating point format, and the time nvidia's marketing team got 
+to name a data type or the tensorfloat-32 (which is actually only 19 bits). 
+
+Ideally I would have liked an 8 bit float, but since there isn't a clear standard around such a 
+format yet, bfloat it is. 
+
+### bfloat16
+
+Format : 
+
+- **sign** 1 bit
+- **exponent** 8 bits (vs 5 bits for fp16)
+- **mantissa** 7 bits (vs 10 bits for fp10)
+
+
+Hey? You said "standard", so why not just use fp16? 
+
+Well, because the area of the floating point multiplier scales by the **square of the mantissa** width,
+aka, bf16 multiplication cost me half the area of a fp16, oh and I am cheap. 
+Having a 16 bit wide format is already going to nuke my bandwidth, so how about I don't also nuke my area budget? 
+
+#### Subnormals 
+
+Subnormals are flushed to $0$ on bf16. 
 
 ## Ressources 
 
+[TensorFloat-32 is a lie: wiki page](https://en.wikipedia.org/wiki/TensorFloat-32) 
+[Alternative floating point format: Making floating point math highly efficient for AI hardware](https://engineering.fb.com/2018/11/08/ai-research/floating-point-math/)
 [IEEE 754 visualizer](https://bartaz.github.io/ieee754-visualization/)
 Numerical Computing with  IEEE  Floating Point  Arithmetic - Michael  L. Overton
