@@ -172,7 +172,7 @@ and is called the "exponent bias".
 
 Eg: $1 = (1,000...0)_}{2}\times2^{0}= sign=0, exponent=0111..111=max-1, signficant=0$ 
 
-Given the special numbers, the range of the normalized numbers (not special, $\mathbb{D}* \leftrightaeeay \mathbb{D} \setminus 0$ )
+Given the special numbers, the range of the **normalized numbers** 
 is between $(1)_{2}$ and $(0111...1)_{2}$ or 1 and 254, representing the exponents from 
 $[E_{min} = -126: E_{max} = 127]$.
 
@@ -184,8 +184,28 @@ $$
 N_{max} = (1,111...10)_{2}\times2^{127}=(2-2^{23})\times2^{127)\approx (3,4\times10^{38})_{10}
 $$
 
+##### Subnormals 
+
+Oh yeah, did I mention these don't count as normalized numbers? 
+
+**subnormal** = special 0 exponent bitfield + nonzero fractional bitfield
+
+Eg : 
+
+$$
+2^{-127} = (0,1)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(1000...0) \\
+
+2^{-149} = (0,000...01)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(000...01)
+$$
+
+Subnormal number cannot be normalized since normalization would require an exponent that
+does not fit in the field. 
+
+They allow us to represent numbers in the range immediatly bellow the smallest positive
+normalized number. 
 
 
 ## Ressources 
 
 [IEEE 754 visualizer](https://bartaz.github.io/ieee754-visualization/)
+Numerical Computing with  IEEE  Floating Point  Arithmetic - Michael  L. Overton
