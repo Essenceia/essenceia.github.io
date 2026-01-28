@@ -137,7 +137,26 @@ Note: $ulp(x)$ grows exponentially with $E$, aka: the furter we go from 0, the l
 ![ulp, source: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html](ulp.gif)
 
 
-#### IEEE 754
+### IEEE 754
+
+> "MATLAB's creator Dr. Cleve Moler used to advise foreign visitors not to miss the country's two most awesome spectacles: the Grand Canyon, and meetings of IEEE p754."
+
+#### Special numbers 
+
+Since the leading bit of the normalized number $b_{0}$ is hidden, we 
+need a special representation for $0$.
+And while on the subject of special number representation, we also have a 
+sepcial representation for $\infinity$. 
+
+Special numbers on IEEE 754, each of these has a different representation: 
+- $0$, $sign = 0, exponent = 0, significant = 0$
+- $-0$ (same number as $0$) $sign = 1, exponent = 0, significant = 0$
+- $\infinty$, result of a divide by $0$ $sign = 0, exponent = max, significant = 0$
+- $-\infinty$ $sign = 1, exponent = max, significant = 0$
+- $NaN$, not a number but an error pattern $sign = ignored, exponent = max, significant =\not 0$
+
+
+#### f32
 
 For the IEEE 754 standard 32 bit float : 
 
