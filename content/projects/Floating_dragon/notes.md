@@ -156,17 +156,16 @@ Special numbers on IEEE 754, each of these has a different representation:
 - $NaN$, not a number but an error pattern $sign = ignored, exponent = max, significant =\not 0$
 
 
-#### f32
+#### Single floating point format: `float32_t`
 
 For the IEEE 754 standard 32 bit float : 
 
 - *sign* $S$ 1 bit, positive `0`, negative `1`
-- *exponent* $E$ 8 bits,
-- *mantissa* $M$ 23 bits, also reffered to as the significant
+- *exponent* $E$ 8 bits, doesn't use a 2's complement representation, but a "biased representation.
+The bitstream stores the binary representation of $E+127$. $127$ is added to the desired exponent $E$ 
+and is called the "exponent bias". Eg: $1 = (1,000...0)_}{2}\times2^{0}= sign=0, exponent=0111..111=max-1, signficant=0$ 
+- *mantissa* $M$ 23 bits, also reffered to as the fractional part or significant
 
-$$
-(-1)^{S} \times 1.M \times 2^{E-127}
-$$
 
 
 ## Ressources 
