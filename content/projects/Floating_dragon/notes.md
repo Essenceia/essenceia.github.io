@@ -170,18 +170,20 @@ The exponenet field doesn't use a 2's complement representation, but a "biased r
 The bitstream stores the binary representation of $E+127$. $127$ is added to the desired exponent $E$ 
 and is called the "exponent bias". 
 
-Eg: $1 = (1,000...0)_}{2}\times2^{0}= sign=0, exponent=0111..111=max-1, signficant=0$ 
+Eg: $ 1 = (1,000...0)_}{2}\times2^{0}= sign=0, exponent=0111..111=max-1, signficant=0 $ 
 
 Given the special numbers, the range of the **normalized numbers** 
-is between $(1)_{2}$ and $(0111...1)_{2}$ or 1 and 254, representing the exponents from 
-$[E_{min} = -126: E_{max} = 127]$.
+is between $ (1)_{2} $ and $ (0111...1)_{2} $ or 1 and 254, representing the exponents from 
+$ [E_{min} = -126: E_{max} = 127] $.
 
 Thus the smallest and largest floating point number we can store with f32 is : 
+
 $$
-N_{min} = (1,000...0)_{2}\times2^{-126}=2^{-126)\approx (1,2\times10^{-38})_{10}
+N_{min} = (1,000...0)_{2} \times 2^{-126} = 2^{-126) \approx (1,2 \times 10^{-38} )_{10}
 $$
+
 $$
-N_{max} = (1,111...10)_{2}\times2^{127}=(2-2^{23})\times2^{127)\approx (3,4\times10^{38})_{10}
+N_{max} = (1,111...10)_{2} \times 2^{127} = (2-2^{23}) \times 2^{127) \approx (3,4 \times 10^{38})_{10}
 $$
 
 ##### Subnormals 
@@ -193,7 +195,7 @@ Oh yeah, did I mention these don't count as normalized numbers?
 Eg : 
 
 $$
-2^{-127} = (0,1)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(1000...0) \\
+2^{-127} = (0,1)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(1000...0) 
 
 2^{-149} = (0,000...01)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(000...01)
 $$
