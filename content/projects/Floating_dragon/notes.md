@@ -92,8 +92,9 @@ $$
 let $1 \leq S < 2$ ($S \in \mathbb{D}$ and $E \in \mathbb{Z}$).
 
 Consequently the binary expansion of $S$ is : 
+
 $$
-S =  (b_{0} , b_{1} b_{2} b_{3} ...)_{2} with b_{0} = 1
+S =  (b_{0} , b_{1} b_{2} b_{3}  \ldots )_{2} with b_{0} = 1
 $$
 
 Given $b_{0} = 1$ we can omit it from being stored and save on 1 bit, this is the hidden bit. 
@@ -101,6 +102,7 @@ Given $b_{0} = 1$ we can omit it from being stored and save on 1 bit, this is th
 **Eg** 
 
 Using the same example as for fixed point:
+
 $$
 \dfrac{11}{2} = (1 , 011)_{2} \times 2^{2}
 $$
@@ -110,26 +112,27 @@ $$
 The precision, denoted as $p$ in the floating point system, is the number of bits in the significant $S$, including the hidden bit. 
 
 Any normalized floating point number with precision $p$ can be written as: 
+
 $$
-x = \pm (1, b_{1} b_{2} ... b_{p-1})_{2} \times 2^{E}
+x = \pm (1, b_{1} b_{2}  \ldots  b_{p-1})_{2} \times 2^{E}
 $$
 
 Note: the smallest $x$ that is greater than $1$ is: 
 
 $$
-(1,000...1)_{2} = 1 + 2^{-(p-1)}
+(1,000 \ldots 1)_{2} = 1 + 2^{-(p-1)}
 $$
 
 we call this smallest step the machine epsilon, notation $\epsilon$ : the gap between this smallest number and 1
 
 $$
-\epsilon = (0,000...1)_{2} = 2^{-(p-1)}
+\epsilon = (0,000 \ldots 1)_{2} = 2^{-(p-1)}
 $$
 
 Let us now define $ulp(x)$, as the gap between $x$ and the next larger/smaller floating point number ($x > 0$/$x < 0$). 
 
 $$
-ulp(x) = (0,000...1)_{2} \times 2^{E} = \epsilon \times 2^{E}
+ulp(x) = (0,000 \ldots 1)_{2} \times 2^{E} = \epsilon \times 2^{E}
 $$
 
 Note: $ulp(x)$ grows exponentially with $E$, aka: the furter we go from 0, the larger the gap. 
@@ -151,8 +154,8 @@ sepcial representation for $\infinity$.
 Special numbers on IEEE 754, each of these has a different representation: 
 - $0$, $sign = 0, exponent = 0, significant = 0$
 - $-0$ (same number as $0$) $sign = 1, exponent = 0, significant = 0$
-- $\infinty$, result of a divide by $0$ $sign = 0, exponent = max, significant = 0$
-- $-\infinty$ $sign = 1, exponent = max, significant = 0$
+- $\infty$, result of a divide by $0$ $sign = 0, exponent = max, significant = 0$
+- $-\infty$ $sign = 1, exponent = max, significant = 0$
 - $NaN$, not a number but an error pattern $sign = ignored, exponent = max, significant =\not 0$
 
 
@@ -170,20 +173,25 @@ The exponenet field doesn't use a 2's complement representation, but a "biased r
 The bitstream stores the binary representation of $E+127$. $127$ is added to the desired exponent $E$ 
 and is called the "exponent bias". 
 
-Eg: $ 1 = (1,000...0)_}{2}\times2^{0}= sign=0, exponent=0111..111=max-1, signficant=0 $ 
+Eg: 
+
+$$
+1 = (1,000 \ldots 0)_{2} \times 2^{0} = sign=0, exponent=0111 \ldots 111=max-1, signficant=0 
+$$
 
 Given the special numbers, the range of the **normalized numbers** 
-is between $ (1)_{2} $ and $ (0111...1)_{2} $ or 1 and 254, representing the exponents from 
-$ [E_{min} = -126: E_{max} = 127] $.
+is between $1_2$ 
+and $0111 \ldots 1_2$ or 1 and 254, representing the exponents from 
+$[E_{min} = -126 ; E_{max} = 127]$.
 
 Thus the smallest and largest floating point number we can store with f32 is : 
 
 $$
-N_{min} = (1,000...0)_{2} \times 2^{-126} = 2^{-126) \approx (1,2 \times 10^{-38} )_{10}
+N_{min} = (1,000 \ldots 0)_{2} \times 2^{-126} = 2^{-126) \approx (1,2 \times 10^{-38} )_{10}
 $$
 
 $$
-N_{max} = (1,111...10)_{2} \times 2^{127} = (2-2^{23}) \times 2^{127) \approx (3,4 \times 10^{38})_{10}
+N_{max} = (1,111 \ldots 10)_{2} \times 2^{127} = (2-2^{23}) \times 2^{127) \approx (3,4 \times 10^{38})_{10}
 $$
 
 ##### Subnormals 
@@ -195,9 +203,9 @@ Oh yeah, did I mention these don't count as normalized numbers?
 Eg : 
 
 $$
-2^{-127} = (0,1)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(1000...0) 
+2^{-127} = (0,1)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(1000 \ldots 0) 
 
-2^{-149} = (0,000...01)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(000...01)
+2^{-149} = (0,000 \ldots 01)_{2} \times 2^{-126} = sign=0, exponent=0, significant=(000 \ldots 01)
 $$
 
 Subnormal number cannot be normalized since normalization would require an exponent that
