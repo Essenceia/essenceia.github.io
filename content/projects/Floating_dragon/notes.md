@@ -363,6 +363,15 @@ previous sticky bit if there was no such shift.
 The conclusion of this is that the bulk of the sticky bit computation can be performed in parallel
 with the significand addition.
 
+## Multiplication 
+
+1. $m_r = m_x \times m_y$. Assuming $x$ and $y$ are normal numbers ($1 \leq m_x \lt 2$ and $1 \leq m_y \lt 2$),
+then $1 \leq m_r \lt 4$, therefor the significant may need to be shifted to the right by 1 for normalization, and 
+$e_r = e_r + 1$ (similar to the far case for addition). 
+Since the product of a $p$ sized multiplication is $2p$, the partial sticky bit compute has to be performed on $p-1$ digits (sad). 
+2. $e_r = e_x + e_y = (E_x - bias) + (E_y - bias)$ or, we can directly compute the biased exponent of the result 
+(before normalization) as $E_x + E_y - bias$.
+
 
 ## Ressources 
 
