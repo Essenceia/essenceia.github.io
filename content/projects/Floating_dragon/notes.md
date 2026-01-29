@@ -365,6 +365,8 @@ with the significand addition.
 
 ## Multiplication 
 
+Assuming normal numbers: 
+
 1. $m_r = m_x \times m_y$. Assuming $x$ and $y$ are normal numbers ($1 \leq m_x \lt 2$ and $1 \leq m_y \lt 2$),
 then $1 \leq m_r \lt 4$, therefor the significant may need to be shifted to the right by 1 for normalization, and 
 $e_r = e_r + 1$ (similar to the far case for addition). 
@@ -372,6 +374,17 @@ Since the product of a $p$ sized multiplication is $2p$, the partial sticky bit 
 2. $e_r = e_x + e_y = (E_x - bias) + (E_y - bias)$ or, we can directly compute the biased exponent of the result 
 (before normalization) as $E_x + E_y - bias$.
 
+
+## Implementation 
+
+### Observations 
+
+#### Adders
+
+Correct adder for the job, different paths have different adder requirements : 
+- add: significant addition: on critical path, needs to be as fast as possible while operating on wide data -> tree adder/ carry lookahead 
+- mul: exponent addition: small data, can be done in parallel to much more intensive significant multiplicaiton,
+not on critical path -> use ripple carry 
 
 ## Ressources 
 
