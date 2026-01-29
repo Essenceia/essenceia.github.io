@@ -247,7 +247,7 @@ Format :
 
 - **sign** 1 bit
 - **exponent** 8 bits (vs 5 bits for fp16)
-- **mantissa** 7 bits (vs 10 bits for fp10)
+- **significant** 7 bits (vs 10 bits for fp10), (mantissa) 
 
 
 Hey? You said "standard", so why not just use fp16? 
@@ -316,13 +316,52 @@ most 1, we must divide $m_r$ by 2:
 
 #### Observations 
 
-The alignment shift need never be by more than $p + 1$ digits. Indeed,
+##### Significant alignement sizing
+
+The alignment shift need never be by more than $p + 1$ digits ($p$ for precision bits, 
+or number of bits in the signification + that one hidden bit) . Indeed,
 if the exponent difference is larger than $p + 1$.
 $y$ will only be used for computing the sticky bit, and it doesn’t matter that it is not shifted to
 its proper place.
 
+##### Normalization alignment
 
+Leading-zero count (LZC) and variable shifting is only needed in case
+of a cancellation, i.e., when the significands are subtracted and the exponent 
+difference is 0 or 1. But in this case, several things are simpler.
+The sticky bit is equal to zero and need not be computed. 
+More importantly, **the alignment shift is only by 0 or 1 digit**.
 
+In other words, although two possibly large shifts are mentioned in the
+previous algorithm (one for significand alignment, the other one for
+normalization in case of a cancellation), they are mutually exclusive.
+The literature defines these mutually exclusive cases as the close case
+(when the exponents are close) and the far case (when their difference
+is larger than 1)
+
+##### Computation of the sticky bit in parallel
+
+In the example above
+the normalization step is performed before
+rounding: indeed, rounding requires the knowledge of the position of
+the round and sticky bits.
+
+However, here again the distinction between the close and far 
+rounding cases makes things simpler. 
+
+In the close case, the sticky bit is zero whatever shift the normalization entails. 
+
+In the far case, normalization will entail a shift by at most one digit. 
+
+Classically, the initial sticky bit is therefore computed out of the digits to
+the right of the $p + 2$ (directly out of the lower digits of the lesser
+addend). The $p + 2$ digit is called the guard digit. 
+
+It will either become the round digit in case of a 1-digit shift, or it will be merged to the
+previous sticky bit if there was no such shift.
+
+The conclusion of this is that the bulk of the sticky bit computation can be performed in parallel
+with the significand addition.
 
 
 ## Ressources 
