@@ -287,6 +287,8 @@ $$
 
 ### Operations 
 
+![adder source:Handbook for Floating-Point Arithmetic](adder.png) 
+
 #### First steps
 
 1. First, the two exponents $e_x$ and $e_y$ are compared, and the inputs $x$ and
@@ -294,6 +296,9 @@ $y$ are possibly swapped to ensure that $e_x ≥ e_y$.
 2. A second step is to compute $m_y \dot 2^{−(e_x−e_y)}$ by right shifting $m_y$ by $e_x−e_y$
 digit positions (this step is sometimes called *significand alignment*). The
 exponent result $e_r$ is tentatively set to $e_x$.
+3. In case of effectice substraction, one of the significantds is possibly complemented
+using **1's complement** (the increment required for complete negation is injected 
+as an additional carry).
 3. The result significand is computed as $m_r = m_x + ( −1)^{s_z} · m_y · 2^{−(e_x−e_y)}$:
 either an addition or a subtraction is performed, depending on the signs
 $s_x$ and $s_y$. Then if $m_r$ is negative, it is negated. This (along with the signs
@@ -306,11 +311,11 @@ At this point $r$ is not neceesarily normalized, so we need to do so.
 
 Normalization will be required : 
 
-1. If there was a carry in the addition of $m_r$. Since $m_r \lt 2$ is allways true making the carry at
+1. **far path**: If there was a carry in the addition of $m_r$. Since $m_r \lt 2$ is allways true making the carry at
 most 1, we must divide $m_r$ by 2: 
     - $m_r$ shift right once
     - $e_r = e_r + 1$ 
-2. There was an cancellation in the addition and $m_r < 1$. Let $λ$ be the number of leading zeros of $m_r$:
+2. **close path**: There was an cancellation in the addition and $m_r < 1$. Let $λ$ be the number of leading zeros of $m_r$:
     - $m_r$ is shifted left by $λ$ digit positions
     - $e_r = e_r − λ$
 
@@ -363,6 +368,24 @@ previous sticky bit if there was no such shift.
 The conclusion of this is that the bulk of the sticky bit computation can be performed in parallel
 with the significand addition.
 
+##### Sign of r in far path
+
+The sign of the result is known in advance, it is the sign of the numbers with the 
+largest exponent (cases where exponent are equal would be handled by the close path). 
+
+Note: the far path may perform either an addition or substraction. 
+
+##### Sign of r in close path
+
+The close path allways performs a significant substraction, however the sign or the result is unknown. 
+If it is negative, it needs to be negated to
+obtain a positive significand (changing the sign bit of the result). This
+change of sign is represented after the subtraction. 
+
+A better latency is obtained by computing in parallel $m_x − m_y$ and $m_y − m_x$
+and selecting the one that is positive:
+![Possible implementations of significand subtraction in the close path, source:Handbook for Floating-Point Arithmetic](sig_sub.png)
+
 ## Multiplication 
 
 Assuming normal numbers: 
@@ -375,9 +398,7 @@ Since the product of a $p$ sized multiplication is $2p$, the partial sticky bit 
 (before normalization) as $E_x + E_y - bias$.
 
 
-## Implementation 
-
-### Observations 
+## Implementation optimization observation 
 
 #### Adders
 
