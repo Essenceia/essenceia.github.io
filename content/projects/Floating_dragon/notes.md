@@ -268,9 +268,10 @@ I really need to unearth where they dumped the corpse of the tensor flow spec fo
 
 ## Operations
 
-Floating point values will be represented is the following section using the notations: 
+Floating point values will be represented is the following section using the notations:
+ 
 $$
-x = (-1)^{s_x} \dot m_x \bot 2^{e_x}
+x = (-1)^{s_x} \dot m_x \dot 2^{e_x}
 $$
 
 The following section is based of the 7th chapter of the "Handbook of Floating-Point Arithmetic".
@@ -281,14 +282,16 @@ Let an 2 floating point number adder performing:
 
 $$
 r = add(x+y)
-= (−1)^{s_r} · m_r · 2^{e_r}
+= round(norm((−1)^{s_r} · m_r · 2^{e_r}))
 $$
 
 ### Operations 
 
+#### First steps
+
 1. First, the two exponents $e_x$ and $e_y$ are compared, and the inputs $x$ and
 $y$ are possibly swapped to ensure that $e_x ≥ e_y$.
-2. A second step is to compute $m_y \dot 2^{−(e_x−e_y)}$ by ==right shifting== $m_y$ right by $e_x−e_y$
+2. A second step is to compute $m_y \dot 2^{−(e_x−e_y)}$ by right shifting $m_y$ by $e_x−e_y$
 digit positions (this step is sometimes called *significand alignment*). The
 exponent result $e_r$ is tentatively set to $e_x$.
 3. The result significand is computed as $m_r = m_x + ( −1)^{s_z} · m_y · 2^{−(e_x−e_y)}$:
@@ -296,6 +299,31 @@ either an addition or a subtraction is performed, depending on the signs
 $s_x$ and $s_y$. Then if $m_r$ is negative, it is negated. This (along with the signs
 $s_x$ and $s_y$) determines the sign $s_r$ of the result. At this step, we have an
 exact sum $(−1)^{s_r} · m_r · 2^{e_r}$ .
+
+At this point $r$ is not neceesarily normalized, so we need to do so. 
+
+#### Normalize
+
+Normalization will be required : 
+
+1. If there was a carry in the addition of $m_r$. Since $m_r \lt 2$ is allways true making the carry at
+most 1, we must divide $m_r$ by 2: 
+    - $m_r$ shift right once
+    - $e_r = e_r + 1$ 
+2. There was an cancellation in the addition and $m_r < 1$. Let $λ$ be the number of leading zeros of $m_r$:
+    - $m_r$ is shifted left by $λ$ digit positions
+    - $e_r = e_r − λ$
+
+#### Observations 
+
+The alignment shift need never be by more than $p + 1$ digits. Indeed,
+if the exponent difference is larger than $p + 1$.
+$y$ will only be used for computing the sticky bit, and it doesn’t matter that it is not shifted to
+its proper place.
+
+
+
+
 
 ## Ressources 
 
