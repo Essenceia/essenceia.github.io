@@ -139,6 +139,18 @@ Note: $ulp(x)$ grows exponentially with $E$, aka: the furter we go from 0, the l
 
 ![ulp, source: https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html](ulp.gif)
 
+#### Associativity 
+
+> Floating-point arithmetic can only represent a finite subset of the continuum of real numbers. Consequently
+certain properties of real arithmetic, such as associativity of addition, do not always hold for floating-point
+arithmetic.
+~ IEEE 574
+
+If you where felling uneasy, you where right, in the real world, floating point representations 
+are not associative, aka, sometimes : $A + (B + C) /not= C + (A + B)$. 
+
+Are you internally crying now? Because I am. 
+
 
 ### IEEE 754
 
@@ -165,7 +177,9 @@ For the IEEE 754 standard 32 bit float :
 
 - *sign* $S$ 1 bit, positive `0`, negative `1`
 - *exponent* $E$ 8 bits, 
-- *mantissa* $M$ 23 bits, also reffered to as the fractional part, and if we where being pedantic, since this isn't a logarythmic representation is should really be called a significant
+- *mantissa* $M$ 23 bits, also reffered to as the fractional part, 
+and if we where being pedantic, since this isn't a logarythmic representation is should really be 
+called a **significant**
 
 ##### Exponent 
 
@@ -244,10 +258,50 @@ Having a 16 bit wide format is already going to nuke my bandwidth, so how about 
 
 #### Subnormals 
 
-Subnormals are flushed to $0$ on bf16. 
+It is unclear if support for subnormal numbers is needed for bf16. 
+On one hand, the RISC-V BF16 extension specifies support for subnormal 
+numbers it seems like the tensor flow definition of bf16 does not. 
+
+TPU: Subnormals are flushed to $0$ on bf16.
+
+I really need to unearth where they dumped the corpse of the tensor flow spec for bf16 ...  
+
+## Operations
+
+Floating point values will be represented is the following section using the notations: 
+$$
+x = (-1)^{s_x} \dot m_x \bot 2^{e_x}
+$$
+
+The following section is based of the 7th chapter of the "Handbook of Floating-Point Arithmetic".
+
+## Addition 
+
+Let an 2 floating point number adder performing: 
+
+$$
+r = add(x+y)
+= (−1)^{s_r} · m_r · 2^{e_r}
+$$
+
+### Operations 
+
+1. First, the two exponents $e_x$ and $e_y$ are compared, and the inputs $x$ and
+$y$ are possibly swapped to ensure that $e_x ≥ e_y$.
+2. A second step is to compute $m_y \dot 2^{−(e_x−e_y)}$ by ==right shifting== $m_y$ right by $e_x−e_y$
+digit positions (this step is sometimes called *significand alignment*). The
+exponent result $e_r$ is tentatively set to $e_x$.
+3. The result significand is computed as $m_r = m_x + ( −1)^{s_z} · m_y · 2^{−(e_x−e_y)}$:
+either an addition or a subtraction is performed, depending on the signs
+$s_x$ and $s_y$. Then if $m_r$ is negative, it is negated. This (along with the signs
+$s_x$ and $s_y$) determines the sign $s_r$ of the result. At this step, we have an
+exact sum $(−1)^{s_r} · m_r · 2^{e_r}$ .
 
 ## Ressources 
 
+[Great blog post on bflot16](https://nhigham.com/2020/06/02/what-is-bfloat16-arithmetic/)
+[RISC-V BF16](https://docs.riscv.org/reference/isa/unpriv/bfloat16.html)
+[BFloat16 wiki](https://en.wikipedia.org/wiki/Bfloat16_floating-point_format)
 [TensorFloat-32 is a lie: wiki page](https://en.wikipedia.org/wiki/TensorFloat-32) 
 [Alternative floating point format: Making floating point math highly efficient for AI hardware](https://engineering.fb.com/2018/11/08/ai-research/floating-point-math/)
 [IEEE 754 visualizer](https://bartaz.github.io/ieee754-visualization/)
