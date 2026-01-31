@@ -292,7 +292,7 @@ $$
 The notion of **far** and **close** path refer to the magnitude difference bettween $e_x$ and $e_y$ 
 of $x$ and $y$. 
 The close path handles the case where the magnitudes are less than 2 orders appart (exponent difference of less than 2), 
-in this case significant cancellations may occure. 
+in this case significant cancellations may occure (more than 1 bit). 
 On the other hand, the far path handles magnitude differences of 2 or more, implying no need for significant cancellations, 
 but needing much larger variable significant alignement logic. 
 
@@ -313,6 +313,10 @@ $s_x$ and $s_y$) determines the sign $s_r$ of the result. At this step, we have 
 exact sum $(−1)^{s_r} · m_r · 2^{e_r}$ .
 
 At this point $r$ is not neceesarily normalized, so we need to do so. 
+
+#### Close path 
+
+The close path has deeper logic than the far path ... no shit 
 
 #### Normalize
 
@@ -384,12 +388,18 @@ Note: the far path may perform either an addition or substraction.
 
 ##### Sign of r in close path
 
-The close path allways performs a significant substraction, however the sign or the result is unknown. 
-If it is negative, it needs to be negated to
-obtain a positive significand (changing the sign bit of the result). This
-change of sign is represented after the subtraction. 
+Given the close path is our deeper compared to the far path I am looking for ways of improving it. 
 
-A better latency is obtained by computing in parallel $m_x − m_y$ and $m_y − m_x$
+Recall that we don't want to calculate $m_x - m_y$ but the absolute values $| m_x - m_y |$. 
+
+Before this point the resulting sign or the significant subraction $m_x - m_y$ or ($m_y - m_x$ is unknown (we are judging
+based on the exponents until this point). 
+
+Let's say we use the previous design and calculate $m_x - m_y$, if the result turns out to 
+be negative, we then need to negate it, changing the sign in the process. 
+This results in additional logic **after** the substraction to handle this case. 
+
+An alternative approach, allowing for a better latency is obtained by computing in parallel $m_x − m_y$ and $m_y − m_x$
 and selecting the one that is positive:
 ![Possible implementations of significand subtraction in the close path, source:Handbook for Floating-Point Arithmetic](sig_sub.png)
 
