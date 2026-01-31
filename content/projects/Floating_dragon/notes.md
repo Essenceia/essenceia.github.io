@@ -398,6 +398,18 @@ Since the product of a $p$ sized multiplication is $2p$, the partial sticky bit 
 (before normalization) as $E_x + E_y - bias$.
 
 
+### Implementation 
+
+Assuming we don't handle subnormal numbers, here is an overview of a multiplication : 
+ 
+![Basic architecture of a floating-point multiplier without subnormal handling](mul_no_sub.png)
+
+Notes: 
+
+- $p \times p$ multiplication ($p = 8$ for bf16) is going to be my most expensive logic in terms of delay 
+and area: need a low latency mul, booth (can't reuse i8 booth mul as revious design was optimized for signed bits, give yosys unsigned booth a shot?) 
+- nomralization needs to wait for MSB of the multiplication to decide whether to increment in the `incrementer` 
+ 
 ## Implementation optimization observation 
 
 #### Adders
