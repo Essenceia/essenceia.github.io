@@ -392,7 +392,7 @@ Given the close path is our deeper compared to the far path I am looking for way
 
 Recall that we don't want to calculate $m_x - m_y$ but the absolute values $| m_x - m_y |$. 
 
-Before this point the resulting sign or the significant subraction $m_x - m_y$ or ($m_y - m_x$ is unknown (we are judging
+Before this point the resulting sign or the significant subraction $m_x - m_y$ or $m_y - m_x$ is unknown (we are judging
 based on the exponents until this point). 
 
 Let's say we use the previous design and calculate $m_x - m_y$, if the result turns out to 
