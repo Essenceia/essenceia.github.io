@@ -409,7 +409,9 @@ Notes:
 - $p \times p$ multiplication ($p = 8$ for bf16) is going to be my most expensive logic in terms of delay 
 and area: need a low latency mul, booth (can't reuse i8 booth mul as revious design was optimized for signed bits, give yosys unsigned booth a shot?) 
 - nomralization needs to wait for MSB of the multiplication to decide whether to increment in the `incrementer` 
- 
+- if I implement only the `RU` rounding mode, I can remove the rounding logic and the incrementer, and simplify 
+the path going to the final exponent selection mux. 
+
 ## Implementation optimization observation 
 
 #### Adders
