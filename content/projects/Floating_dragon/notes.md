@@ -289,12 +289,19 @@ $$
 
 ![adder source:Handbook for Floating-Point Arithmetic](adder.png) 
 
-#### First steps
+The notion of **far** and **close** path refer to the magnitude difference bettween $e_x$ and $e_y$ 
+of $x$ and $y$. 
+The close path handles the case where the magnitudes are less than 2 orders appart (exponent difference of less than 2), 
+in this case significant cancellations may occure. 
+On the other hand, the far path handles magnitude differences of 2 or more, implying no need for significant cancellations, 
+but needing much larger variable significant alignement logic. 
+
+#### Far path 
 
 1. First, the two exponents $e_x$ and $e_y$ are compared, and the inputs $x$ and
 $y$ are possibly swapped to ensure that $e_x ≥ e_y$.
 2. A second step is to compute $m_y \dot 2^{−(e_x−e_y)}$ by right shifting $m_y$ by $e_x−e_y$
-digit positions (this step is sometimes called *significand alignment*). The
+digit positions (this step is sometimes called *significand alignment* and is done by the *shift* block in the far path). The
 exponent result $e_r$ is tentatively set to $e_x$.
 3. In case of effectice substraction, one of the significantds is possibly complemented
 using **1's complement** (the increment required for complete negation is injected 
