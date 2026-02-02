@@ -258,6 +258,12 @@ Having a 16 bit wide format is already going to nuke my bandwidth, so how about 
 
 #### Subnormals 
 
+Subnormals differ from normal numbers, they are the case when $|m| < 1$ and $e = e_{min}$. 
+The term denormal is also used. 
+These are special cases. 
+
+##### Subnormals for bf16 
+
 It is unclear if support for subnormal numbers is needed for bf16. 
 On one hand, the RISC-V BF16 extension specifies support for subnormal 
 numbers it seems like the tensor flow definition of bf16 does not. 
