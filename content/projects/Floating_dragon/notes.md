@@ -258,7 +258,12 @@ Having a 16 bit wide format is already going to nuke my bandwidth, so how about 
 
 #### Subnormals 
 
-Subnormals differ from normal numbers, they are the case when $|m| < 1$ and $e = e_{min}$. 
+Subnormals differ from normal numbers, they are the case when $|m| < 1$ and $e = e_{min}$
+BUT the representation of $e_{min}$ is NOT the same as a normal value. There are 2 different
+representaiton for $e_{min}$ as stored as a IEEE float : 
+1. $(000 \ldots 0)_2$
+2, $(000 \ldots 01)_2$
+
 The term denormal is also used. 
 These are special cases. 
 
