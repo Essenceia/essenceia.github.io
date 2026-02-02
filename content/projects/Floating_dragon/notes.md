@@ -181,7 +181,7 @@ For the IEEE 754 standard 32 bit float :
 and if we where being pedantic, since this isn't a logarythmic representation is should really be 
 called a **significant**
 
-##### Exponent 
+#### Exponent 
 
 The exponenet field doesn't use a 2's complement representation, but a biased representation.
 The bitstream stores the binary representation of $E+127$. $127$ is added to the desired exponent $E$ 
@@ -208,7 +208,7 @@ $$
 N_{max} = (1,111 \ldots 10)_{2} \times 2^{127} = (2-2^{23}) \times 2^{127} \approx (3,4 \times 10^{38})_{10}
 $$
 
-##### Subnormals 
+#### Subnormals 
 
 Oh yeah, did I mention these don't count as normal normalized numbers? 
 
@@ -270,6 +270,41 @@ to name a data type or the tensorfloat-32 (which is actually only 19 bits).
 
 Ideally I would have liked an 8 bit float, but since there isn't a clear standard around such a 
 format yet, bfloat it is. 
+
+#### Rounding 
+
+IEEE defines rounding modes for how a value should be rounded post calculation to fit into the 
+reprensentation's format. The rounding function is commonly noted as $◦$, for example, the rounded 
+result of $a + b$ would be $◦(a+b)$. 
+There are 5 official rounding modes : 
+- $RD$ round downwards (round towards $- \infty$), such that $RD(x)$ is the largest floating-point number (possibly $− \infty$)
+less than or equal to $x$
+- $RU$ round upwards (round towards $+ \infty$), such that $RU(x)$ is the smallest floating-point number (possibly $+ \infty$)
+greater or equal equal to $x$
+- $RZ$ round towards zero, such that $RZ(x)$ is the
+closest floating-point number to $x$ that is no greater in magnitude than $x$
+(it is equal to $RD(x)$ if $x ≥ 0$, and to $RU(x)$ if $x ≤ 0$)
+- $RN$ round nearest, exists in 2 flavors: 
+    - $RN_{even}$
+    - $RN_{away}$
+
+![The standard rounding functions. Here we assume that the real numbers x and y are positive.](round_mode.png)
+
+For a positive normal value of precision $p$, whose infinitely precise significant is $1. m_1 m_2 \ldots$, 
+let the rounding bit $round = m_p$ and the sticky bit be $sticky = m_{p+1} | m_{p+2} \ldots$, we 
+can define how to round as : 
+
+| round / sticky | RD | RU | RN |
+|----------------|----|----|-----|
+| 0 / 0          | −  | −  | −   |
+| 0 / 1          | −  | +  | −   |
+| 1 / 0          | −  | +  | −/+ |
+| 1 / 1          | −  | +  | +   |
+
+Where : 
+- $-$ means that the significiant of $\circ (x)$ is truncated to $1. m_1 m_2 \ldots m_{p-1}$
+- $+$ means we need to add $2^{-p+1}$ to the truncated significant, possibly leading to an exponent change. 
+Is this correct? Should it not actually be $(000 \ldots 01)_2$ to the significant? 
 
 ### bfloat16
 
