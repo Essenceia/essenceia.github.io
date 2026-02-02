@@ -111,7 +111,7 @@ $$
 
 The precision, denoted as $p$ in the floating point system, is the number of bits in the significant $S$, including the hidden bit. 
 
-Any normalized floating point number with precision $p$ can be written as: 
+Any normalized **normal** floating point number with precision $p$ can be written as: 
 
 $$
 x = \pm (1, b_{1} b_{2}  \ldots  b_{p-1})_{2} \times 2^{E}
@@ -149,7 +149,7 @@ arithmetic.
 If you where felling uneasy, you where right, in the real world, floating point representations 
 are not associative, aka, sometimes : $A + (B + C) /not= C + (A + B)$. 
 
-Are you internally crying now? Because I am. 
+Are you internally crying now? Because I am. This is going to make the testbench for the FMA even more fun. 
 
 
 ### IEEE 754
@@ -183,7 +183,7 @@ called a **significant**
 
 ##### Exponent 
 
-The exponenet field doesn't use a 2's complement representation, but a "biased representation.
+The exponenet field doesn't use a 2's complement representation, but a biased representation.
 The bitstream stores the binary representation of $E+127$. $127$ is added to the desired exponent $E$ 
 and is called the "exponent bias". 
 
@@ -193,7 +193,7 @@ $$
 1 = (1,000 \ldots 0)_{2} \times 2^{0} = sign=0, exponent=0111 \ldots 111=max-1, signficant=0 
 $$
 
-Given the special numbers, the range of the **normalized numbers** 
+Given the special numbers, the range of the normal **normalized numbers** 
 is between $1_2$ 
 and $0111 \ldots 1_2$ or 1 and 254, representing the exponents from 
 $[E_{min} = -126 ; E_{max} = 127]$.
@@ -210,7 +210,7 @@ $$
 
 ##### Subnormals 
 
-Oh yeah, did I mention these don't count as normalized numbers? 
+Oh yeah, did I mention these don't count as normal normalized numbers? 
 
 **subnormal** = special 0 exponent bitfield + nonzero fractional bitfield
 
@@ -229,6 +229,36 @@ does not fit in the field.
 
 They allow us to represent numbers in the range immediatly bellow the smallest positive
 normalized number. 
+
+
+Subnormals differ from normal numbers, they are the case when $|m| < 1$ and $e = e_{min}$
+BUT the representation of $e_{min}$ is NOT the same as a normal value. There are 2 different
+representaiton for $e_{min}$ as stored as a IEEE float : 
+1. $(000 \ldots 0)_2$
+2, $(000 \ldots 01)_2$
+
+Hence, the significant has the form: 
+- normal : $1 . m_1 m_2 m_3 \ldots m_{p-1}$
+- subnormals: $0 . m_1 m_2 m_3 \ldots m_{p-1}$
+
+###### Range
+
+Let's assume $p = 8$ and $e_{min} = -126, e_{max} = +127}$ (aka, same format as bf16), 
+the representable range is now extended to: 
+- the smallest positive normal number = $2^{e_{min}} = 2^{-126}$
+- the smallest positive subnormal number = $2^{e_{min}-p+1} = 2^{-126-7} = 2^{-133}$
+
+Notes : 
+The term denormal is also used. 
+These are special cases. 
+
+###### Observation 
+
+Subnormal implementation is likely going to be the most difficult type of number to 
+implement in the floating point arithmatic. 
+
+But, if I was to forgo there implementation I would lost the ability do do gradual 
+underflow: slowing the loss of precision instead of it being abrupt. 
 
 ## Minifloats
 
@@ -255,17 +285,6 @@ Hey? You said "standard", so why not just use fp16?
 Well, because the area of the floating point multiplier scales by the **square of the mantissa** width,
 aka, bf16 multiplication cost me half the area of a fp16, oh and I am cheap. 
 Having a 16 bit wide format is already going to nuke my bandwidth, so how about I don't also nuke my area budget? 
-
-#### Subnormals 
-
-Subnormals differ from normal numbers, they are the case when $|m| < 1$ and $e = e_{min}$
-BUT the representation of $e_{min}$ is NOT the same as a normal value. There are 2 different
-representaiton for $e_{min}$ as stored as a IEEE float : 
-1. $(000 \ldots 0)_2$
-2, $(000 \ldots 01)_2$
-
-The term denormal is also used. 
-These are special cases. 
 
 ##### Subnormals for bf16 
 
