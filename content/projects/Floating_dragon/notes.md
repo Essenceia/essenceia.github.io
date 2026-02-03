@@ -380,12 +380,16 @@ The following section is based of the 7th chapter of the "Handbook of Floating-P
 
 ## Addition 
 
-Let an 2 floating point number adder performing: 
+
+### Sign 
+
+When $x$ and $y$ are nonzero, the addition is based on the identity: 
 
 $$
-r = add(x+y)
-= round(norm((−1)^{s_r} · m_r · 2^{e_r}))
+x + y = (-1)^s_x \dot (|x| + (-1)^s_z \dot |y|), s_x = s_x XOR s_y\\
 $$
+
+This hold for substration since $x - y = x + (-y)$
 
 ### Operations 
 
@@ -398,7 +402,7 @@ in this case significant cancellations may occure (more than 1 bit).
 On the other hand, the far path handles magnitude differences of 2 or more, implying no need for significant cancellations, 
 but needing much larger variable significant alignement logic. 
 
-#### Far path 
+#### Main operations 
 
 1. First, the two exponents $e_x$ and $e_y$ are compared, and the inputs $x$ and
 $y$ are possibly swapped to ensure that $e_x ≥ e_y$.
@@ -409,14 +413,14 @@ exponent result $e_r$ is tentatively set to $e_x$.
 using **1's complement** (the increment required for complete negation is injected 
 as an additional carry).
 3. The result significand is computed as $m_r = m_x + ( −1)^{s_z} · m_y · 2^{−(e_x−e_y)}$:
-either an addition or a subtraction is performed, depending on the signs
-$s_x$ and $s_y$. Then if $m_r$ is negative, it is negated. This (along with the signs
+either an addition or a subtraction is performed, depending on the sign of $s_z$, the result of the 
+xor between $s_x$ and $s_y$. Then if $m_r$ is negative, it is negated. This (along with the signs
 $s_x$ and $s_y$) determines the sign $s_r$ of the result. At this step, we have an
 exact sum $(−1)^{s_r} · m_r · 2^{e_r}$ .
 
 At this point $r$ is not neceesarily normalized, so we need to do so. 
 
-#### Close path 
+#### Notes on the close path 
 
 The close path has deeper logic than the far path ... no shit 
 
