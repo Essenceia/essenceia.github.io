@@ -170,6 +170,9 @@ Special numbers on IEEE 754, each of these has a different representation:
 - $-\infty$ $sign = 1, exponent = max, significant = 0$
 - $NaN$, not a number but an error pattern $sign = ignored, exponent = max, significant =\not 0$
 
+![layout](layout.png) 
+
+![special numbers](special_numbers.png) 
 
 #### Single floating point format: `float32_t`
 
@@ -180,6 +183,7 @@ For the IEEE 754 standard 32 bit float :
 - *mantissa* $M$ 23 bits, also reffered to as the fractional part, 
 and if we where being pedantic, since this isn't a logarythmic representation is should really be 
 called a **significant**
+
 
 #### Exponent 
 
@@ -278,12 +282,12 @@ reprensentation's format. The rounding function is commonly noted as $◦$, for 
 result of $a + b$ would be $◦(a+b)$. 
 There are 5 official rounding modes : 
 - $RD$ round downwards (round towards $- \infty$), such that $RD(x)$ is the largest floating-point number (possibly $− \infty$)
-less than or equal to $x$
+less than or equal to $x$, `roundTowardNegative` in the spec
 - $RU$ round upwards (round towards $+ \infty$), such that $RU(x)$ is the smallest floating-point number (possibly $+ \infty$)
-greater or equal equal to $x$
+greater or equal equal to $x$, `roundTowardPositive` in the spec
 - $RZ$ round towards zero, such that $RZ(x)$ is the
 closest floating-point number to $x$ that is no greater in magnitude than $x$
-(it is equal to $RD(x)$ if $x ≥ 0$, and to $RU(x)$ if $x ≤ 0$)
+(it is equal to $RD(x)$ if $x ≥ 0$, and to $RU(x)$ if $x ≤ 0$), `roundTowardZero` in the spec
 - $RN$ round nearest, exists in 2 flavors: 
     - $RN_{even}$
     - $RN_{away}$
