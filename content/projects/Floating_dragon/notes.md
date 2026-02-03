@@ -325,7 +325,24 @@ either we :
     - the floating point successor of $x$ if $x$ is positive
     - the floating point predecesor of $x$ if $x$ is positive
 
+##### Sucessor 
 
+Property : 
+> The binary encoding of the successor of a positive floating-point value is the successor of the binary encoding of this values, considered as a binary integer. 
+
+This property explains : 
+- why the significant is after the exponent 
+- the choice of a biased exponent over the two's complement or signed-magnitude
+
+This is true for all positive numbers, including subnormal numbers, from $+0$ to $+\infty$.
+
+###### Implementation
+
+As a consequence of this property, to compute the sucessor, we can consider the integer 
+encodig of $x$ and simply increment it by $1$. The possible carry propagate from the significant
+field to the encoding field will take care of the possible change of exponent. 
+
+This also means, we need an adder as large as the exponent and significant width combined. 
 ### bfloat16
 
 Format : 
@@ -490,7 +507,7 @@ and selecting the one that is positive:
 
 ## Multiplication 
 
-Assuming normal numbers: 
+### Assuming normal numbers
 
 1. $m_r = m_x \times m_y$. Assuming $x$ and $y$ are normal numbers ($1 \leq m_x \lt 2$ and $1 \leq m_y \lt 2$),
 then $1 \leq m_r \lt 4$, therefor the significant may need to be shifted to the right by 1 for normalization, and 
@@ -499,6 +516,17 @@ Since the product of a $p$ sized multiplication is $2p$, the partial sticky bit 
 2. $e_r = e_x + e_y = (E_x - bias) + (E_y - bias)$ or, we can directly compute the biased exponent of the result 
 (before normalization) as $E_x + E_y - bias$.
 
+### Subnormal support
+
+For reflecting subnormal numbers, the exponent calculate is actually complexified to:
+
+$$
+e_x = E_x - bias + 1 - n_x
+$$
+
+where $n_x$ is the *is normal* bit, equal to 1 for normal values and 0 for subnormals. 
+This relation allows us to write exponent handling expressions that are valid both in the 
+normal and subnormal cases. 
 
 ### Implementation 
 
