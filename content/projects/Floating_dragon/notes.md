@@ -14,6 +14,14 @@ by canceling any common factor in the numerator and denominator.
 
 (*ensemble des reels* $\mathbb{R}$ *incluse les irratonelles, indenombrable*) 
 
+Notes:
+ 
+When performing an addition, substration, multiplication of FMA on $\mathbb{D}$ the result is also within 
+$\mathbb{D}$ (which makes me happy), though the result might still need to be rounded to fit within the desired
+representation's storage format. This property doesn't fold true for the square root or division operations, for
+which the result can be within $\mathbb{Q}$, which makes me even more happy that I have no plans to implement 
+these. In practice, this is also addressed though rounding, tought only after having resuded the result to a
+finite computation, which opens the poblem of determining an accurate enough approximation. 
 
 ## Representations
 
@@ -294,7 +302,7 @@ closest floating-point number to $x$ that is no greater in magnitude than $x$
 
 ![The standard rounding functions. Here we assume that the real numbers x and y are positive.](round_mode.png)
 
-For a positive normal value of precision $p$, whose infinitely precise significant is $1. m_1 m_2 \ldots$, 
+For a **positive** value of precision $p$, whose infinitely precise significant is $1. m_1 m_2 \ldots$, 
 let the rounding bit $round = m_p$ and the sticky bit be $sticky = m_{p+1} | m_{p+2} \ldots$, we 
 can define how to round as : 
 
@@ -308,7 +316,15 @@ can define how to round as :
 Where : 
 - $-$ means that the significiant of $\circ (x)$ is truncated to $1. m_1 m_2 \ldots m_{p-1}$
 - $+$ means we need to add $2^{-p+1}$ to the truncated significant, possibly leading to an exponent change. 
-Is this correct? Should it not actually be $(000 \ldots 01)_2$ to the significant? 
+In practice, by "adding $2^{-p+1}$" means going to the floating point sucessor. 
+ 
+In other words, let $x = (-1)^s \dot (m_0 . m_1 m_2 \ldots m_{p-1})_2 \dot 2^e$, when rounding $x$ 
+either we : 
+- truncate $m$ after $p-1$ fractions digits 
+- round to the successor, the $+$ case shown above: 
+    - the floating point successor of $x$ if $x$ is positive
+    - the floating point predecesor of $x$ if $x$ is positive
+
 
 ### bfloat16
 
