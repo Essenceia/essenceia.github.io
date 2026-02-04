@@ -429,9 +429,9 @@ The close path has deeper logic than the far path ... no shit have you seen that
 Normalization will be required : 
 
 1. **far path**: If there was a carry in the addition of $m_z$. Since $m_z \lt 2$ is allways true making the carry at
-most 1, we must divide $m_z$ by 2: 
-    - $m_z$ shift right once
-    - $e_z = e_x + 1$ 
+most 1, we must divide $m_z$ by 2. If there was a substraction, there might have been at most a one bit cancelation, leading to the need to a multiplication by 2 of $m_z$. These operations are performed in the `prenorm` block of the far path, it shift by 1 bit in either direction:
+    - $m_z$ shift $pm$ once
+    - $e_z = e_x \pm 1$ 
 2. **close path**: There was an cancellation in the addition and $m_z < 1$. Let $λ$ be the number of leading zeros of $m_z$:
     - $m_z$ is shifted left by $λ$ digit positions
     - $e_z = e_x − λ$
@@ -554,7 +554,7 @@ Notes:
 - $p \times p$ multiplication ($p = 8$ for bf16) is going to be my most expensive logic in terms of delay 
 and area: need a low latency mul, booth (can't reuse i8 booth mul as revious design was optimized for signed bits, give yosys unsigned booth a shot?) 
 - nomralization needs to wait for MSB of the multiplication to decide whether to increment in the `incrementer` 
-- if I implement only the `RU` rounding mode, I can remove the rounding logic and the incrementer, and simplify 
+- if I implement only the `RZ` rounding mode, I can remove the rounding logic and the incrementer, and simplify 
 the path going to the final exponent selection mux. 
 
 ## Implementation optimization observation 
