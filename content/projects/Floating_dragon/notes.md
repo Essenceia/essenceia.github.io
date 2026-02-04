@@ -422,19 +422,30 @@ At this point $r$ is not neceesarily normalized, so we need to do so.
 
 #### Notes on the close path 
 
-The close path has deeper logic than the far path ... no shit 
+The close path has deeper logic than the far path ... no shit have you seen that LZC + shift ? 
 
-#### Normalize
+#### Normalize + Rounding
 
 Normalization will be required : 
 
-1. **far path**: If there was a carry in the addition of $m_r$. Since $m_r \lt 2$ is allways true making the carry at
-most 1, we must divide $m_r$ by 2: 
-    - $m_r$ shift right once
-    - $e_r = e_r + 1$ 
-2. **close path**: There was an cancellation in the addition and $m_r < 1$. Let $λ$ be the number of leading zeros of $m_r$:
-    - $m_r$ is shifted left by $λ$ digit positions
-    - $e_r = e_r − λ$
+1. **far path**: If there was a carry in the addition of $m_z$. Since $m_z \lt 2$ is allways true making the carry at
+most 1, we must divide $m_z$ by 2: 
+    - $m_z$ shift right once
+    - $e_z = e_x + 1$ 
+2. **close path**: There was an cancellation in the addition and $m_z < 1$. Let $λ$ be the number of leading zeros of $m_z$:
+    - $m_z$ is shifted left by $λ$ digit positions
+    - $e_z = e_x − λ$
+
+The normalization + rounding block has as inputs : 
+- $e_z$ exponent
+- $m_z$ significant of $p+1$ bits with a MSB of 1 (if normal)
+  - LSB is the round bit
+  - sicky bit: 0 if close path, 1/0 from far path
+
+We use the rounding increment trick, using the fact that the next floating point number is the 
+floating point number in decimal representation $+ 1$. 
+We can using a $p + w_E$ bit adder if we need to round to the next floating point number (upper/under depending on the sign) and let the carry propagate the normalization to the exponent. 
+This works even if the increment entails an overflow. 
 
 #### Observations 
 
