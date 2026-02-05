@@ -386,7 +386,7 @@ The following section is based of the 7th chapter of the "Handbook of Floating-P
 When $x$ and $y$ are nonzero, the addition is based on the identity: 
 
 $$
-x + y = (-1)^s_x \dot (|x| + (-1)^s_z \dot |y|), s_x = s_x XOR s_y\\
+x + y = (-1)^{s_x} \dot (|x| + (-1)^{s_z} \dot |y|), s_z = s_x XOR s_y\\
 $$
 
 This hold for substration since $x - y = x + (-y)$
