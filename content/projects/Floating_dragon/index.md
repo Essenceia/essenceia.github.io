@@ -8,4 +8,5 @@ draft: true
 showTableOfContents: true
 ---
 
-
+After days of resistance the floating point stopped and contemplated its victory, and behold, for it was very complete. 
+And in its magniloquence it granted me the binary, for base 10 to remain a myserty. 
