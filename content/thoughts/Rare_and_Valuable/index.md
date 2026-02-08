@@ -1,3 +1,12 @@
+---
+title: "Rare and valuable"
+date: 2025-12-15
+description: "How giants vanish in silence."
+summary: "How giants vanish in silience."
+tags: ["writting experminent", "mortality", "Intel"]
+draft: true
+showTableOfContents: false
+---
 
 Is what makes something valuable that it is rare? 
 

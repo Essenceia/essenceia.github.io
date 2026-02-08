@@ -1,6 +1,24 @@
+---
+title: "Textures of growing up"
+date: 2026-02-07
+description: "Description of the texture of my formative years."
+summary: "Description of the texture of my formative years."
+tags: ["writting experminent", "growing up"]
+draft: false
+showTableOfContents: false
+showReadingTime: false
+showWordCount: false
+showTaxonomies: true
+---
+
 It sometimes feels like I was of the last generation: the last to grow up in a world with a familiar texture, a texture future generations will never know. 
 
 I was born in 1996, according to society's conflation of individuals into generations based on their order of arrival, I am the youngest of the millennials. 
+
+{{< figure 
+caption="Pandor, by John William Waterhouse (1989)"
+src="John_William_Waterhouse_-_Pandora_1896.jpg"
+>}}
 
 My childhood played out on the tempo of adventures outside the limits of the family yard, floors covered in dolls and legos, and birthdays playing hide and seek. 
 

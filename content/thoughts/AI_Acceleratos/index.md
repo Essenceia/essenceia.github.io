@@ -1,9 +1,25 @@
-title: Why wait for the AI bubble to pop to tapeout AI accelerators?
+---
+title: "Why wait for the AI bubble to pop to tapeout AI accelerators?"
+date: 2026-01-20
+description: "On coping with the difficulties of seperating sincere instrests from fenzys."
+summary: "On coping with the difficulties of seperating sincere instrests from fenzys."
+tags: ["writting experminent", "sincere intrests"]
+draft: false
+showTableOfContents: false
+showReadingTime: false
+showWordCount: false
+showTaxonomies: true
+---
+
 
 How much of what you do is for yourself, and how much is for others? 
 
 Social pressure is a powerful force. 
 
+{{< figure
+    src="John_William_Waterhouse_A_Mermaid.jpg"
+    caption="A Mermain, John William Waterhouse (1900)"
+>}} 
 A small subset of minds might truly be immune to its effects, but the greatest majority delude themselves in believing in their resistance, as they get swept away by the flow. 
 
 I for one, am susceptible, weak to the suggestion to the crowd. And although I have dispensed great effort in building up my mental insulation, my defenses are porous. 

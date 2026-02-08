@@ -1,3 +1,12 @@
+---
+title: "Wishing for failure"
+date: 2025-12-15
+description: "How giants vanish in silence."
+summary: "How giants vanish in silience."
+tags: ["writting experminent", "mortality", "Intel"]
+draft: true
+showTableOfContents: false
+---
 
 Deep down, I hope my chip won't work. 
 

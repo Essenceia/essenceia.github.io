@@ -1,11 +1,28 @@
+---
+title: "Reflexion on mortality"
+date: 2025-12-16
+description: "How giants vanish in silence."
+summary: "How giants vanish in silience."
+tags: ["writting experminent", "mortality", "Intel"]
+draft: false
+showTableOfContents: false
+showReadingTime: false
+showWordCount: false
+showTaxonomies: true
+---
 
 Intel is dying, and it is deeply troubling. 
 
 I have literally actively worked in direction of there destruction, designing CPU cores for the competition. 
 I also firmly believe the x86 memory model will not scale to massively multicore systems as well as the arm architecture.
 
-Yet, manufacturing is what killed intel. 
+Yet, manufacturing is what killed Intel. 
 
+{{< figure
+    src="feature_The_Fighting_Temeraire_JMW_Turner_National_Gallery.jpg"
+    caption="The Fighting Temeraire, tugged to her last Berth to be broken up, JMW Turner (1838)"
+>}}
+ 
 Our society has forgotten death, for humans and for entities. 
 
 By virtue of not paying attention to our own History, 
