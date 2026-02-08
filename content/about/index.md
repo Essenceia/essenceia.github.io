@@ -35,10 +35,6 @@ currently living in the US.
 Professionally, I have a Masters in Electrical and Computer Engineering, have
 previously worked as a CPU designer at ARM and an FPGA engineer at Optiver.
 
-Lately I've gotten very interested in financial trading accelerators, and as such,
-most of my free time is currently spent building a high frequency trading
-accelerator from scratch. 
-
 In this blog, I document my most recent projects, in the hopes to help others in
 their own endeavors.
 
