@@ -13,8 +13,8 @@ showTaxonomies: true
 
 Intel is dying, and it is deeply troubling. 
 
-I have literally actively worked in direction of there destruction, designing CPU cores for the competition. 
-I also firmly believe the x86 memory model will not scale to massively multicore systems as well as the arm architecture.
+I have literally actively worked in direction of their destruction, designing CPU cores for the competition. 
+I also firmly believe the x86 memory model will not scale to massively multicore systems as efficiently as the arm architecture.
 
 Yet, manufacturing is what killed Intel. 
 
@@ -26,9 +26,9 @@ Yet, manufacturing is what killed Intel.
 Our society has forgotten death, for humans and for entities. 
 
 By virtue of not paying attention to our own History, 
-structures around us fell immortal. 
+structures around us feel immortal. 
 We look at giants and assume they will always stand tall,
-forgetting how there feet are made of clay. 
+forgetting how their feet are made of clay. 
 
 When giants fall, they fall slowly. 
 This is another fallacy of ours. 
