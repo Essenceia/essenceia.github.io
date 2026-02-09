@@ -3,7 +3,7 @@ title: "Reflexion on mortality"
 date: 2025-12-16
 description: "How giants vanish in silence."
 summary: "How giants vanish in silience."
-tags: ["writting experminent", "mortality", "Intel"]
+tags: ["writting experminent"]
 draft: false
 showTableOfContents: false
 showReadingTime: false

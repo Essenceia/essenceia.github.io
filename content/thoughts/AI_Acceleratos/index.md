@@ -3,7 +3,7 @@ title: "Why wait for the AI bubble to pop to tapeout AI accelerators?"
 date: 2026-01-20
 description: "On coping with the difficulties of seperating sincere instrests from fenzys."
 summary: "On coping with the difficulties of seperating sincere instrests from fenzys."
-tags: ["writting experminent", "sincere intrests"]
+tags: ["writting experminent"]
 draft: false
 showTableOfContents: false
 showReadingTime: false

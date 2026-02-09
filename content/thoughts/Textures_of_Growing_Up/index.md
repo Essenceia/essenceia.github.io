@@ -3,7 +3,7 @@ title: "Textures of growing up"
 date: 2026-02-07
 description: "Description of the texture of my formative years."
 summary: "Description of the texture of my formative years."
-tags: ["writting experminent", "growing up"]
+tags: ["writting experminent"]
 draft: false
 showTableOfContents: false
 showReadingTime: false
