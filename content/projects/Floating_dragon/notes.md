@@ -424,6 +424,26 @@ At this point $r$ is not neceesarily normalized, so we need to do so.
 
 The close path has deeper logic than the far path ... no shit have you seen that LZC + shift ? 
 
+##### Tree based LZC
+
+We can partially pre-determine the LZC using Leading Zero Anticipatory logic (LZA). This 
+"predictor" is at most off by 1, which allows us to compute the LZA in parallel on the abosulte 
+values of the significant difference for the close path. 
+This was we can start the exponent difference early. 
+
+Problem is that since it can be off, we need another LZA correction block down the line. Because of 
+this it is questionable if using a LZA would actually reduce the logic depth for my use case 
+where $p=8$, but it is guarantied to 
+increase the area... 
+
+Going with an optimized tree based LZC. Accounting for leaf initial value detimization (not shown in 
+algo bellow), the tree should be 4 levels deep. 
+Since the usefull input data vector is only 9 bits wide, a little under half of the tree is expected
+to be optimized out during synthesis. 
+
+![Tree based LZC, inner levels](lzc_inner_tree.png)
+
+
 #### Normalize + Rounding
 
 Normalization will be required : 
