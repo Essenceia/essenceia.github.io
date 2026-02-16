@@ -2,7 +2,7 @@
 title: "Alibaba cloud FPGA: the 200$ Kintex UltraScale+"
 description: "Using a decommissioned Alibaba cloud accelerator card as an FPGA dev board"
 summary: "No documentation, no problem!"
-tags: ["fpga", "ebay", "debugging", "linux", "hacking"]
+tags: ["fpga", "ebay", "debugging", "linux", "hacking", "AS02MC04"]
 date: 2025-09-02
 showTableOfContents: true
 ---
@@ -78,8 +78,8 @@ Option `2` was coming up ahead until I stumbled upon this ebay listing :
  
 {{< figure 
     src="ebay.png"
-    alt="Ebay listing for a decommissioned Alibaba Cloud accelerator FPGA"
-    caption="Ebay listing for a decommissioned Alibaba Cloud accelerator FPGA"
+    alt="Ebay listing for a decommissioned Alibaba Cloud accelerator FPGA. Model name: AS02MC04"
+    caption="Ebay listing for a decommissioned Alibaba Cloud accelerator FPGA. Model name: AS02MC04"
 >}}
 For 200$ this board featured a `XCKU3P-FFVB676`, 2 SPF+ connector and a x8 PCIe interface. 
 On the flip side it came with no documentation whatsoever, no guaranty it worked, and the 
