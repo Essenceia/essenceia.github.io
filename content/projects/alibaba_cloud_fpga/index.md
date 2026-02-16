@@ -7,6 +7,16 @@ date: 2025-09-02
 showTableOfContents: true
 ---
 
+
+{{< alert "circle-info" >}} 
+Update: Since this article was first published, many more brave souls have acquired this FPGA board, 
+leading to some "interesting" surprises.
+
+There will be an up to date list at the end of the article recollecting all such fun experiences that
+future owners might want to be aware of.
+{{< /alert >}}
+
+
 ## Introduction
 
 I was recently in the market for a new FPGA to start building my upcoming projects on. 
@@ -82,6 +92,7 @@ But I like a challenge, and the appeal of unlocking the 200$ Kintex UltraScale+ 
 was too great to ignore. 
 
 As such, I aim for this article to become the documentation paving the way to though this mirage. 
+
 
 ## The debugger challenge 
 
@@ -481,6 +492,9 @@ Additionally, the JLink is well supported by OpenOCD, the JLink's libraries are 
 
 {{< alert icon="circle-info" >}} 
 Note : I could also have used a USB Blaster, which considering it is literally an Altera tool would have made it hilarious.
+
+[Update]Note: Michał Hęćka has gotten the board flashing with an Altera USB Blaster. 
+
 {{< /alert >}}
 {{< figure 
     src="segger_jlink_conn.svg"
@@ -1429,3 +1443,28 @@ Truck-kun pinout: https://blog.csdn.net/qq_37650251/article/details/145716953
 Ebay listing: https://www.ebay.com/itm/167626831054?_trksid=p4375194.c101800.m5481
 
 OpenOCD documentation: https://openocd.org/doc-release/pdf/openocd.pdf
+
+## Before you buy
+
+If you have gotten yourself this board and have any personal experiences you would be 
+willing to share please feel free to [shot me an email.](mailto:julia.desmazes@gmail.com)
+
+**TL;DR:** 
+- your SFP might be faulty 
+
+### Broken SFP
+
+**Credit: Michał Hęćka** 
+
+Michał received an FPGA board with a `Huawei MTRA-3E11A` SFP module, but before plugging it 
+in he noticed some dirt specks inside the module. 
+He proceeded to open the module for closer inspection, and realized the receiver and transmission
+lasers were unsoldered and just ... hanging there. 
+
+{{< figure
+    src="broken_SFP.jpg"
+    caption="Clearly very broken SFP ... How does this even happen ?"
+    alt="Clearly very broken SFP ... How does this even happen ?"
+>}}
+
+Outcome: The ebay seller refunded the amount of the module. Seller `maybe123`. 
