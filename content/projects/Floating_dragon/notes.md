@@ -595,3 +595,4 @@ not on critical path -> use ripple carry
 [Alternative floating point format: Making floating point math highly efficient for AI hardware](https://engineering.fb.com/2018/11/08/ai-research/floating-point-math/)
 [IEEE 754 visualizer](https://bartaz.github.io/ieee754-visualization/)
 Numerical Computing with  IEEE  Floating Point  Arithmetic - Michael  L. Overton
+[Great floating point simulator, supporting a wide range of formats](https://kuterdinel.com/float-gallery.html)
