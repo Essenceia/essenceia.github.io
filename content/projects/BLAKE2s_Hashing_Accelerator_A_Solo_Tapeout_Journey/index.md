@@ -179,7 +179,7 @@ We can clearly see not only how BLAKE2b needs twice the storage requirement of B
 
 ### Pseudo code 
 
-Pseudo-code for the blake2 function as per the rfc-9693 spec, we will make references to this latter in the article.
+Pseudo-code for the blake2 function as per the [rfc-7693 spec](https://github.com/Essenceia/blake2_asic/blob/main/docs/rfc7693.txt), we will make references to this latter in the article.
 
 Mixing function G. R1, R2, R3, R4 and w are the constants given per blake2 version. 
 ```
