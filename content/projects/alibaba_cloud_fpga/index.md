@@ -1,19 +1,19 @@
 --- 
-title: "Alibaba cloud FPGA: the 200$ Kintex UltraScale+"
+title: "Alibaba cloud FPGA: the 200$ Kintex UltraScale+ [Updated]"
 description: "Using a decommissioned Alibaba cloud accelerator card as an FPGA dev board"
 summary: "No documentation, no problem!"
 tags: ["fpga", "ebay", "debugging", "linux", "hacking", "AS02MC04"]
-date: 2025-09-02
+date: 2026-02-25
 showTableOfContents: true
 ---
 
 
 {{< alert "circle-info" >}} 
-Update: Since this article was first published, many more brave souls have acquired this FPGA board, 
-leading to some "interesting" surprises.
-
-There will be an up to date list at the end of the article recollecting all such fun experiences that
-future owners might want to be aware of.
+This article was originally published on the 2nd of September 2025 and is regularly kept up to date
+to include the most recent developements around using the Alibaba `AS02MC04` board as a dev board.
+ 
+The [Before you buy](#before-you-buy) section wasn't part of the original article and 
+features the most recent updates.
 {{< /alert >}}
 
 
@@ -844,13 +844,17 @@ MAXVCCAUX 1.807 V
 To my indescribable joy I happened to stumble onto this gold mine, in which we get the board pinout.
 This most likely fell off a truck: https://blog.csdn.net/qq_37650251/article/details/145716953 
 
-So far this pinout looks correct.
+The bellow version has been corrected based on work from [Alex Forencich (link to his work)](https://github.com/fpganinja/taxi/blob/master/src/cndm/board/AS02MC04/fpga/fpga.xdc)
+and some of my own oppinions. 
+
+Alex drives the leds at 3.3V while I drive them at only 1.8V, so if you are seeing issues with 
+your LED behavior consider switching them over the 3.3V.
 
 
-| Pin Index | Name | IO Standard | Location | Bank |
-|-----------|------|-------------|----------|------|
-| 0 | diff_100mhz_clk_p | LVDS | E18 | BANK67 |
-| 1 | diff_100mhz_clk_n | LVDS | D18 | BANK67 |
+| Pin Index | Name | IO Standard | Location | Bank | Notes |
+|-----------|------|-------------|----------|------|-------|
+| 0 | diff_100mhz_clk_p | LVDS | E18 | BANK67 | - |
+| 1 | diff_100mhz_clk_n | LVDS | D18 | BANK67 | - |
 | 2 | sfp_mgt_clk_p | LVDS | K7 | BANK227 |
 | 3 | sfp_mgt_clk_n | LVDS | K6 | BANK227 |
 | 4 | sfp_1_txn | - | B6 | BANK227 |
@@ -861,29 +865,29 @@ So far this pinout looks correct.
 | 9 | sfp_2_txp | - | D7 | BANK227 |
 | 10 | sfp_2_rxn | - | B1 | BANK227 |
 | 11 | sfp_2_rxp | - | B2 | BANK227 |
-| 12 | SFP_1_MOD_DEF_0 | LVCMOS18 | D14 | BANK87 |
-| 13 | SFP_1_TX_FAULT | LVCMOS18 | B14 | BANK87 |
-| 14 | SFP_1_LOS | LVCMOS18 | D13 | BANK87 |
-| 15 | SFP_1_LED | LVCMOS18 | B12 | BANK87 |
-| 16 | SFP_2_MOD_DEF_0 | LVCMOS18 | E11 | BANK86 |
-| 17 | SFP_2_TX_FAULT | LVCMOS18 | F9 | BANK86 |
-| 18 | SFP_2_LOS | LVCMOS18 | E10 | BANK86 |
-| 19 | SFP_2_LED | LVCMOS18 | C12 | BANK87 |
-| 20 | IIC_SDA_SFP_1 | LVCMOS18 | C14 | BANK87 |
-| 21 | IIC_SCL_SFP_1 | LVCMOS18 | C13 | BANK87 |
-| 22 | IIC_SDA_SFP_2 | LVCMOS18 | D11 | BANK86 |
-| 23 | IIC_SCL_SFP_2 | LVCMOS18 | D10 | BANK86 |
-| 24 | IIC_SDA_EEPROM_0 | LVCMOS18 | G10 | BANK86 |
-| 25 | IIC_SCL_EEPROM_0 | LVCMOS18 | G9 | BANK86 |
-| 26 | IIC_SDA_EEPROM_1 | LVCMOS18 | J15 | BANK87 |
-| 27 | IIC_SCL_EEPROM_1 | LVCMOS18 | J14 | BANK87 |
-| 28 | GPIO_LED_R | LVCMOS18 | A13 | BANK87 |
-| 29 | GPIO_LED_G | LVCMOS18 | A12 | BANK87 |
-| 30 | GPIO_LED_H | LVCMOS18 | B9 | BANK86 |
-| 31 | GPIO_LED_1 | LVCMOS18 | B11 | BANK86 |
-| 32 | GPIO_LED_2 | LVCMOS18 | C11 | BANK86 |
-| 33 | GPIO_LED_3 | LVCMOS18 | A10 | BANK86 |
-| 34 | GPIO_LED_4 | LVCMOS18 | B10 | BANK86 |
+| 12 | SFP_1_MOD_DEF_0 | LVCMOS33 | D14 | BANK87 | PULLUP true |
+| 13 | SFP_1_TX_FAULT | LVCMOS33 | B14 | BANK87 | PULLUP true |
+| 14 | SFP_1_LOS | LVCMOS33 | D13 | BANK87 |PULLUP true |
+| 15 | SFP_1_LED | LVCMOS18 | B12 | BANK87 | SLEW SLOW DRIVE 12 |
+| 16 | SFP_2_MOD_DEF_0 | LVCMOS33 | E11 | BANK86 | PULLUP true |
+| 17 | SFP_2_TX_FAULT | LVCMOS33 | F9 | BANK86 | PULLUP true |
+| 18 | SFP_2_LOS | LVCMOS33 | E10 | BANK86 | PULLUP true |
+| 19 | SFP_2_LED | LVCMOS18 | C12 | BANK87 | SLEW SLOW DRIVE 12 |
+| 20 | IIC_SDA_SFP_1 | LVCMOS33 | C14 | BANK87 | SLEW SLLOW DRIVE 12 PULLUP true |
+| 21 | IIC_SCL_SFP_1 | LVCMOS33 | C13 | BANK87 | SLEW SLLOW DRIVE 12 PULLUP true |
+| 22 | IIC_SDA_SFP_2 | LVCMOS33 | D11 | BANK86 | SLEW SLLOW DRIVE 12 PULLUP true |
+| 23 | IIC_SCL_SFP_2 | LVCMOS33 | D10 | BANK86 | SLEW SLLOW DRIVE 12 PULLUP true |
+| 24 | IIC_SDA_EEPROM_0 | LVCMOS33 | G10 | BANK86 | SLEW SLOW DRIVE 12 PULLUP true |
+| 25 | IIC_SCL_EEPROM_0 | LVCMOS33 | G9 | BANK86  | SLEW SLOW DRIVE 12 PULLUP true |
+| 26 | IIC_SDA_EEPROM_1 | LVCMOS33 | J15 | BANK87 | SLEW SLOW DRIVE 12 PULLUP true |
+| 27 | IIC_SCL_EEPROM_1 | LVCMOS33 | J14 | BANK87 | SLEW SLOW DRIVE 12 PULLUP true |
+| 28 | GPIO_LED_R | LVCMOS18 | A13 | BANK87 | SLEW SLOW DRIVE 12 |
+| 29 | GPIO_LED_G | LVCMOS18 | A12 | BANK87 | SLEW SLOW DRIVE 12 |
+| 30 | GPIO_LED_H | LVCMOS18 | B9  | BANK86 | SLEW SLOW DRIVE 12 |
+| 31 | GPIO_LED_1 | LVCMOS18 | B11 | BANK86 | SLEW SLOW DRIVE 12 |
+| 32 | GPIO_LED_2 | LVCMOS18 | C11 | BANK86 | SLEW SLOW DRIVE 12 |
+| 33 | GPIO_LED_3 | LVCMOS18 | A10 | BANK86 | SLEW SLOW DRIVE 12 |
+| 34 | GPIO_LED_4 | LVCMOS18 | B10 | BANK86 | SLEW SLOW DRIVE 12 |
 | 35 | pcie_mgt_clkn | - | T6 | BANK225 |
 | 36 | pcie_mgt_clkp | - | T7 | BANK225 |
 | 37 | pcie_tx0_n | - | R4 | BANK225 |
@@ -918,7 +922,7 @@ So far this pinout looks correct.
 | 66 | pcie_rx5_p | - | AD2 | BANK224 |
 | 67 | pcie_rx6_p | - | AE4 | BANK224 |
 | 68 | pcie_rx7_p | - | AF2 | BANK224 |
-| 69 | pcie_perstn_rst | LVCMOS18 | A9 | BANK86 |
+| 69 | pcie_perstn_rst | LVCMOS33 | A9 | BANK86 | PULLUP true |
 
 ### Global clock 
 
@@ -1450,7 +1454,10 @@ If you have gotten yourself this board and have any personal experiences you wou
 willing to share please feel free to [shot me an email.](mailto:julia.desmazes@gmail.com)
 
 **TL;DR:** 
-- your SFP might be faulty 
+- your SFP might be faulty
+- there are hidden extra GPIOs 
+- most of the `LVCMOS18` are actually `LVCMOS33` 
+- this board is supported by [Corundum](https://github.com/fpganinja/taxi/tree/master), an high-performance FPGA-based NIC using the taxi open-source transport library
 
 ### Broken SFP
 
@@ -1467,4 +1474,73 @@ lasers were unsoldered and just ... hanging there.
     alt="Clearly very broken SFP ... How does this even happen ?"
 >}}
 
-Outcome: The ebay seller refunded the amount of the module. Seller `maybe123`. 
+Outcome: The ebay seller refunded the amount of the module. Seller `maybe123`.
+
+### Extra GPIOs
+
+**Credit: Alex Forencich** 
+
+There are some additional GPIO pin accessible via pads and he speculates some 
+boards might have the actual header and components associated to these populated. 
+
+For all of use other plebs, these signals are available through SMD resistor footprints. 
+
+{{< figure
+    src="J5.jpg"
+    caption="J5 location on the board"
+    alt="J5 location on the board"
+>}}
+
+J5 pio to FPGA pin reverse engineering : 
+```tcl
+set_property -dict {LOC A14 IOSTANDARD LVCMOS33} [get_ports {gpio[0]}] ;# J5.3,4
+set_property -dict {LOC E12 IOSTANDARD LVCMOS33} [get_ports {gpio[1]}] ;# J5.5,6
+set_property -dict {LOC E13 IOSTANDARD LVCMOS33} [get_ports {gpio[2]}] ;# J5.7,8
+set_property -dict {LOC F10 IOSTANDARD LVCMOS33} [get_ports {gpio[3]}] ;# J5.9,10
+set_property -dict {LOC C9  IOSTANDARD LVCMOS33} [get_ports {gpio[4]}] ;# J5.11,12
+set_property -dict {LOC D9  IOSTANDARD LVCMOS33} [get_ports {gpio[5]}] ;# J5.13,14
+```
+source: https://github.com/fpganinja/taxi/blob/8567f91ef6bab46a261e98f5ab660731162605f5/src/cndm/board/AS02MC04/fpga/fpga.xdc#L49C1-L54C84
+
+### Most pins are actually 3.3V
+
+**Credit: Alex Forencich** 
+
+According to his experience, apparently a lot of the I/O interfaces reported to be operating at 1.8V should actually be
+operating at 3.3V.
+
+I have partially updated the board pinout table and information in the section above to reflect this. 
+
+To get the full up to date board xdc according to Alex [checkout the Corundum board support](https://github.com/fpganinja/taxi/tree/master/src/cndm/board/AS02MC04/fpga). 
+
+### Corundum for the Alibaba AS02MC04
+
+**Credit: Alex Forencich**
+
+For users not looking to re-implement the entire PCIe + Ethernet stack themselves 
+and wanting something to get there projects running off the bat, the Corundum NIC
+has recently added support for this alibaba board. 
+
+[link to the project](https://github.com/fpganinja/taxi/tree/master/src/cndm/board/AS02MC04/fpga)
+
+{{< quote  author="taxi project README" source="https://github.com/fpganinja/taxi">}}
+
+## Corundum NIC
+
+Corundum is an open-source, high-performance FPGA-based NIC and platform for in-network compute.  Features include a high performance datapath, 10G/25G/100G Ethernet, PCI express gen 3+, a custom, high performance, tightly-integrated PCIe DMA engine, many (1000+) transmit, receive, completion, and event queues, scatter/gather DMA, MSI/MSI-X interrupts, per-port transmit scheduling, flow hashing, RSS, checksum offloading, and native IEEE 1588 PTP timestamping.  A Linux driver is included that integrates with the Linux networking stack.  Development and debugging is facilitated by an extensive simulation framework that covers the entire system from a simulation model of the driver and PCI express interface on the host side and Ethernet interfaces on the network side.
+
+Several variants of Corundum are planned, sharing the same host interface and device driver but targeting different optimization points:
+
+*  corundum-micro: size-optimized for applications like SoCs and low-bandwidth NICs, supporting several ports at 1 Gbps up to 10-25 Gbps
+*  corundum-lite: middle of the road design, supporting multiple ports at 10G/25G or one port at 100G, up to around 100 Gbps aggregate
+*  corundum-ng: intended for high-performance packet processing with deep pipelines and segmented internal interfaces, supporting operation at up to 400 Gbps aggregate
+*  corundum-proto: simplified design with simplified driver, intended for educational purposes only
+
+Planned features include a DPDK driver, SR-IOV, AF_XDP, white rabbit/IEEE 1588 HA, and Zircon stack integration.
+
+Note that Corundum is still under active development and may not ready for production use; additional functionality and improvements to performance and flexibility will be made over time.
+
+{{< /quote >}}
+
+
+ 
