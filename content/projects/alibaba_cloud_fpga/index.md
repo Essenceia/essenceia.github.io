@@ -1480,10 +1480,10 @@ Outcome: The ebay seller refunded the amount of the module. Seller `maybe123`.
 
 **Credit: Alex Forencich** 
 
-There are some additional GPIO pin accessible via pads and he speculates some 
+There are some additional GPIO pins accessible via pads and he speculates some 
 boards might have the actual header and components associated to these populated. 
 
-For all of use other plebs, these signals are available through SMD resistor footprints. 
+For all of us other plebs, these signals are available through SMD resistor footprints. 
 
 {{< figure
     src="J5.jpg"
@@ -1491,7 +1491,7 @@ For all of use other plebs, these signals are available through SMD resistor foo
     alt="J5 location on the board"
 >}}
 
-J5 pio to FPGA pin reverse engineering : 
+J5 connection to FPGA pin reverse engineering : 
 ```tcl
 set_property -dict {LOC A14 IOSTANDARD LVCMOS33} [get_ports {gpio[0]}] ;# J5.3,4
 set_property -dict {LOC E12 IOSTANDARD LVCMOS33} [get_ports {gpio[1]}] ;# J5.5,6
@@ -1506,7 +1506,7 @@ source: https://github.com/fpganinja/taxi/blob/8567f91ef6bab46a261e98f5ab6607311
 
 **Credit: Alex Forencich** 
 
-According to his experience, apparently a lot of the I/O interfaces reported to be operating at 1.8V should actually be
+According to his experience, a lot of the I/O interfaces reported to be operating at 1.8V should actually be
 operating at 3.3V.
 
 I have partially updated the board pinout table and information in the section above to reflect this. 
@@ -1518,10 +1518,10 @@ To get the full up to date board xdc according to Alex [checkout the Corundum bo
 **Credit: Alex Forencich**
 
 For users not looking to re-implement the entire PCIe + Ethernet stack themselves 
-and wanting something to get there projects running off the bat, the Corundum NIC
+and wanting something to get their projects running off the bat, the Corundum NIC
 has recently added support for this alibaba board. 
 
-[link to the project](https://github.com/fpganinja/taxi/tree/master/src/cndm/board/AS02MC04/fpga)
+[link to the Corundum project](https://github.com/fpganinja/taxi/tree/master/src/cndm/board/AS02MC04/fpga)
 
 {{< quote  author="taxi project README" source="https://github.com/fpganinja/taxi">}}
 
