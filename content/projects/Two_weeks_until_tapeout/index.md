@@ -657,7 +657,7 @@ desperately needed after an all nighter spent trying to wrap up my design:
 
 {{< figure  
 	src="waffles.jpg"  
-	caption="My beloved."  
+	caption="My beloved Waffle House."  
     alt="a plate of waffle house waffles "  
 >}} 
 
