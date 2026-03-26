@@ -236,7 +236,7 @@ source: [ENERGY PROPORTIONAL MEMORY SYSTEMS](https://chipgen.stanford.edu/people
 Even though I purposefully chose 64 bit floats, the most energy intensive arithmetic operation, 
 we still required a 64x64 systolic array before the cost of compute started exceeding the cost of the initial DRAM value reads.
 
-aka: For those not living in 2026, we have uncovered a new clue to the mystery of where all the low-power DRAM chips have suddenly vanished to!  
+aka: For those not living in 2026, we have uncovered a new clue to the mystery of where all the HBM chips have suddenly vanished to! (HBM has the lowest energy cost per accessed bit.) 
 
 #### Scaling 
 
