@@ -29,4 +29,7 @@ I can name each one and tell you exactly how each changed what I can do. Not all
 
 Today I am embarking on project number 6. 
 
-
+{{< figure
+	src="large.jpg"
+	caption="BA public lecture about a model solar system, with a lamp—in place of the sun—illuminating the faces of the audience, Joseph Wright of Derby (1766) - europeana.eu, Public Domain, https://commons.wikimedia.org/w/index.php?curid=1292995"
+>}}
