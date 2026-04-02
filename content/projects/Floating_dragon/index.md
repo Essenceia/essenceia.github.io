@@ -17,7 +17,7 @@ Half a decade ago I decided that I was going to implement some floating point ar
  
 This is how I faced the most complete technical defeat of my existence. Through this utter annihilation emerged my present fear of floating point. 
 
-After half a decade I decided it was time for a rematch, time to face my dragons
+After half a decade I decided it was time for a rematch, time to face my dragons!
 
 But this time, I would not simply aim for a surface level understanding, this time I would aim to deeply grasp the floating point representation. 
 
@@ -27,8 +27,7 @@ When setting out on this crusade, I believed that there were only 3 types of peo
 2. The math PhDs working on the floating point representation  
 3. The people building the floating point hardware   
 
-Welcome to round 2 
-
+**Welcome to round 2!**
 
 # Chapter 1: Descent into madness 
 
@@ -53,8 +52,11 @@ With the values of \(S\), \(E\) and \(T\) being the values stored in the floatin
 - \(E\) biased exponent  
 - \(T\) trailing significant field
 
-![][image1]  
-source: IEEE 754-2019, section 3
+{{< figure
+	src="ieee_layout.png"
+	alt="Floating point layout - IEEE 754-2019, section 3"
+	caption="Floating point layout - IEEE 754-2019, section 3"
+>}}
 
 The size of these fields, as well as the values of \(b\) (exponent bias) and \(p\) (precision) depend on the floating point format.
 
@@ -91,7 +93,7 @@ Also, this is where hell starts.
 
 Let us commence our descent slowly. 
 
-As the most astute readers might have already noticed looking (kudos) at the representation format, we have a real sign bit. This implies that we actually have 2 representations for zero: +0.0 and -0.0.  
+As the most astute readers might have already noticed looking (kudos) at the representation format, we have a real sign bit. This implies that we actually have 2 representations for zero: \(+0.0\) and \(-0.0\).  
 
 Now where things get fun is that we have rules around which zero to use. For example, let us consider how we would determine the equality between two floating point numbers, say `X == Y` ? 
 
@@ -120,7 +122,8 @@ Here are a few examples for clarification :
 - \(+\infty - \infty\) would also result in a `qNaN` because \(\pm\infty\) are actually limits, not numbers. And subtracting a limit from another limit \(+\infty - \infty\) just doesn’t make sense. 
 
 
-Want to know another fun fact about `qNaN`s ?   
+Want to know another fun fact about `qNaN`s ?  
+ 
 They are contagious.
 
 Arithmetic operations with a `qNaN` as an operand will result in a `qNaN`.  
@@ -150,11 +153,11 @@ $$
 (-1)^{S} × 2^{e} × m  
 $$  
 Where \(m\) is a number represented by a string of the form \(d_0 . d_1 d_2 ... d_{p-1}\), and is \(p\) long.(with \(p\) the precision, or number of bits in the significant + 1 ).   
-For example 1.5 would be written as :    
+For example \(1.5\) would be written as :    
 $$  
 (-1)^0 × 2^{0} × 1.1000   
 $$  
-and 3 as \(2 × 1.5\) :   
+and \(3\) as \(2 × 1.5\) :   
 $$  
 (-1)^0 × 2^{1} × 1.1000   
 $$  
@@ -185,7 +188,10 @@ $$
 0.000091552734375 - 0.0000762939453125 = 0.0
 $$
 
-![][image2]
+{{< figure 
+	src="denorm0.png"
+	caption="Credit: Handbook of Floating-Point Arithmetic, Second Edition"
+>}}
 
 Now when we add subnormals we are effectively filling this gap.
 
@@ -193,10 +199,15 @@ Eg,using float16 with subnormals:
 $$
 0.000091552734375 - 0.0000762939453125 = 0.0000152587890625
 $$
-![][image3]  
+
+{{< figure
+	src="denorm1.png" 
+	caption="Credit: Handbook of Floating-Point Arithmetic, Second Edition"
+>}}
+
 Now with subnormals in our system we inherit the following interesting property: for any floating point number \(x\) and \(y\) such that \(x \neq y\), \(x - y\) is necessarily nonzero.
 
-We have now acquired extra armour against a division by zero    
+As a bonus, we have now acquired extra armour against a division by zero:  
 ```C++  
 if ( x != y ) z = 1.0 / ( x - y );   
 ```
@@ -217,16 +228,18 @@ More seriously, it depends: what rounding mode are we using ?
 
 The IEEE spec defines 5 rounding modes that compliant hardware should support: 
 
-- `RD` round downwards towards $-\intfy$: the result is the largest representable floating point less than or equal to the exact results  
-- `RU` round towards $+\intfy$: the result is the smallest representable floating point greater or equal to the exact results  
+- `RD` round downwards towards \(-\infty\): the result is the largest representable floating point less than or equal to the exact results  
+- `RU` round towards \(+\infty\): the result is the smallest representable floating point greater or equal to the exact results  
 - `RZ` round towards \(0\) in all cases  
 - `RN_even/RN_away`  round to nearest: the result is the nearest possible value, with a tie breaking rule if the number is exactly halfway between the two:   
   - `even` chooses the number where the least significant bit of the significant ( mantissa) is 0.  
   - `away` chooses the next consecutive floating point number
 
-![][image4]
-
-*source : Chapter 2 of Handbook of Floating-Point Arithmetic*
+{{< figure
+	src="rounding.png"
+	caption="credit : Chapter 2 of Handbook of Floating-Point Arithmetic, Second Edition"
+	alt="Credit : Chapter 2 of Handbook of Floating-Point Arithmetic, Second Edition"
+>}}
 
 Let us get back to our example,  `15359` isn’t a representable number with a `float16_t`, and the closest two numbers are `15352` and `15360`. 
 
@@ -330,8 +343,11 @@ $$
 
 The laws of [trichotomy](https://en.wikipedia.org/wiki/Law_of_trichotomy) have broken down, we can never unsee this
 
-![][image5]  
-Floating point K.O
+{{< figure
+	src="ko.jpeg"
+	caption="Floating point K.O"
+	alt="Floating point K.O"
+>}}
 
 ## Adder example
 
@@ -360,16 +376,27 @@ No, we are going to build our own FPU hardware out of transistors, optimize the 
 Note: This next section is a simplified overview aimed at giving readers that are unfamiliar with hardware design the groundwork for understanding the constraints that go into hardware design.   
 If you have already gazed into the abyss, you can skip this section. 
 
-Digital hardware is built by connecting groups of prearranged transistors called cells. These cells might correspond to basic logic operations. Here is the example of a :2 input or whose result is then anded with another input.  
+Digital hardware is built by connecting groups of prearranged transistors called cells. These cells might correspond to basic logic operations. Here is the example of a: 2 input or whose result is then anded with another input.
+  
 This logic can be written as :   
 ```  
 X = ((A1 | A2) & B1)  
 ```   
 Or represented by the following schematic : 
+{{< figure
+	src="sky130_fd_sc_hd__o21a.schematic.svg"
+	caption="[sky130_fd_sc_hd__o21a](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html) schematic"
+	alt="sky130_fd_sc_hd__o21a schematic"
+>}}
+
 
 Since these gates are built out of transistors they are specific to a fabrication process known as a node. Here is what this function looks like for the Skywater 130nm A node :   
-![][image6]  
-link: [https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html)
+
+{{< figure
+	src="sky130_fd_sc_hd__o21a_1.svg"
+	caption="[sky130_fd_sc_hd__o21a_1](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html) cell floorplan"
+	alt="sky130_fd_sc_hd__o21a cell floorplan"
+>}}
 
 These cells occupy an area of the chip proportional to the amount of transistors needed to build them, more transistors more area. When building a chip, the more area we need the more money it costs to build. Additionally the more area a functionality needs, the further apart the logic spreads, the longer the wire, the longer the wire delay, this impacts timing. 
 
@@ -396,74 +423,84 @@ So, since all logic we add comes with a cost, step 1 is to take a step back and 
 There are plenty of different floating point formats, ranging from your standard IEEE types to your more custom application specific weirdos like the Pixar float.   
 It would be great if we lived in the dimension where we could drop them all in an arena and let them fight to death. But, tragically we can’t do that with abstract concepts. So now we are forced to sit down and think about it … uh 
 
-Appart : Yes you read that right, no this isn’t some AI hallucination, and no I am not talking about the 2019 short film. Did you know Pixar has its own 24 bit floating point type adapted to its use case ? Pixar is probably one of the most underrated tech companies: most people have no idea just how custom their rendering hardware has gotten in the past. Also, have you ever heard of [Pixar Image Computers](https://en.wikipedia.org/wiki/Pixar_Image_Computer)? Beware this rabbit hole goes deep.   
+{{< alert icon="circle-info" >}}
+Yes you read that right, no this isn’t some AI hallucination, and no I am not talking about the 2019 short film.
+ 
+Did you know Pixar has its own 24 bit floating point type adapted to its use case ? Pixar is probably one of the most underrated tech companies: most people have no idea just how custom their rendering hardware has gotten in the past. Also, have you ever heard of [Pixar Image Computers](https://en.wikipedia.org/wiki/Pixar_Image_Computer)? 
 
-On one hand we have the IEEE floats, these are your industry standard floats. Being compliant guarantees that the same floating point operation will have the same behavior regardless of the hardware it is run on, something your buyers really want. (Unless your hardware has a bug, in that case you made an attempt at being compliant. Hello intel :wave: : the internet hasn’t forgotten yet). But compliance implies supporting subnormals, `NaN`s, $\pm\intfy$ and 5 different rounding modes. 
+Beware this rabbit hole goes deep.   
+{{< /alert >}}
 
-Then you have the matter of size: how large is your memory footprint and then, how are you allocating your bits across your exponent and significant fields?   
+On one hand we have the IEEE floats, these are your industry standard floats. Being compliant guarantees that the same floating point operation will have the same behavior regardless of the hardware it is run on, something your buyers really want. (Unless your hardware has a bug, in that case you made an attempt at being compliant. Hello intel 👋: the internet hasn’t forgotten yet). But compliance implies supporting subnormals, `NaN`s, \(\pm\infty\) and 5 different rounding modes. 
+
+Then you have the matter of size: how large is your memory footprint and then, how are you allocating your bits across your exponent and significant fields?  
+ 
 Some options are : 
 
-- float16, IEEE 754 half-precision: 5 bits exponent, 10 bits significant  
-- float32, IEEE 754 single precision: 8 bits exponent, 23 bits significant  
-- float64, IEEE 754 double precision: 11 bits exponent, 52 bits significant  
+- `float16`, IEEE 754 half-precision: 5 bits exponent, 10 bits significant  
+- `float32`, IEEE 754 single precision: 8 bits exponent, 23 bits significant  
+- `float64`, IEEE 754 double precision: 11 bits exponent, 52 bits significant  
 - Pixar's PXR24 format, 8 bits exponent, 15 bits significant  
-- tf32, Nvdia’s TensorFloat-32 which is a 19 bit format. I know right, why did they let the marketing department name this ? 8 bits exponent, 10 bits significant  
-- bfloat16, Google’s brain float format : 8 bits exponent, 7 bits significant
+- `tf32`, Nvdia’s TensorFloat-32 which is a 19 bit format. I know right, why did they let the marketing department name this ? 8 bits exponent, 10 bits significant  
+- `bfloat16`, Google’s brain float format : 8 bits exponent, 7 bits significant
 
 What size we ultimately choose depends on our workload’s needs. Certain workloads need more precision which requires more significant bits, others benefit from smaller formats allowing them to workaround a memory bandwidth limitation. 
 
-So, once again, the answer is: it depends  Thank you for reading  
+So, once again, the answer is: it depends! Thank you for reading!  
 
-More seriously, let’s clarify what we are actually building, because this floating point arithmetic is going to be part of a larger project, else this wouldn't be any fun. But to maximize the fun factor we need a project which requires a LOT of floating point math. Luckily, it just so happens that I know just the accelerator architecture for the task: a matrix matrix multiplication systolic array These types of accelerators are widely found in machine learning accelerators targeting both training and inference tasks (when quantization degrades accuracy too much). Now, I am not setting out to build an AI accelerator, it just so happens to be a convenient excuse to put too much floating point arithmetic on my silicon. 
+More seriously, let’s clarify what we are actually building, because this floating point arithmetic is going to be part of a larger project, else this wouldn't be any fun. But to maximize the fun factor we need a project which requires a LOT of floating point math. 
+
+Luckily, it just so happens that I know just the accelerator architecture for the task: a matrix matrix multiplication systolic array These types of accelerators are widely found in machine learning accelerators targeting both training and inference tasks (when quantization degrades accuracy too much). Now, I am not setting out to build an AI accelerator, it just so happens to be a convenient excuse to put too much floating point arithmetic on my silicon. 
 
 Splendid, now that we ~~have our excuse~~ know what application we are targeting, let us examine the constraints of this workload. 
 
 Firstly, we are not building an FPU unit for a CPU with external clients. We can go custom, which conveniently lets us toss IEEE 754 compatibility and its 5 rounding modes back into the pit of hell from which it crawled out of. That said, for producing test vectors for testing the floating point arithmetic implementation I would like to choose a less confidential format. Additionally, any format that is easy to convert to and from one of the widely supported IEEE types, gets extra points. This will simplify interoperability between the accelerator and the firmware driving it. 
 
-Secondly, my chip will be IO bottlenecked (for those that have been following this blog: yes, again  :fire:) so my choice will be one of the [minifloats](https://en.wikipedia.org/wiki/Minifloat), this term refers to floats of less than 32 bits wide. See, I am not choosing this just because the name is cute, there are also technical reasons. 
+Secondly, my chip will be IO bottlenecked (for those that have been following this blog: yes, again 🔥) so my choice will be one of the [minifloats](https://en.wikipedia.org/wiki/Minifloat), this term refers to floats of less than 32 bits wide. See, I am not choosing this just because the name is cute, there are also technical reasons. 
 
 Because we are targeting a smaller format, we need to be even more deliberate about our split of exponent/significant. Sacrificing exponent bits will reduce the range of our format, but skimping on the significant will reduce our number’s representable precision. Now, we can also approach the question of this split from the hardware angle by considering how this will impact the multiplication and addition implementation.
 
-Let us consider multiplication, the most expensive operation in a floating point multiplication is the multiplication of the significance. This involves an unsigned multiplication of `<significant bits> + 1` wide, and the hardware cost of a multiplication does everything but scale linearly: the cost of an 8 bit bfloat16 significant multiplication is roughly half that of of an 11 bit float16 significant multiplication.   
+Let us consider multiplication, the most expensive operation in a floating point multiplication is the multiplication of the significance. This involves an unsigned multiplication of `<significant bits> + 1` wide, and the hardware cost of a multiplication does everything but scale linearly: the cost of an 8 bit `bfloat16` significant multiplication is roughly half that of of an 11 bit `float16` significant multiplication.   
 Small significants are starting to sound very appealing.
 
 Back to what our application needs, AI workloads have the interesting characteristics of being relatively insensible to loss of precision, as illustrated by the fact that quantization is even possible. On the other hand, they benefit from having more range. 
 
 For all these reasons, I now crown the bfloat16 our winner. Congratulations, you are officially my favorite minifloat
 
-Here is a recap on why bfloat16 is the best format in the history of the universe : 
+Here is a recap on why `bfloat16` is the best format in the history of the universe : 
 
 - only 16 bits wide  
 - small mantissa: 7 bits   
 - widely spread format: this isn’t a custom invention and even has C++ standard library support  
-- easy conversion to float32: just chop off the mantissa bits (with some caveats which we will get into later)  
+- easy conversion to `float32`: just chop off the mantissa bits (with some caveats which we will get into later)  
 - not an IEEE 754 type 
 
-A great thing about bfloat16 is that it has no spec, so we can implement it however we want A horrible thing with bfloat16 is that it has no spec, so we can implement it however we want
+A great thing about `bfloat16` is that it has no spec, so we can implement it however we want!<br />
+A horrible thing with `bfloat16` is that it has no spec, so we can implement it however we want!
 
-This project was a great lesson in why we need the IEEE to keep the age-old tradition of attracting engineers with the promise of free donuts and locking them in a room until a spec is produced 
+This project was a great lesson in why we need the IEEE to keep the age-old tradition of attracting engineers with the promise of free donuts and locking them in a room until a spec is produced! 
 
-Turns out, when you don’t have a spec you can implement something however you want, so naturally everyone does it differently 
+Turns out, when you don’t have a spec you can implement something however you want, so naturally everyone does it differently! 
 
-Now, we are building a custom accelerator, so bfloat16 operation compatibility isn’t a huge issue, the problem is that we now need to choose for ourselves which ice cream toppings we want on our floating point math flavor. 
+Now, we are building a custom accelerator, so `bfloat16` operation compatibility isn’t a huge issue, the problem is that we now need to choose for ourselves which ice cream toppings we want on our floating point math flavor. 
 
 The first question to settle is rounding modes.   
 We need to choose at least one, and for testing against known test vectors it needs to be one of the IEEE modes. Out of the 5 modes in the spec, round towards zero is by far the most convenient and cheapest to implement in hardware. Unlike the others you never need to round upwards to the next floating point value, allowing me, to skip the need for a 16 bit addition at the very end (perfectly placed right on the critical path for maximum timing pressure) of the addition. 
 
 But, `RZ` (round towards zero) as another massive advantage, and that its behavior on overflow:  
-`RZ` doesn’t overflow to $\pm\infty$ it clamps 
+`RZ` doesn’t overflow to \(\pm\infty\) it clamps! 
 
 This means that, as long as no \(\infty\) is provided as an input for my addition and multiplication operations they will never produce an \(\infty\). So by disallowing \(\infty\) to be used as input I can drop \(\infty\) support entirely and save on hardware. 
 
-But, it gets better: the only operations that organically produce a `NaN` in addition and multiplication operations are against $\intfy$. So if I also disallow `NaN` as an input value I can also remove the hardware cost of supporting them. 
+But, it gets better: the only operations that organically produce a `NaN` in addition and multiplication operations are against \(\infty\). So if I also disallow `NaN` as an input value I can also remove the hardware cost of supporting them. 
 
-Lastly we have the question of denormal support, probably the least debated question in bfloat16 design, the 126 additional denormal values are just not worth their hardware hassle: dropped. 
+Lastly we have the question of denormal support, probably the least debated question in `bfloat16` design, the 126 additional denormal values are just not worth their hardware hassle: dropped. 
 
-To recap, our ice cream order is :   
-- bfloat16: 1 bit sign, 8 bits exponent, 7 bits significant  
+To recap, our ice cream order is 🍨:   
+- `bfloat16`: 1 bit sign, 8 bits exponent, 7 bits significant  
 - round toward zero rounding only  
-- no subnormal support, all subnormals will be clamped to 0  
-- no $\pm\infty$ or `NaN` support
+- no subnormal support, all subnormals will be clamped to \(\pm0.0\)  
+- no \(\pm\infty\) or `NaN` support
 
 ## Architecture
 
@@ -824,4 +861,8 @@ Because I now have something much more important to do
 Before we can go to sleep, before we can finish writing the doc, there is one post tapeout tradition that must never be skipped:   
 ![][image15]  
 Waffle House
+
+## Ressources 
+
+I highly recommend the excellent book *"Handbook of Floating-Point Arithmetic, Second edition"*, for readers looking for the 600 page version of the floating point question.
 
