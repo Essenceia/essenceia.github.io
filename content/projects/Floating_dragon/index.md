@@ -1,21 +1,21 @@
 ---
 title: "Floating dragons: Floating point from scratch"
-date: 2026-04-02
-description: "Building floating point from scratch from first principals."
+date: 2026-04-01
+description: "Building floating point from scratch"
 summary: ""
-tags: ["floating point", "float", "bfloat16",  "IHP", "130nm", "C++", "verification", "math", "rtl", "verilog", "DFT", "systolic_array", "arithmetic"]
+tags: ["floating point", "float", "bfloat16",  "IHP", "130nm", "C", "verification", "math", "rtl", "verilog", "DFT", "systolic_array", "arithmetic"]
 draft: true
 showTableOfContents: true
 ---
+{{< katex >}}
 
 Recommended soundtrack for reading, microtonal math rock:  [https://www.youtube.com/watch?v=0Ssi-9wS1so](https://www.youtube.com/watch?v=0Ssi-9wS1so)
 
 I have a confession to make: floating point scares me.
 
-Half a decade ago I decided that I was going to implement some floating point arithmetic. Back then it seemed approachable enough, after all, floating points are ubiquitous. How hard can it really be ?   
-My experience until that point had been: given enough time and effort is spent bashing my brain against a problem, I can generally figure things out.  
-This is how I faced the most complete technical defeat of my existence.  
-Through this utter annihilation emerged my present fear of floating point. 
+Half a decade ago I decided that I was going to implement some floating point arithmetic. Back then it seemed approachable enough, after all, floating points are ubiquitous. How hard can it really be ? My experience until that point had been: given enough time and effort is spent bashing my brain against a problem, I can generally figure things out. 
+ 
+This is how I faced the most complete technical defeat of my existence. Through this utter annihilation emerged my present fear of floating point. 
 
 After half a decade I decided it was time for a rematch, time to face my dragons
 
@@ -29,6 +29,7 @@ When setting out on this crusade, I believed that there were only 3 types of peo
 
 Welcome to round 2 
 
+
 # Chapter 1: Descent into madness 
 
 Looking back on it, one of the main reasons behind my past defeat was that I mistook my ability to use floating points as a marker of understanding. And that this freed me from the need to invest the time in studying floating point, as if I was going to pick it up along the way. 
@@ -41,12 +42,12 @@ I am assuming that readers already have some surface level knowledge of what flo
 
 Let me just set a few definitions, in the context of this discussion **normal** floating point numbers will be defined as: 
 
-{{< katex >}}
+
+$$  
+(-1)^{S} × 2^{E−b} × (1 + T \cdot 2^{1−p})  
+$$ 
  
-$$  
-(-1)^{S} × 2^{E−b} × (1 + T · 2^{1−p})  
-$$  
-With the values of (S), \(E\) and \(T\) being the values stored in the floating point fields: 
+With the values of \(S\), \(E\) and \(T\) being the values stored in the floating point fields: 
 
 - \(S\) sign bit   
 - \(E\) biased exponent  
@@ -59,12 +60,13 @@ The size of these fields, as well as the values of \(b\) (exponent bias) and \(p
 
 Eg, for the IEEE 754 single precision (`float32_t`) we have: 
 
-- $b = 127$  
+- \(b = 127\)  
 - \(p = 24\)
 
-Resulting in:  
+Resulting in: 
+ 
 $$  
-(-1)^{S} × 2^{E−127} × (1 + T · 2^{-23})  
+(-1)^{S} \times 2^{E−127} \times (1 + T \cdot 2^{-23})  
 $$
 
 In this discussion we will be calling : 
@@ -94,28 +96,28 @@ As the most astute readers might have already noticed looking (kudos) at the rep
 Now where things get fun is that we have rules around which zero to use. For example, let us consider how we would determine the equality between two floating point numbers, say `X == Y` ? 
 
 To do this comparison we would generally re-use the adder and do `X - Y` then check all the result’s bits are 0, problem is -0.0 is written with an 1 in its sign bit.   
-So we have rules around when the result should use $+0.0$ or $-0.0$, and the subtracting of two equal floating point numbers is such an example of this rule :   
+So we have rules around when the result should use \(+0.0\) or \(-0.0\), and the subtracting of two equal floating point numbers is such an example of this rule :   
 $$  
 X - X = +0.0  
 $$
 
 ### NaN
 
-NaN for Not A Number.   
+`NaN` for Not A Number.   
 For all of you that thought we were talking about numbers, this is the point at which you start understanding the difference between a number and a representation format. 
 
 So let’s start with the fun bit, there are actually different types of `NaN`’s: 
 
-- quiet `NaN`s (`qNaN`s) that you would typically encounter from your bad math  
-- signaling `NaN`s (`sNaN`s) the ones bad math doesn’t produce and also the ones that scream at you by signaling an invalid operation exception whenever they appear as operands. Most people won’t encounter these. 
+- `q`uiet `NaN`s (`qNaN`s) that you would typically encounter from your bad math  
+- `s`ignaling `NaN`s (`sNaN`s) the ones bad math doesn’t produce and also the ones that scream at you by signaling an invalid operation exception whenever they appear as operands. Most people won’t encounter these. 
 
-So, what do I mean by “`qNaN`s are used to indicate when the result of an arithmetic operation cannot be represented”?  
+So, what do I mean by *“`qNaN`s are used to indicate when the result of an arithmetic operation cannot be represented”*?  
    
 Here are a few examples for clarification : 
 
-- $sqrt(-1.0)$ results in an `qNaN` as $\sqrt(-1.0) = i$, and \(i\) is an imaginary number that cannot be presented without the use of complex notation.   
-- 0.0 / 0.0 would also result in a `qNaN` because: what are you doing ?   
-- $+\infty - \infty$ would also result in a `qNaN` because $\pminfty$ are actually limits, not numbers. And subtracting a limit from another limit $+\infty - \infty$ just doesn’t make sense. 
+- \(\sqrt(-1.0)\) results in an `qNaN` as \(\sqrt(-1.0) = i\), and \(i\) is an imaginary number that cannot be presented without the use of complex notation.   
+- \(\frac{0.0}{0.0}\) would also result in a `qNaN` because: what are you doing ?   
+- \(+\infty - \infty\) would also result in a `qNaN` because \(\pm\infty\) are actually limits, not numbers. And subtracting a limit from another limit \(+\infty - \infty\) just doesn’t make sense. 
 
 
 Want to know another fun fact about `qNaN`s ?   
@@ -128,7 +130,7 @@ In memory `NaN`s are represented with all the exponent bits set to \(1\)  and wi
 
 ### Infinity**s**
 
-So we have already started introducing these with the `NaN`s, but the floating point representation has room for two infinity notations: one for $+/infty$ and its mirror $-\infty$. These are not numbers, infinity is not a number it’s a limit
+So we have already started introducing these with the `NaN`s, but the floating point representation has room for two infinity notations: one for \(+\infty\) and its mirror \(-\infty\). These are not numbers, infinity is not a number it’s a limit
 
 In compliance with IEEE certain specific infinities can be used in arithmetic operations, be used as inputs for boolean operations and be produced as the result of a calculation. 
 
@@ -147,51 +149,56 @@ A more common way of writing this is:
 $$  
 (-1)^{S} × 2^{e} × m  
 $$  
-Where \(m\) is a number represented by a string of the form $d_0 \dot d_1 d\_2 \dots d_{p-1}$, and is \(p\) long.(with \(p\) the precision, or number of bits in the significant + 1 ).   
-For example 1.5 would be written as :   
+Where \(m\) is a number represented by a string of the form \(d_0 . d_1 d_2 ... d_{p-1}\), and is \(p\) long.(with \(p\) the precision, or number of bits in the significant + 1 ).   
+For example 1.5 would be written as :    
 $$  
 (-1)^0 × 2^{0} × 1.1000   
 $$  
-and 3 as $2 × 1.5$ :   
+and 3 as \(2 × 1.5\) :   
 $$  
 (-1)^0 × 2^{1} × 1.1000   
 $$  
-In our normal floating point representation, the \(1\) in $(1 + T · 2^{1−p})$ is our $d_0$ and is always set to $d_0 = 1$.   
-Now, the funny thing is our significant actually only has $p-1$ bits, and $d_0$ is actually an inferred bit, we call it the `hidden bit`. 
+In our normal floating point representation, the \(1\) in \((1 + T · 2^{1−p})\) is our \(d_0\) and is always set to \(d_0 = 1\).   
+Now, the funny thing is our significant actually only has \(p-1\) bits, and \(d_0\) is actually an inferred bit, we call it the `hidden bit`. 
 
 Seems simple enough ? Could something finally be simple about floating point ? 
 
 Don’t worry: floating point isn’t going to let you down like this, because we have another category of numbers 
 
-They have an implicit hidden bit set to $d_0 = 0$ and are called `subnormal numbers` (or `denormal numbers)`. Yay :party: 
+They have an implicit hidden bit set to \(d_0 = 0\) and are called `subnormal numbers` (or `denormal numbers)`. Yay 🥳
 
 These are used to encode the smallest representable floating point numbers, and were the most controversial part of the IEEE 574 spec during it’s elaboration.  
-They are also a giant pain in the ass to implement, so much so that a lot of the early FPU’s would trap on subnormal numbers and handle them in software … very slowly …   
-So why are we putting up with them apart from not wanting to waste some bits ?  
+They are also a giant pain in the ass to implement, so much so that a lot of the early FPU’s would trap on subnormal numbers and handle them in software … very slowly …  
+ 
+So why are we putting up with them apart from not wanting to waste some bits ? 
+ 
 The culprit: gradual underflow. 
 
 #### Gradual underflow
 
-The idea behind gradual underflow is to slow the loss of precision instead of it being abrupt after the smallest representable normal number:($2^{-(b+1)-p+1}$). This helps with numerical stability. 
+The idea behind gradual underflow is to slow the loss of precision instead of it being abrupt after the smallest representable normal number: \(2^{-(b+1)-p+1}\). This helps with numerical stability. 
 
-To illustrate what I mean, let’s imagine we didn’t have subnormals, \(x\) and \(y\) where floating points numbers such that $x \neq y$. If $x - y$ fell in the range between 0 and the smallest representable floating point number then it would underflow to 0 since there is no representable number in that range. 
+To illustrate what I mean, let’s imagine we didn’t have subnormals, \(x\) and \(y\) where floating points numbers such that \(x \neq y\). If \(x - y\) fell in the range between \(0.0\) and the smallest representable floating point number then it would underflow to \(0.0\) since there is no representable number in that range. 
 
-eg, using float16 without subnormals:   
+Eg, using float16 without subnormals:   
+$$
 0.000091552734375 - 0.0000762939453125 = 0.0
+$$
 
 ![][image2]
 
 Now when we add subnormals we are effectively filling this gap.
 
-eg,using float16 with subnormals:  
+Eg,using float16 with subnormals:  
+$$
 0.000091552734375 - 0.0000762939453125 = 0.0000152587890625
-
+$$
 ![][image3]  
-Now with subnormals in our system we inherit the following interesting property: for any floating point number \(x\) and \(y\) such that $x \neq y$, $x - y$ is necessarily nonzero.
+Now with subnormals in our system we inherit the following interesting property: for any floating point number \(x\) and \(y\) such that \(x \neq y\), \(x - y\) is necessarily nonzero.
 
-We have now acquired armour against a division by zero    
+We have now acquired extra armour against a division by zero    
 ```C++  
-if ( x = y ) z = 1.0 / ( x - y );   
+if ( x != y ) z = 1.0 / ( x - y );   
 ```
 
 ### Rounding modes 
@@ -204,7 +211,7 @@ So what would happen when we try to set it to `15359` ?
 float16_t e = 15359.0;  
 cout << e << endl;  
 ```  
-The answer is 42
+The answer is 42.
 
 More seriously, it depends: what rounding mode are we using ? 
 
@@ -236,53 +243,53 @@ So depending on which rounding mode we are using we will get :
 
 ### Rounding modes boundary behavior 
 
-Recall how, when I was describing the behavior of the rounding modes I didn’t systematically use the term “number” for the rounding result ? This is because some rounding modes cause the result to round into $\pm\infty$.
+Recall how, when I was describing the behavior of the rounding modes I didn’t systematically use the term “number” for the rounding result ? This is because some rounding modes cause the result to round into \(\pm\infty\).
 
 For example on `float16_t` using `RU` rounding :   
 ```C++  
-    float16_t x, y, z;  
-    x = 65504;  
-    y = 1;  
-    fesetround(FE_UPWARD);  
-    z = x + y;  
-    cout << x << " + " << y << " = " << z << endl;  
+float16_t x, y, z;  
+x = 65504;  
+y = 1;  
+fesetround(FE_UPWARD);  
+z = x + y;  
+cout << x << " + " << y << " = " << z << endl;  
 ```  
 Would result in :   
 ```  
 65504 + 1 = inf  
 ```  
 Similarly :   
+```C++ 
+float16_t x, y, z;  
+x = -65504;  
+y = 1;  
+fesetround(FE_DOWNWARD);  
+z = x - y;  
+cout << x << " - " << y << " = " << z << endl;  
 ```  
-    float16_t x, y, z;  
-    x = -65504;  
-    y = 1;  
-    fesetround(FE_DOWNWARD);  
-    z = x - y;  
-    cout << x << " - " << y << " = " << z << endl;  
-```  
-Would round down to $-\intfy$ :   
+Would round down to \(-\intfy\) :   
 ```  
 -65504 - 1 = -inf  
 ```
 
-Conjunctly these definitions imply that operations using the `RU` will never reach $-\infty$ and operations using `RD` $+intfy$.   
+Conjunctly these definitions imply that operations using the `RU` will never reach \(-\infty\) and operations using `RD` \(+\infty\).   
 ```C++  
-    float16_t x, y, zsub, zadd;  
-    x = 65504;  
-    y = 1;  
-    fesetround(FE_UPWARD);  
-    zsub = -x - y;  
-    cout << -x << " - " << y << " = " << zsub << endl;  
-    fesetround(FE_DOWNWARD);  
-    zadd = x + y;  
-    cout << x << " + " << y << " = " << zadd << endl;  
+float16_t x, y, zsub, zadd;  
+x = 65504;  
+y = 1;  
+fesetround(FE_UPWARD);  
+zsub = -x - y;  
+cout << -x << " - " << y << " = " << zsub << endl;  
+fesetround(FE_DOWNWARD);  
+zadd = x + y;  
+cout << x << " + " << y << " = " << zadd << endl;  
 ```  
 Result :   
 ```  
 -65504 - 1 = -65504  
 65504 + 1 = 65504  
 ```  
-Now where this get’s fun is with `RZ` , since it behaves like a `RD` for positive numbers and a `RU` on negative numbers, this means operations using this rounding mode CANNOT reach $\pm\intfy$.
+Now where this get’s fun is with `RZ` , since it behaves like a `RD` for positive numbers and a `RU` on negative numbers, this means operations using this rounding mode CANNOT reach \(\pm\infty\).
 
 At this point in the article my sudden obsession with rounding mode limit behavior might seem a little random. Please just sit tight for now and trust me, we will be exploiting this behavior later in this article. 
 
@@ -299,14 +306,14 @@ So any comparison against a `NaN` will be unordered, this is a pretty interestin
 
 Here is this relationship in effect:   
 ```C++  
-    float16_t x, y;  
-    x = NAN;  
-    y = 1.0;  
-    cout << "x =/= x:   " << ((x=x)  ? "true" : "false") << endl;  
-    cout << "x > x:     " << ((x>x)   ? "true" : "false") << endl;  
-    cout << "x <= x:    " << ((x<=x)  ? "true" : "false") << endl;  
-    cout << "x > y:     " << ((x>y)   ? "true" : "false") << endl;  
-    cout << "x <= y:    " << ((x<=y)  ? "true" : "false") << endl;  
+float16_t x, y;  
+x = NAN;  
+y = 1.0;  
+cout << "x =/= x:   " << ((x=x)  ? "true" : "false") << endl;  
+cout << "x > x:     " << ((x>x)   ? "true" : "false") << endl;  
+cout << "x <= x:    " << ((x<=x)  ? "true" : "false") << endl;  
+cout << "x > y:     " << ((x>y)   ? "true" : "false") << endl;  
+cout << "x <= y:    " << ((x<=y)  ? "true" : "false") << endl;  
 ```  
 Result:  
 ```  
@@ -444,9 +451,9 @@ The first question to settle is rounding modes.
 We need to choose at least one, and for testing against known test vectors it needs to be one of the IEEE modes. Out of the 5 modes in the spec, round towards zero is by far the most convenient and cheapest to implement in hardware. Unlike the others you never need to round upwards to the next floating point value, allowing me, to skip the need for a 16 bit addition at the very end (perfectly placed right on the critical path for maximum timing pressure) of the addition. 
 
 But, `RZ` (round towards zero) as another massive advantage, and that its behavior on overflow:  
-`RZ` doesn’t overflow to $\pminfty$ it clamps 
+`RZ` doesn’t overflow to $\pm\infty$ it clamps 
 
-This means that, as long as no $\infty$ is provided as an input for my addition and multiplication operations they will never produce an $\infty$. So by disallowing $\infty$ to be used as input I can drop $\infty$ support entirely and save on hardware. 
+This means that, as long as no \(\infty\) is provided as an input for my addition and multiplication operations they will never produce an \(\infty\). So by disallowing \(\infty\) to be used as input I can drop \(\infty\) support entirely and save on hardware. 
 
 But, it gets better: the only operations that organically produce a `NaN` in addition and multiplication operations are against $\intfy$. So if I also disallow `NaN` as an input value I can also remove the hardware cost of supporting them. 
 
@@ -456,7 +463,7 @@ To recap, our ice cream order is :
 - bfloat16: 1 bit sign, 8 bits exponent, 7 bits significant  
 - round toward zero rounding only  
 - no subnormal support, all subnormals will be clamped to 0  
-- no $\pm \infty$ or `NaN` support
+- no $\pm\infty$ or `NaN` support
 
 ## Architecture
 
@@ -489,7 +496,7 @@ Recall how we were doing `RZ` rounding only ? `RZ` is an effective clamping of t
 
 caption=”I have highlighted in color all the logic needed as a result of this rounding upwards, and we are removing all of it. (:fire: w :fire:)”
 
-Next, since we are imposing no `NaN`s or $\infty$ be used as an operand, we have no way of triggering an exception, so this too is removed.   
+Next, since we are imposing no `NaN`s or \(\infty\) be used as an operand, we have no way of triggering an exception, so this too is removed.   
 ![][image9]
 
 Now, this schematic doesn’t illustrate how subnormals are handled, but our implementation is also saving logic there. That said, we do still need some logic to detect when they occur and clamp them to \(0\). On the close path this functionality is rolled into a block that I will label as “normalize” that is on our critical path after the multibit significant shift and the exponent subtraction.
@@ -594,10 +601,9 @@ Which is totally legal, given the bfloat16 behavior is not fully outlined by any
 Since I am not perfectly fluent in x86 assembly, I decided to write a [simple test program](https://github.com/Essenceia/BFloat16/blob/main/cpu_test/main.cpp) to probe out the behavior of my soft `bfloat16_t`.
 
 From this I learned that it:
-
-* has subnormal support  
-* has `NaN` support  
-* has inf support
+- has subnormal support  
+- has `NaN` support  
+- has inf support
 
 So naive me thought that, in order to use this as a golden model for the hardware, all I needed was to also manually clamp subnormals to 0 and not drive `NaN`s and $intfy$s. 
 
