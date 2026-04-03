@@ -1,17 +1,19 @@
-{{ $path := .Get "path" }}
+{{- $path := .Get "path" -}}
+{{ $currentDir := .Page.File.Dir }}
+{{ $filepath := printf "%s/%s" $currentDir $path }}
 {{ $lang := .Get "lang" | default "text" }}
 {{ $title := .Get "title" | default (print "Show " $path) }}
-{{ $code := readFile $path }}
+{{ $code := readFile $filepath }}
+{{- $caption := .Get "caption" }}
 
-<details>
-  <summary style="cursor: pointer; font-weight: bold; margin: 0.5rem 0;">{{ $title }}</summary>
+<figure>
+  {{ with $title }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
   <div style="
-    max-height: 20em;
+    max-height: 50em;
     overflow: auto;
-    margin-top: 0.1rem;
-    border-radius: 10px;
-    padding: 1rem;
-  ">
+    border-radius: 10px;"
+>
     {{ highlight $code $lang "" }}
   </div>
-</details>
+  {{ with $caption }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
+</figure>

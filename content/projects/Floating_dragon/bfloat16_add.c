@@ -345,7 +345,5 @@ static inline bf16 bf16_add(
 int main() {
 	bf16 f0 = {.frc = 0, .exp = 1, .sig = 0};
 	bf16 r = bf16_add(f0, f0);
-	bfloat16_t v = 1;
-	volatile bfloat16_t r1 = v + v + v;
 	return 0;
 }

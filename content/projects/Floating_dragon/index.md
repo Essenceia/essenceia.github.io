@@ -31,13 +31,13 @@ When setting out on this crusade, I believed that there were only 3 types of peo
 
 # Chapter 1: Descent into madness 
 
-Looking back on it, one of the main reasons behind my past defeat was that I mistook my ability to use floating points as a marker of understanding. And that this freed me from the need to invest the time in studying floating point, as if I was going to pick it up along the way. 
+Looking back on it, one of the main reasons behind my past defeat was that I mistook my ability to use floating points for a marker of understanding. And that this freed me from the need to invest the time in studying floating point, as if I was going to pick it up along the way. 
 
 So it’s now time to put the computer aside, and spend 10 days in the company of paper. ( you remember, the white stuff ) 
 
 ## How floating point works 
 
-I am assuming that readers already have some surface level knowledge of what floating point is, so I won’t insult your intelligence with a basic intro. 
+I am assuming that readers already have some surface level knowledge of what floating point is, so I will spare you the basic intro. 
 
 Let me just set a few definitions, in the context of this discussion **normal** floating point numbers will be defined as: 
 
@@ -83,7 +83,7 @@ Note : The term mantissa isn’t pedantically correct since this isn't a logarit
 
 We are not actually interested in floating point in the abstract, but rather what we commonly refer to as “float” in our programs. 
 
-In the world of all the possible floating point types, these are the vanilla’s, except in this world, everyone also wants vanilla all the time
+In the world of all the possible floating point types, these are the vanillas, except in this world, everyone also wants vanilla all the time
 
 This float format is canonized by the IEEE in the IEEE 754 specification. Inside this holy grail is where the expected behavior is outlined in excruciating detail making it possible for users to expect the same behavior for the same floating point operations on different platforms. A cornerstone of making float ~~portable~~. 
 
@@ -117,7 +117,7 @@ So, what do I mean by *“`qNaN`s are used to indicate when the result of an ari
    
 Here are a few examples for clarification : 
 
-- \(\sqrt(-1.0)\) results in an `qNaN` as \(\sqrt(-1.0) = i\), and \(i\) is an imaginary number that cannot be presented without the use of complex notation.   
+- \(\sqrt(-1.0)\) results in an `qNaN` as \(\sqrt(-1.0) = i\), and \(i\) is an imaginary number that cannot be represented without the use of complex notation.   
 - \(\frac{0.0}{0.0}\) would also result in a `qNaN` because: what are you doing ?   
 - \(+\infty - \infty\) would also result in a `qNaN` because \(\pm\infty\) are actually limits, not numbers. And subtracting a limit from another limit \(+\infty - \infty\) just doesn’t make sense. 
 
@@ -170,7 +170,7 @@ Don’t worry: floating point isn’t going to let you down like this, because w
 
 They have an implicit hidden bit set to \(d_0 = 0\) and are called `subnormal numbers` (or `denormal numbers)`. Yay 🥳
 
-These are used to encode the smallest representable floating point numbers, and were the most controversial part of the IEEE 574 spec during it’s elaboration.  
+These are used to encode the smallest representable floating point numbers, and were the most controversial part of the IEEE 574 spec during its elaboration.  
 They are also a giant pain in the ass to implement, so much so that a lot of the early FPU’s would trap on subnormal numbers and handle them in software … very slowly …  
  
 So why are we putting up with them apart from not wanting to waste some bits ? 
@@ -230,10 +230,10 @@ The IEEE spec defines 5 rounding modes that compliant hardware should support:
 
 - `RD` round downwards towards \(-\infty\): the result is the largest representable floating point less than or equal to the exact results  
 - `RU` round towards \(+\infty\): the result is the smallest representable floating point greater or equal to the exact results  
-- `RZ` round towards \(0\) in all cases  
+- `RZ` round towards \(0.0\) in all cases  
 - `RN_even/RN_away`  round to nearest: the result is the nearest possible value, with a tie breaking rule if the number is exactly halfway between the two:   
-  - `even` chooses the number where the least significant bit of the significant ( mantissa) is 0.  
-  - `away` chooses the next consecutive floating point number
+  - `even` (round ties to even) chooses the number where the least significant bit of the significant ( mantissa) is 0.  
+  - `away` (round ties to away) chooses the next consecutive floating point number
 
 {{< figure
 	src="rounding.png"
@@ -285,7 +285,7 @@ Would round down to \(-\intfy\) :
 -65504 - 1 = -inf  
 ```
 
-Conjunctly these definitions imply that operations using the `RU` will never reach \(-\infty\) and operations using `RD` \(+\infty\).   
+Conjunctly these definitions imply that operations using the `RU` will never reach \(-\infty\) and operations using `RD` will never reach \(+\infty\).   
 ```C++  
 float16_t x, y, zsub, zadd;  
 x = 65504;  
@@ -351,7 +351,13 @@ The laws of [trichotomy](https://en.wikipedia.org/wiki/Law_of_trichotomy) have b
 
 ## Adder example
 
-TODO: paste ugly C code
+{{< collapsible-code 
+	path="bfloat16_add.c" 
+	lang="C" 
+	title="Bfloat16 addition in C"
+	caption="Lolilol" 
+>}}
+
 
 # Chapter 2: 
 
@@ -405,7 +411,7 @@ Timing what ?
 
 Imagine a world where charge carriers propagate like water: it takes time for the carrier to propagate through the logic gates and the wires. The more logic gates you have on your path, the more wire length you need to traverse, the longer the time. The density of these carriers indicates your binary state: 0 or 1, and for the predictable operation of your chip, you need to leave enough time for your flows of carriers to fully propagate through your longest path. 
 
-How much time you leave directly impacts how high you clock your hardware and so, how much performance you can get out of your design. 
+How much time you leave directly impacts how fast you can clock your hardware and hence how much performance you can get out of your design. 
 
 ## Optimizing
 
@@ -461,7 +467,7 @@ Secondly, my chip will be IO bottlenecked (for those that have been following th
 
 Because we are targeting a smaller format, we need to be even more deliberate about our split of exponent/significant. Sacrificing exponent bits will reduce the range of our format, but skimping on the significant will reduce our number’s representable precision. Now, we can also approach the question of this split from the hardware angle by considering how this will impact the multiplication and addition implementation.
 
-Let us consider multiplication, the most expensive operation in a floating point multiplication is the multiplication of the significance. This involves an unsigned multiplication of `<significant bits> + 1` wide, and the hardware cost of a multiplication does everything but scale linearly: the cost of an 8 bit `bfloat16` significant multiplication is roughly half that of of an 11 bit `float16` significant multiplication.   
+Let us consider the multiplication, the most expensive operation in a floating point multiplication is the multiplication of the significants. This involves an unsigned multiplication of `<significant bits> + 1` wide, and the hardware cost of a multiplication does everything but scale linearly: the hardwre cost of an 8 bit `bfloat16` significant multiplication is roughly half that of of an 11 bit `float16` significant multiplication.   
 Small significants are starting to sound very appealing.
 
 Back to what our application needs, AI workloads have the interesting characteristics of being relatively insensible to loss of precision, as illustrated by the fact that quantization is even possible. On the other hand, they benefit from having more range. 
@@ -481,21 +487,21 @@ A horrible thing with `bfloat16` is that it has no spec, so we can implement it 
 
 This project was a great lesson in why we need the IEEE to keep the age-old tradition of attracting engineers with the promise of free donuts and locking them in a room until a spec is produced! 
 
-Turns out, when you don’t have a spec you can implement something however you want, so naturally everyone does it differently! 
+Turns out, when you don’t have a spec you can implement something however you want, so naturally [everyone does it differently!](https://xkcd.com/927/)
 
 Now, we are building a custom accelerator, so `bfloat16` operation compatibility isn’t a huge issue, the problem is that we now need to choose for ourselves which ice cream toppings we want on our floating point math flavor. 
 
 The first question to settle is rounding modes.   
-We need to choose at least one, and for testing against known test vectors it needs to be one of the IEEE modes. Out of the 5 modes in the spec, round towards zero is by far the most convenient and cheapest to implement in hardware. Unlike the others you never need to round upwards to the next floating point value, allowing me, to skip the need for a 16 bit addition at the very end (perfectly placed right on the critical path for maximum timing pressure) of the addition. 
+We need to choose at least one, and for testing against known test vectors it needs to be one of the IEEE modes. Out of the 5 modes in the spec, round towards zero is by far the most convenient and cheapest to implement in hardware. Unlike the others you never need to round upwards to the next floating point value, allowing me to skip the need for a 16 bit addition at the very end (perfectly placed right on the critical path for maximum timing pressure) of the addition. 
 
-But, `RZ` (round towards zero) as another massive advantage, and that its behavior on overflow:  
+But, `RZ` (round towards zero) has another massive advantage, and that its behavior on overflow:  
 `RZ` doesn’t overflow to \(\pm\infty\) it clamps! 
 
 This means that, as long as no \(\infty\) is provided as an input for my addition and multiplication operations they will never produce an \(\infty\). So by disallowing \(\infty\) to be used as input I can drop \(\infty\) support entirely and save on hardware. 
 
 But, it gets better: the only operations that organically produce a `NaN` in addition and multiplication operations are against \(\infty\). So if I also disallow `NaN` as an input value I can also remove the hardware cost of supporting them. 
 
-Lastly we have the question of denormal support, probably the least debated question in `bfloat16` design, the 126 additional denormal values are just not worth their hardware hassle: dropped. 
+Lastly we have the question of denormal support, probably the least debated question in `bfloat16` design: the 126 additional denormal values are just not worth their hardware hassle, dropped. 
 
 To recap, our ice cream order is 🍨:   
 - `bfloat16`: 1 bit sign, 8 bits exponent, 7 bits significant  
@@ -505,7 +511,7 @@ To recap, our ice cream order is 🍨:
 
 ## Architecture
 
-Now that we have done the first hard part of deciding what we want to build, we need to do the second hard part of architecturing it. 
+Now that we have done the first hard part of deciding what we want to build, we need to do the second hard part: architecturing it. 
 
 For our matrix matrix operations we will require both an adder and a multiplier.   
 Since this article is getting quite long and the multiplier is actually quite easy to build once you figure out how to design the mantissa multiplication efficiently (spoiler: unsigned booth radix-4 multipliers), I will now focus on the more complex and intricate adder design.
@@ -516,7 +522,7 @@ This is by no means a bad design and if we were focused entirely on optimizing a
 Looking back at the addition algorithm, we observe that the massive cancellations and mantissa shifting are actually mutually exclusive. These cancellations for which we need to count the mantissa difference leading zeros and subtract more than 1 from the exponent ahead of normalization only occur when the exponent difference of the two operands is less than 2 AND we are doing an effective subtraction.   
 Based on this, and at the cost of some minor functionality duplication we can split our adder into 2 paths: 
 
-- close path: exponent different < 2 and effective substraction  
+- close path: exponent difference < 2 and effective substraction  
 - far path: exponent diff < 2 and effective addition or exponent difference >= 2 
 
 
@@ -549,15 +555,15 @@ caption=”Schematic of the version for bfloat16 addition we are implementing.�
 
 ## Verification 
 
-Theory is entertaining but unless it has proven it can stand up to reality nothing proves it true. So, there is no better way of validating one's understanding than tossing it against hard cold reality. 
+Theory is entertaining but unless it has proven it can stand up to reality, nothing proves it true. So, there is no better way of validating one's understanding than tossing it against hard cold reality. 
 
-Also, this isn’t just some thought experiment, we are actually taping this out on actual silicon, and if my past traumas with hardware have ingrained but one lesson in my mind it is that: until you have proven it works, it is broken  
+Also, this isn’t just some thought experiment, we are actually taping this out on actual silicon, and if my past traumas with hardware have ingrained but one lesson in my mind it is that: until you have proven it works, it is broken! 
 
-Time to run some tests
+Time to run some tests!
 
-Testing floating point arithmetic hardware is actually an interesting challenge since it is full of corner cases: you can’t just test 100 random values and call it a day. No, you need exhaustive coverage for all these corners, most of which you didn’t know existed. This is very much a you don’t know you don’t know problem. So, what is the plan for this ? 
+Testing floating point arithmetic hardware is actually an interesting challenge since it is full of corner cases: you can’t just test 100 random values and call it a day. No, you need exhaustive coverage for all these corners, most of which you didn’t know existed. This is very much a *"you don’t know you don’t know"* problem. So, what is the plan for this ? 
 
-And this is where I committed my crime against verification: directed simulation driven testing scales with the size of the input space, which is a fancy way of saying it doesn’t scale linearly. This is why formal methods are increasingly widespread for floating point validation. If we wanted to test this using directed testing we would need to test for all $2^{32}$ input combinations, which sounds like a terrible idea …
+This is where I committed my crime against verification: directed simulation driven testing scales with the size of the input space, which is a fancy way of saying it doesn’t scale linearly. This is why formal methods are increasingly widespread for floating point validation. If we wanted to test this using directed testing we would need to test for all $2^{32}$ input combinations, which sounds like a terrible idea …
 
 … and exactly what I am going to do because it is the only way to exhaustively test all the corner cases without having verified prior knowledge of where all the angles are. [This is a second order of ignorance problem.](https://www.5oi.org/the-five-orders-of-ignorance)
 
@@ -717,11 +723,13 @@ Now that we have some working bfloat16 arithmetics comes my favourite part: buil
 
 [https://github.com/Essenceia/Systolic_Array_with_DFT_v2/blob/main/docs/global_placement/placement_detailed.gif](https://github.com/Essenceia/Systolic_Array_with_DFT_v2/blob/main/docs/global_placement/placement_detailed.gif)
 
-Since this article is focused on the floating point arithmetic I will contain my desire to tell you all about the rest of the accelerator and lock it up in the ASIC’s repo: https://github.com/Essenceia/Systolic_Array_with_DFT_v2
+Since this article is focused on the floating point arithmetic I will contain my desire to tell you all about the rest of the accelerator and lock it up in the ASIC’s repo: 
+
+{{< github repo="Essenceia/Systolic_Array_with_DFT_v2" showTumbnail=true alt="" >}}
 
 ### Tiny Tapeout ihp26a
 
-This time we will be taping the chip on IHP’s fancy 130nm `sg13g2` node using Tiny Tapeout’s `ihp16a` chip as our shuttle. Also, for full transparency I was offered a coupon by the Tiny Tapout team that I traded for the area that I am using in this project( and a devboard ). So technically speaking this tapeout is sponsored by Tiny Tapeout, which will definitely not help me rave less about them    
+This time we will be taping the chip on IHP’s fancy 130nm `sg13g2` node using [Tiny Tapeout’s `ihp26a` chip](https://tinytapeout.com/chips/ttihp26a/) as our shuttle. Also, for full transparency I was offered a coupon by the Tiny Tapout team that I traded for the area that I am using in this project (and a devboard ). So technically speaking this tapeout is sponsored by Tiny Tapeout, which will definitely not help me rave less about them    
 Thanks guys 
 
 ![][image11]
@@ -822,16 +830,16 @@ Now I have a somewhat unique rule for my tapeouts: I never tapeout the same desi
 
 So if I wanted to submit to the `ihp0p4` shuttle chip, I couldn’t just re-use my existing IP, no, I needed something new. 
 
-Enter the fmax challenge  
+Enter the fmax challenge! 
 
 Do you recall how I told you IHP cells were lightning fast and how I was doing the full addition and multiplication in a single cycle ? Well part of me was dying to know how high I could reach if we were to ignore the IO limitation and aim for the maximum frequency  
 Luckily for me another community member was taping [out a comparable design](https://github.com/NikLeberg/tt_um_float_synth/tree/ihp-sg13cmos5l): and so we raced
 
 [https://github.com/Essenceia/uselessly_fast_bfloat16_multiplier](https://github.com/Essenceia/uselessly_fast_bfloat16_multiplier)
 
-In order to increase the frequency the bfloat16 multiplication was cut into 2 cycles As expected, the main critical path went through the mantissa multiplication. Now, in the original implementation of the multiplication, I was using the synthesizer implementation directive to infer an unsigned Booth radix-4 multiplier. 
+In order to increase the frequency the bfloat16 multiplication was cut into 2 cycles. As expected, the main critical path went through the mantissa multiplication. Now, in the original implementation of the multiplication, I was using the synthesizer implementation directive to infer an unsigned Booth radix-4 multiplier. 
 
-As the LZC experience has shown us, yosys is not a lightweight when it comes to generating optimized logic. Unfortunately, we trade this for a loss of control on our netlist, and in this case the inability to choose exactly where we would split the multiplication.
+As the LZC experience has shown us, yosys is not a light weight when it comes to generating optimized logic. Unfortunately, we trade this for a loss of control on our netlist, and in this case the inability to choose exactly where we would split the multiplication.
 
 Thus, in order to help pipeline this path, I needed to re-implement a custom 8-bit unsigned Booth radix-4 multiplier from scratch. 
 
@@ -841,6 +849,9 @@ Inside this custom multiplication stage, a flop is added after the encoding stag
 
 ![][image13]A few additional such implementations were performed throughout the multiplier allowing this design to reach a maximum operating frequency of `454.545` MHz.
 
+{{< figure 
+	src="fast_mul_floorplan.png"
+	caption="Uselessly fast multiplier floorplan render. Operate at up to 454.545 MHz on the nominal operating corner of 1.20 V at 25°C and occupies a single tile of area 202.08x154.98 um." 
 ![][image14]
 
 ## Closing 
@@ -852,12 +863,11 @@ After having build my own floating point arithmetic from scratch I now believed 
 1. The people writing the IEEE 754 spec  
 2. The math PhDs working on the floating point representation 
 
-After having re-implemented floating point arithmetics and taped it out twice, I can confidently assert that I do not deeply understand floating point arithmetics, but at least now I know exactly how deep the rabbit hole goes and   
-what I must do if I want to truly master it. 
+After having re-implemented floating point arithmetics and taped it out twice, I can confidently assert that I do not deeply understand floating point arithmetics, but at least now I know exactly how deep the rabbit hole goes and what I must do if I want to truly master it. 
 
 But with two 130nm tapeouts containing my own floating point IP I can confidently leave the explorations of the other minifloats and implementation of more complex operations to some other day. 
 
-Because I now have something much more important to do 
+Because I now have something much more important to do!
 
 Before we can go to sleep, before we can finish writing the doc, there is one post tapeout tradition that must never be skipped:   
 ![][image15]  
