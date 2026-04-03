@@ -1,10 +1,10 @@
 ---
 title: "Floating dragons: Floating point from scratch"
-date: 2026-04-01
-description: "Building floating point from scratch"
-summary: ""
+date: 2026-04-03
+description: "Building floating point from scratch!"
+summary: "Building floating point from scratch!"
 tags: ["floating point", "float", "bfloat16",  "IHP", "130nm", "C", "verification", "math", "rtl", "verilog", "DFT", "systolic_array", "arithmetic"]
-draft: true
+draft: false
 showTableOfContents: true
 ---
 {{< katex >}}
@@ -78,7 +78,7 @@ In this discussion we will be calling :
 - exponent, the value stored in the biased exponent field \(E\)  
 - significant/mantissa, the value stored in the \(T\) field
 
-> [!TIP]
+> [!TIP] Significant/Mantissa
 > The term mantissa isn’t pedantically correct since this isn't a logarithmic representation it should really be called a **significant.** But my fellow programmers in the audience will appreciate that since the sign has already used the \(s\) name for our single letter naming of our structure elements we have no choice but to yield and call this \(m\) for mantissa. I will be using the term mantissa and significant interchangeably in this article.
 
 ## What you never wanted to know 
@@ -368,12 +368,12 @@ Here is an example in C of the steps involved in doing a floating point addition
 
 # Chapter 2: 
 
-I know what you are thinking : So we have a C implementation, it works, why is this article still so long ? Is there a prolific comment section ? Can I go home now ? 
+I know what you are thinking : So we have a C implementation, it works, why is this article still so long? Is there a prolific comment section?<br>Can I go home now? 
 
 You remembered we said we were doing floating points from scratch right ? <br> 
-RIGHT ? 
+**RIGHT !?** 
 
-Code isn’t going to cut it, we need to go deeper 
+Code isn’t going to cut it, we need to go deeper! 
 
 ## Building the hard part 
 
@@ -584,7 +584,7 @@ Time to run some tests!
 
 Testing floating point arithmetic hardware is actually an interesting challenge since it is full of corner cases: you can’t just test 100 random values and call it a day. No, you need exhaustive coverage for all these corners, most of which you didn’t know existed. This is very much a *"you don’t know you don’t know"* problem. So, what is the plan for this ? 
 
-This is where I committed my crime against verification: directed simulation driven testing scales with the size of the input space, which is a fancy way of saying it doesn’t scale linearly. This is why formal methods are increasingly widespread for floating point validation. If we wanted to test this using directed testing we would need to test for all $2^{32}$ input combinations, which sounds like a terrible idea …
+This is where I committed my crime against verification: directed simulation driven testing scales with the size of the input space, which is a fancy way of saying it doesn’t scale linearly. This is why formal methods are increasingly widespread for floating point validation. If we wanted to test this using directed testing we would need to test for all \(2^{32}\) input combinations, which sounds like a terrible idea …
 
 … and exactly what I am going to do because it is the only way to exhaustively test all the corner cases without having verified prior knowledge of where all the angles are.<br>[This is a second order of ignorance problem.](https://www.5oi.org/the-five-orders-of-ignorance)
 
@@ -740,7 +740,7 @@ Sure it might come with different results, but this is what we signed up for whe
 
 ## Implementation 
 
-Now that we have some working bfloat16 arithmetics comes my favourite part: building it out of ~~expensive crystals~~ semiconductors   
+Now that we have some working `bfloat16` arithmetics comes my favourite part: building it out of ~~expensive crystals~~ semiconductors   
 
 {{< figure 
 	src="placement.gif"
@@ -752,10 +752,17 @@ Since this article is focused on the floating point arithmetic I will contain my
 
 {{< github repo="Essenceia/Systolic_Array_with_DFT_v2" showThumbnail=false alt="" >}}
 
+{{< figure
+	src="systolic_array_v2_floorplan.png"
+	caption="Floorplan of the second generation Systolic Array designed for IHP 130nm's node using the sg13g2 PDK. It occupies 126,685 µm² of die area and has a target typical operating voltage of 1.2V at 25°C.<br>This design features two clock trees, one for the MAC and another for the JTAG TAP. The MAC clock targets a 100 MHz maximum operating frequency, but current output GPIO frequency experiements suggest a 75 MHz maximum, and the JTAG 2 MHz."
+	alt="Floorplan of the second generation Systolic Array designed for IHP 130nm's node using the sg13g2 PDK. It occupies 126,685 µm² of die area and has a target typical operating voltage of 1.2V at 25°C. This design features two clock trees, one for the MAC and another for the JTAG TAP. The MAC clock targets a 100 MHz maximum operating frequency, but current output GPIO frequency experiements suggest a 75 MHz maximum, and the JTAG 2 MHz."
+>}} 
+
 ### Tiny Tapeout ihp26a
 
-This time we will be taping the chip on IHP’s fancy 130nm `sg13g2` node using [Tiny Tapeout’s `ihp26a` chip](https://tinytapeout.com/chips/ttihp26a/) as our shuttle. Also, for full transparency I was offered a coupon by the Tiny Tapout team that I traded for the area that I am using in this project (and a devboard ). So technically speaking this tapeout is sponsored by Tiny Tapeout, which will definitely not help me rave less about them    
-Thanks guys 
+This time we will be taping the chip on IHP’s fancy 130nm `sg13g2` node using [Tiny Tapeout’s `ihp26a` chip](https://tinytapeout.com/chips/ttihp26a/) as our shuttle. Also, for full transparency I was offered a coupon by the Tiny Tapout team that I traded for the area that I am using in this project (and a devboard ). So technically speaking this tapeout is sponsored by Tiny Tapeout, which will definitely not help me rave less about them!
+  
+Thanks guys!
 
 {{< figure
 	src="ihp26a_chip.png"
@@ -838,7 +845,7 @@ This `casez` LZC design is not only slightly faster, its biggest strength is in 
 
 Sometimes a good design is about more than just performance. 
 
-### Combo
+### Combo!
 
 But wait! There was a second tapeout ?! 
 
