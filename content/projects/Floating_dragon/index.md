@@ -1,8 +1,8 @@
 ---
 title: "Floating dragons: Floating point from scratch"
 date: 2026-04-03
-description: "Building floating point from scratch!"
-summary: "Building floating point from scratch!"
+description: "Actually building floating point from scratch!"
+summary: "Actually building floating point from scratch!"
 tags: ["floating point", "float", "bfloat16",  "IHP", "130nm", "C", "verification", "math", "rtl", "verilog", "DFT", "systolic_array", "arithmetic"]
 draft: false
 showTableOfContents: true
