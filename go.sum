@@ -1,2 +1,8 @@
+github.com/gohugoio/hugo v0.119.0 h1:kQha6WHt5GcCbI2PELB5KjWMHFJ8LJLrh3lusxnmCng=
+github.com/gohugoio/hugo v0.119.0/go.mod h1:pXwmL2lFumAkr3qS2D262seu4SWDLphQLvYfhdGdLRU=
 github.com/nunocoracao/blowfish/v2 v2.38.3 h1:vQnBVrXR1KHouiCteBhDR6tXqv1g1cJBuXj3XeXZXRM=
 github.com/nunocoracao/blowfish/v2 v2.38.3/go.mod h1:4SkMc+Ht8gpQCwArqiHMBDP3soxi2OWuAhVney+cuyk=
+github.com/nunocoracao/blowfish/v2 v2.86.0 h1:wAnsjubJuoAWgvM0Xgh2H7+4bOBVFAgX3WUvYtXO2k8=
+github.com/nunocoracao/blowfish/v2 v2.86.0/go.mod h1:4SkMc+Ht8gpQCwArqiHMBDP3soxi2OWuAhVney+cuyk=
+github.com/nunocoracao/blowfish/v2 v2.101.0 h1:nis5qMDPm+6NqsgxdOAXEXQZqk61hiCqTRczwLlxThc=
+github.com/nunocoracao/blowfish/v2 v2.101.0/go.mod h1:4SkMc+Ht8gpQCwArqiHMBDP3soxi2OWuAhVney+cuyk=

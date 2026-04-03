@@ -387,6 +387,7 @@ Or represented by the following schematic :
 	src="sky130_fd_sc_hd__o21a.schematic.svg"
 	caption="[sky130_fd_sc_hd__o21a](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html) schematic"
 	alt="sky130_fd_sc_hd__o21a schematic"
+	extrastyle="filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg) brightness(119%) contrast(119%);"
 >}}
 
 
