@@ -925,4 +925,5 @@ Before we can go to sleep, before we can finish writing the doc, there is one po
 
 I highly recommend the excellent book *"Handbook of Floating-Point Arithmetic, Second edition"*, for readers looking for the 600 page version of the floating point question.
 
-Special thanks to my best half, yg, Prawnzz and Erstfel for helping review this article. 
+Special thanks to my best half, [yg](https://hackaday.io/whygee), [Prawnzz](https://www.prawns.dev/) and [Erstfeld](https://github.com/EzraWolf) for helping review this article. 
+

@@ -29,10 +29,10 @@
 #  name = "Parent"
 #  weight = 20
 
-[[main]]
-  name = "HFT"
-  pageRef = "hft"
-  weight = 20
+#[[main]]
+#  name = "HFT"
+#  pageRef = "hft"
+#  weight = 20
 
 #[[main]]
 #  name = "example sub-menu 2"
