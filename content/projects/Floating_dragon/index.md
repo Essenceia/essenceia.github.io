@@ -9,7 +9,6 @@ showTableOfContents: true
 ---
 {{< katex >}}
 
-Recommended soundtrack for reading, microtonal math rock:  [https://www.youtube.com/watch?v=0Ssi-9wS1so](https://www.youtube.com/watch?v=0Ssi-9wS1so)
 
 I have a confession to make: floating point scares me.
 
@@ -28,6 +27,8 @@ When setting out on this crusade, I believed that there were only 3 types of peo
 3. The people building the floating point hardware   
 
 **Welcome to round 2!**
+
+> [!TIP] Recommended soundtrack for reading: [microtonal math rock.](https://www.youtube.com/watch?v=0Ssi-9wS1so)
 
 # Chapter 1: Descent into madness 
 
@@ -77,7 +78,8 @@ In this discussion we will be calling :
 - exponent, the value stored in the biased exponent field \(E\)  
 - significant/mantissa, the value stored in the \(T\) field
 
-Note : The term mantissa isn’t pedantically correct since this isn't a logarithmic representation it should really be called a **significant.** But my fellow programmers in the audience will appreciate that since the sign has already used the \(s\) name for our single letter naming of our structure elements we have no choice but to yield and call this \(m\) for mantissa. I will be using the term mantissa and significant interchangeably in this article.
+> [!TIP]
+> The term mantissa isn’t pedantically correct since this isn't a logarithmic representation it should really be called a **significant.** But my fellow programmers in the audience will appreciate that since the sign has already used the \(s\) name for our single letter naming of our structure elements we have no choice but to yield and call this \(m\) for mantissa. I will be using the term mantissa and significant interchangeably in this article.
 
 ## What you never wanted to know 
 
@@ -164,7 +166,7 @@ $$
 In our normal floating point representation, the \(1\) in \((1 + T · 2^{1−p})\) is our \(d_0\) and is always set to \(d_0 = 1\).   
 Now, the funny thing is our significant actually only has \(p-1\) bits, and \(d_0\) is actually an inferred bit, we call it the `hidden bit`. 
 
-Seems simple enough ? Could something finally be simple about floating point ? 
+Seems simple enough ? Could something finally be simple about floating point ?! 
 
 Don’t worry: floating point isn’t going to let you down like this, because we have another category of numbers 
 
@@ -175,7 +177,7 @@ They are also a giant pain in the ass to implement, so much so that a lot of the
  
 So why are we putting up with them apart from not wanting to waste some bits ? 
  
-The culprit: gradual underflow. 
+The culprit: *gradual underflow*. 
 
 #### Gradual underflow
 
@@ -207,7 +209,7 @@ $$
 
 Now with subnormals in our system we inherit the following interesting property: for any floating point number \(x\) and \(y\) such that \(x \neq y\), \(x - y\) is necessarily nonzero.
 
-As a bonus, we have now acquired extra armour against a division by zero:  
+Bonus: we have now acquired extra armour against a division by zero:  
 ```C++  
 if ( x != y ) z = 1.0 / ( x - y );   
 ```
@@ -312,8 +314,9 @@ It is a pretty common occurrence that we compare floating point values in our co
 
 But what happens if one side of your comparison is a `NaN` ? Can we compare `x > y` if `x` is a `NaN` ? And if so, what is the result ? 
 
-> Four mutually exclusive relations are possible: less than, equal, greater than, and unordered; unordered arises when at least one operand is a NaN. Every NaN shall compare unordered with **everything, including itself**.  
-source: IEEE 754-2019, section 5.11
+{{< quote author="IEEE 754-2019, section 5.11" >}}
+Four mutually exclusive relations are possible: less than, equal, greater than, and unordered; unordered arises when at least one operand is a NaN. Every NaN shall compare unordered with **everything, including itself**.  
+{{< /quote >}}
 
 So any comparison against a `NaN` will be unordered, this is a pretty interesting property meaning that there is literally no ordering relationship when `NaN`s are involved. 
 
@@ -351,19 +354,23 @@ The laws of [trichotomy](https://en.wikipedia.org/wiki/Law_of_trichotomy) have b
 
 ## Adder example
 
+Alright, so how does this actually work ? 
+Since an example is better than a thousand words (idiom than this article clearly doesn’t follow very well), here is some code!
+
+Here is an example in C of the steps involved in doing a floating point addition. This code is provided for illustrative purposes only, some of the corner cases are missing. 
+
 {{< collapsible-code 
 	path="bfloat16_add.c" 
 	lang="C" 
-	title="Bfloat16 addition in C"
-	caption="Lolilol" 
+	title="Floating point addition in C using the `bfloat16` type:"
+	caption="⚠ This code hasn't been thoughly tested, don't use this in prod!" 
 >}}
-
 
 # Chapter 2: 
 
 I know what you are thinking : So we have a C implementation, it works, why is this article still so long ? Is there a prolific comment section ? Can I go home now ? 
 
-You remembered we said we were doing floating points from scratch right ?   
+You remembered we said we were doing floating points from scratch right ? <br> 
 RIGHT ? 
 
 Code isn’t going to cut it, we need to go deeper 
@@ -379,8 +386,10 @@ No, we are going to build our own FPU hardware out of transistors, optimize the 
 
 ## ASIC implementation rules 
 
-Note: This next section is a simplified overview aimed at giving readers that are unfamiliar with hardware design the groundwork for understanding the constraints that go into hardware design.   
+{{< alert icon="circle-info" >}}
+This next section is a simplified overview aimed at giving readers that are unfamiliar with hardware design the groundwork for understanding the constraints that go into hardware design.   
 If you have already gazed into the abyss, you can skip this section. 
+{{< /alert >}}
 
 Digital hardware is built by connecting groups of prearranged transistors called cells. These cells might correspond to basic logic operations. Here is the example of a: 2 input or whose result is then anded with another input.
   
@@ -401,7 +410,7 @@ Since these gates are built out of transistors they are specific to a fabricatio
 
 {{< figure
 	src="sky130_fd_sc_hd__o21a_1.svg"
-	caption="[sky130_fd_sc_hd__o21a_1](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html) cell floorplan"
+	caption="[sky130_fd_sc_hd__o21a_1](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html)  cell floorplan, with each color corresponds to a specific layer of the chip sandwich."
 	alt="sky130_fd_sc_hd__o21a cell floorplan"
 >}}
 
@@ -522,34 +531,46 @@ This is by no means a bad design and if we were focused entirely on optimizing a
 Looking back at the addition algorithm, we observe that the massive cancellations and mantissa shifting are actually mutually exclusive. These cancellations for which we need to count the mantissa difference leading zeros and subtract more than 1 from the exponent ahead of normalization only occur when the exponent difference of the two operands is less than 2 AND we are doing an effective subtraction.   
 Based on this, and at the cost of some minor functionality duplication we can split our adder into 2 paths: 
 
-- close path: exponent difference < 2 and effective substraction  
-- far path: exponent diff < 2 and effective addition or exponent difference >= 2 
+- **close path**: exponent difference < 2 and effective substraction  
+- **far path**: exponent diff < 2 and effective addition or exponent difference >= 2 
 
 
 This split architecture is called the dual path architecture and has been the de facto adder architecture for high performance FPU since the 80s. 
 
-![][image7]  
-caption=”This schematic is from the excellent ‘Handbook of Floating-Point  
-Arithmetic, Second edition’, and I highly recommend this book for readers looking for the 600 page version of the floating point question. “
+{{< figure
+	src="adder.png"
+	caption="Dual path adder architecture schematic.<br>Credit: Handbook of Floating-Point Arithmetic, Second edition"
+	alt=""
+>}}
 
 Now, this schematic is actually for the IEEE compliant float, and we are not designing the general case. So how does this change for us ? 
 
 Recall how we were doing `RZ` rounding only ? `RZ` is an effective clamping of the mantissa whenever rounding is involved, which means we will never need to round upwards, which in turns means we can chop off all the logic to this effect. 
 
-![][image8]
+{{< figure
+	src="adder_edit.jpg"
+	caption="I have highlighted in color all the logic needed as a result of this rounding upwards, and we are removing all of it. (🔥 w 🔥)"
+	alt="I have highlighted in color all the logic needed as a result of this rounding upwards, and we are removing all of it."
+>}}
 
-caption=”I have highlighted in color all the logic needed as a result of this rounding upwards, and we are removing all of it. (:fire: w :fire:)”
 
 Next, since we are imposing no `NaN`s or \(\infty\) be used as an operand, we have no way of triggering an exception, so this too is removed.   
-![][image9]
+
+{{< figure 
+	src="adder_edit1.jpg"
+	caption="RIPing even more stuff out 🪓"
+	alt="RIPing even more stuff out 🪓"
+>}}
 
 Now, this schematic doesn’t illustrate how subnormals are handled, but our implementation is also saving logic there. That said, we do still need some logic to detect when they occur and clamp them to \(0\). On the close path this functionality is rolled into a block that I will label as “normalize” that is on our critical path after the multibit significant shift and the exponent subtraction.
 
 The final design looks something like this: 
 
-![][image10]
-
-caption=”Schematic of the version for bfloat16 addition we are implementing.” 
+{{< figure
+	src="my_adder.jpg"
+	caption="Schematic of the version for bfloat16 addition I am implementing."
+	alt="Schematic of the version for bfloat16 addition I am implementing."
+>}}
 
 # Chapter 3: Theory meets reality 
 
@@ -565,7 +586,7 @@ Testing floating point arithmetic hardware is actually an interesting challenge 
 
 This is where I committed my crime against verification: directed simulation driven testing scales with the size of the input space, which is a fancy way of saying it doesn’t scale linearly. This is why formal methods are increasingly widespread for floating point validation. If we wanted to test this using directed testing we would need to test for all $2^{32}$ input combinations, which sounds like a terrible idea …
 
-… and exactly what I am going to do because it is the only way to exhaustively test all the corner cases without having verified prior knowledge of where all the angles are. [This is a second order of ignorance problem.](https://www.5oi.org/the-five-orders-of-ignorance)
+… and exactly what I am going to do because it is the only way to exhaustively test all the corner cases without having verified prior knowledge of where all the angles are.<br>[This is a second order of ignorance problem.](https://www.5oi.org/the-five-orders-of-ignorance)
 
 This creates our next problem: testing time, just how long is testing +4 billion combinations going to take? Because [I believe low iteration times is paramount to getting shit done](https://essenceia.github.io/projects/alibaba_cloud_fpga/#4---writing-a-bitstream) I need this testbench to run fast, so I need a fast simulator and golden model. 
 
@@ -607,7 +628,7 @@ This is indicative that my current hardware either doesn't have hardware support
 5		bfloat16_t a, b, c;  
 6	  
 7		a = 1.0;  
-   0x0000000000001121 <+8>:	movzwl 0xee4(%rip),%eax        # 0x200c  
+   0x0000000000001121 <+8>:	    movzwl 0xee4(%rip),%eax        # 0x200c  
    0x0000000000001128 <+15>:	mov    %ax,-0x6(%rbp)
 
 8		b = 1.0;  
@@ -651,8 +672,7 @@ From this I learned that it:
 
 So naive me thought that, in order to use this as a golden model for the hardware, all I needed was to also manually clamp subnormals to 0 and not drive `NaN`s and $intfy$s. 
 
-```C++
-
+```C
 #define IS_SUBNORMAL(x) ((isnormal(x) | isnan(x) | isinf(x) | (x == 0e0bf16)))  
 ```
 
@@ -663,20 +683,20 @@ But while I was blissfully working my way through testing all of my possible ope
 
 I quote from the C++ 2022 published proposal on "Extended floating-point types and standard names" : 
 
-```  
+{{< quote author="P1467R9 - Extended floating-point types and standard names" source="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1467r9.html#alias-formats" >}}
 7.2. Supported formats
 
 We propose aliases for the following layouts:
 
-    [IEEE-754-2008] binary16 - IEEE 16-bit.  
-    [IEEE-754-2008] binary32 - IEEE 32-bit.  
-    [IEEE-754-2008] binary64 - IEEE 64-bit.  
-    [IEEE-754-2008] binary128 - IEEE 128-bit.  
-    bfloat16, which is binary32 with 16 bits of precision truncated; see [bfloat16]. <--   
-```  
-source : [https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1467r9.html#alias-formats](https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1467r9.html#alias-formats)
+- [IEEE-754-2008] binary16 - IEEE 16-bit.  
+- [IEEE-754-2008] binary32 - IEEE 32-bit.  
+- [IEEE-754-2008] binary64 - IEEE 64-bit.  
+- [IEEE-754-2008] binary128 - IEEE 128-bit.  
+- bfloat16, which is binary32 with 16 bits of precision truncated; see [bfloat16]. <-- 
+{{< /quote >}}
 
-Note: Let’s make a deal and collectively pretend we all agree we didn’t see that the spec is saying binary32 has 16 bits of precision instead of 24. This is just a typo, and I am unworthy of telling the guys literally designing the next C++ standard that they should fix their spec.
+> [!NOTE] 
+> Let’s make a deal and collectively pretend we all agree we didn’t see that the spec is saying binary32 has 16 bits of precision instead of 24. This is just a typo, and I am unworthy of telling the guys literally designing the next C++ standard that they should fix their spec.
 
 Essentially, this means `bfloat16_t` is, exactly like our reading of the binary hinted at: a truncated down `float32_t` (referred to as binary32 in the IEEE spec).
 
@@ -690,55 +710,60 @@ In practice, this means that, if I want my hw to correctly match the golden mode
 
 Given the C++ standard's library's implementation of `bfloat16_t` of using a `float32_t` under the hood I cannot cleanly match the results of my golden model to the expected RTL output. 
 
-This is because `float32_t` has \(p=24\) bits on internal precision, while `bloat16_t` has 8 bits, so given the same input values, if the difference in exponent between these inputs if within range $]p_{bfloat16}; p_{float32}[$  
+This is because `float32_t` has \(p=24\) bits on internal precision, while `bloat16_t` has 8 bits, so given the same input values, if the difference in exponent between these inputs if within range \(]p_{bfloat16}; p_{float32}[\)!
 I will observe a difference in rounding behavior even if we are using the same rounding mode and the same operands.  
    
 Another property of this is that, this difference will be contained within a margin of the next consecutive floating point number.
 
-To help simplify the following section, let me define $ulp(x)$ as the "unit of last place", or more formally : 
+To help simplify the following section, let me define \(ulp(x)\) as the *"unit of last place"*, or more formally : 
 
-> $ulp(x)$ is the gap between the two floating-point numbers nearest to \(x\), even if \(x\) is one of them  
-~ William Kahan, Godfather of floating point, 1960. 
+{{< quote author="~ William Kahan, Godfather of floating point, 1960">}}
+\(ulp(x)\) is the gap between the two floating-point numbers nearest to \(x\), even if \(x\) is one of them. 
+{{< /quote >}}
 
-As such, my relative error between my golden model's `bfloat16_t` and my implementation will be at most $1 ulp(x)$. 
+As such, my relative error between my golden model's `bfloat16_t` and my implementation will be at most \(1 \times ulp(x)\). 
 
-$ulp(x)$ is defined as :   
-```math   
+\(ulp(x)\) is defined as :   
+$$
 ulp(x) = 2^{-p+1}   
-```
+$$
 
 For my `bfloat16` implementation with \(p=8\) we thus have \(ulp(x) = 2^{-7}\), and I will be calculating the relative error as:   
 $$
 error(x) = \frac{x_{model} - x_{hw}}{x_{model}}  
 $$ 
 
-##### C++ isn’t at fault
+##### **C++ isn’t at fault**
 
-Now that I have finished ranting and gotten my golden model to behave, I would like to point out that I recognize that emulating bfloat16 from float32 is the superior approach for the standard library. It allows offloading most of the compute to the CPU’s FPU, giving orders of magnitude better performance than if it was entirely implemented in software.   
-Sure it might come with different results, but this is what we signed up for when we started using bfloat16. 
+Now that I have finished ranting and gotten my golden model to behave, I would like to point out that I recognize that emulating `bfloat16` from `float32` is the superior approach for the standard library. It allows offloading most of the compute to the CPU’s FPU, giving orders of magnitude better performance than if it was entirely implemented in software.   
+Sure it might come with different results, but this is what we signed up for when we started using `bfloat16`. 
 
 ## Implementation 
 
 Now that we have some working bfloat16 arithmetics comes my favourite part: building it out of ~~expensive crystals~~ semiconductors   
 
-[https://github.com/Essenceia/Systolic_Array_with_DFT_v2/blob/main/docs/global_placement/placement_detailed.gif](https://github.com/Essenceia/Systolic_Array_with_DFT_v2/blob/main/docs/global_placement/placement_detailed.gif)
+{{< figure 
+	src="placement.gif"
+	caption="Initial global placement of all the logic cells of the ASIC floorplan in action.<br>Captured using OpenROAD global placement in debug mode."
+	alt="Initial global placement of all the logic cells of the ASIC floorplan in action. Captured using OpenROAD global placement in debug mode."
+>}}
 
 Since this article is focused on the floating point arithmetic I will contain my desire to tell you all about the rest of the accelerator and lock it up in the ASIC’s repo: 
 
-{{< github repo="Essenceia/Systolic_Array_with_DFT_v2" showTumbnail=true alt="" >}}
+{{< github repo="Essenceia/Systolic_Array_with_DFT_v2" showThumbnail=false alt="" >}}
 
 ### Tiny Tapeout ihp26a
 
 This time we will be taping the chip on IHP’s fancy 130nm `sg13g2` node using [Tiny Tapeout’s `ihp26a` chip](https://tinytapeout.com/chips/ttihp26a/) as our shuttle. Also, for full transparency I was offered a coupon by the Tiny Tapout team that I traded for the area that I am using in this project (and a devboard ). So technically speaking this tapeout is sponsored by Tiny Tapeout, which will definitely not help me rave less about them    
 Thanks guys 
 
-![][image11]
+{{< figure
+	src="ihp26a_chip.png"
+	caption="Tiny Tapeout shuttle chip `ihp26a` render.<br>Source: https://github.com/TinyTapeout/tinytapeout-chip-renders"
+	alt="Tiny Tapeout shuttle chip `ihp26a` render.<br>Source: https://github.com/TinyTapeout/tinytapeout-chip-renders"
+>}}
 
-caption=”Tiny Tapeout shuttle chip ihp26a render. source: https://github.com/TinyTapeout/tinytapeout-chip-renders”
-
-The IHP 130nm cell library we are using this time is special: it is lightning fast compared to the other two open source PDKs allowing us to reach some truly impressive fmax’s. 
-
-> Note: As illustrated by our fmax competition using the sister IHP `sg13cmos5l` node. https://github.com/Essenceia/uselessly_fast_bfloat16_multiplier
+The IHP 130nm cell library we are using this time is special: it is lightning fast compared to the other two open source PDKs allowing us to reach some truly impressive fmax’s. (As illustrated by our [fmax competition using the sister IHP `sg13cmos5l` node.](#combo))
 
 But once again, we have an IO problem: the maximum GPIO stable operating frequency is expected to be around 100MHz on input and 75MHz on the output path, meaning this systolic array is effectively bottlenecked at 75MHz. But, since the sg13g2 PDK is so fast, and closing timing at 75MHz was not challenging enough, I decided to challenge myself to target a normal frequency  of100MHz. Oh and I would also **do the entire bfloat16 addition and multiplication in a single cycle.** 
 
@@ -815,27 +840,29 @@ Sometimes a good design is about more than just performance.
 
 ### Combo
 
-But wait  There was a second tapeout ? 
+But wait! There was a second tapeout ?! 
 
 When I started planning this article, my hope was to have the bfloat16 arithmetic be taped out as part of my second generation systolic array on IHP 130 nm. 
 
 But in the midst of writing this article the Tiny Tapeout community got the chance to do a second IHP 130 nm targeting IHP’s newer [sg13cmos5l](https://github.com/IHP-GmbH/ihp-sg13cmos5l) node.   
 Just like how we got the chance to do the GF180 tapeout for the [first generation systolic array](https://essenceia.github.io/projects/two_weeks_until_tapeout/) this was a private experimental shuttle, making us come full circle. 
 
-![][image12]
-
-Tiny Tapeout `ihp0p4` chip render, credit: Luis Eduardo Ledoux Pardo
+{{< figure
+	src="ihp0p4_chip.png"
+	caption="Tiny Tapeout shuttle `ihp0p4` chip render.<br>Credit: Luis Eduardo Ledoux Pardo"
+	alt="Tiny Tapeout shuttle `ihp0p4` chip render.<br>Credit: Luis Eduardo Ledoux Pardo"
+>}}
 
 Now I have a somewhat unique rule for my tapeouts: I never tapeout the same design twice. 
 
-So if I wanted to submit to the `ihp0p4` shuttle chip, I couldn’t just re-use my existing IP, no, I needed something new. 
+So if I wanted to submit to the `ihp0p4` shuttle chip, I couldn’t just re-use my existing IP. No, I needed something new. 
 
-Enter the fmax challenge! 
+Enter **the fmax challenge!** 
 
-Do you recall how I told you IHP cells were lightning fast and how I was doing the full addition and multiplication in a single cycle ? Well part of me was dying to know how high I could reach if we were to ignore the IO limitation and aim for the maximum frequency  
-Luckily for me another community member was taping [out a comparable design](https://github.com/NikLeberg/tt_um_float_synth/tree/ihp-sg13cmos5l): and so we raced
+Do you recall how I told you IHP cells were lightning fast and how I was doing the full addition and multiplication in a single cycle ? Well part of me was dying to know how high I could reach if we were to ignore the IO limitation and aim for the maximum frequency! <br> 
+Luckily for me another community member was taping [out a comparable design](https://github.com/NikLeberg/tt_um_float_synth/tree/ihp-sg13cmos5l): and so we raced!
 
-[https://github.com/Essenceia/uselessly_fast_bfloat16_multiplier](https://github.com/Essenceia/uselessly_fast_bfloat16_multiplier)
+{{< github repo="Essenceia/uselessly_fast_bfloat16_multiplier" showThumbnail=false >}}
 
 In order to increase the frequency the bfloat16 multiplication was cut into 2 cycles. As expected, the main critical path went through the mantissa multiplication. Now, in the original implementation of the multiplication, I was using the synthesizer implementation directive to infer an unsigned Booth radix-4 multiplier. 
 
@@ -843,16 +870,26 @@ As the LZC experience has shown us, yosys is not a light weight when it comes to
 
 Thus, in order to help pipeline this path, I needed to re-implement a custom 8-bit unsigned Booth radix-4 multiplier from scratch. 
 
-> Note: Oh, also, I forgot to mention one small thing: this shuttle was officially announced, opened and closed within the span of 24 hours. So now picture all of this happening at 3am. 
+> [!WARNING] Minor detail ...
+> Oh, also, I forgot to mention one small thing: this shuttle was officially announced, opened and closed within the span of **24 hours!** So now picture all of this happening at 3am. 🫠
 
 Inside this custom multiplication stage, a flop is added after the encoding stage, in the middle of the compression stage. We are storing the partial compression of the first two partial products, and the last 3 before, on the next cycle compressing them together to get the final result of this mantissa multiplication.
 
-![][image13]A few additional such implementations were performed throughout the multiplier allowing this design to reach a maximum operating frequency of `454.545` MHz.
+{{< figure
+	src="my_mul.jpg"
+	caption="Schematic of the fast multiplier I am implementing with the seperation line indicating which operations happen on \(t_0\) and which on \(t_1\)."
+	alt="Schematic of the fast multiplier I am implementing with the seperation line indicating which operations happen on \(t_0\) and which on \(t_1\)."
+>}}
+
+
+A few additional such implementations were performed throughout the multiplier allowing this design to reach a maximum operating frequency of `454.545` MHz.
 
 {{< figure 
 	src="fast_mul_floorplan.png"
-	caption="Uselessly fast multiplier floorplan render. Operate at up to 454.545 MHz on the nominal operating corner of 1.20 V at 25°C and occupies a single tile of area 202.08x154.98 um." 
-![][image14]
+	caption="Uselessly fast multiplier floorplan render. Operate at up to 454.545 MHz on the nominal operating corner of 1.20 V at 25°C and occupies a single tile of area 202.08x154.98 um."
+	alt="Uselessly fast multiplier floorplan render. Operate at up to 454.545 MHz on the nominal operating corner of 1.20 V at 25°C and occupies a single tile of area 202.08x154.98 um."
+ >}} 
+
 
 ## Closing 
 
@@ -869,11 +906,16 @@ But with two 130nm tapeouts containing my own floating point IP I can confidentl
 
 Because I now have something much more important to do!
 
-Before we can go to sleep, before we can finish writing the doc, there is one post tapeout tradition that must never be skipped:   
-![][image15]  
-Waffle House
+Before we can go to sleep, before we can finish writing the doc, there is one post tapeout tradition that must never be skipped:  
 
-## Ressources 
+{{< figure
+	src="waffles.webp"
+	caption="Waffle House! ❤"
+	alt="Waffle House! <3"
+>}}
+
+### P.S
 
 I highly recommend the excellent book *"Handbook of Floating-Point Arithmetic, Second edition"*, for readers looking for the 600 page version of the floating point question.
 
+Special thanks to my best half, yg, Prawnzz and Erstfel for helping review this article. 
