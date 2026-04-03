@@ -85,11 +85,11 @@ In this discussion we will be calling :
 
 We are not actually interested in floating point in the abstract, but rather what we commonly refer to as “float” in our programs. 
 
-In the world of all the possible floating point types, these are the vanillas, except in this world, everyone also wants vanilla all the time
+In the world of all the possible floating point types, these are the vanillas, except in this world, everyone also wants vanilla all the time!
 
 This float format is canonized by the IEEE in the IEEE 754 specification. Inside this holy grail is where the expected behavior is outlined in excruciating detail making it possible for users to expect the same behavior for the same floating point operations on different platforms. A cornerstone of making float ~~portable~~. 
 
-Also, this is where hell starts. 
+Also, this is where hell starts! 
 
 ### +0/-0
 
@@ -99,7 +99,7 @@ As the most astute readers might have already noticed looking (kudos) at the rep
 
 Now where things get fun is that we have rules around which zero to use. For example, let us consider how we would determine the equality between two floating point numbers, say `X == Y` ? 
 
-To do this comparison we would generally re-use the adder and do `X - Y` then check all the result’s bits are 0, problem is -0.0 is written with an 1 in its sign bit.   
+To do this comparison we would generally re-use the adder and do `X - Y` then check all the result’s bits are 0, problem is \(-0.0\) is written with an 1 in its sign bit.   
 So we have rules around when the result should use \(+0.0\) or \(-0.0\), and the subtracting of two equal floating point numbers is such an example of this rule :   
 $$  
 X - X = +0.0  
@@ -112,14 +112,14 @@ For all of you that thought we were talking about numbers, this is the point at 
 
 So let’s start with the fun bit, there are actually different types of `NaN`’s: 
 
-- `q`uiet `NaN`s (`qNaN`s) that you would typically encounter from your bad math  
+- `q`uiet `NaN`s (`qNaN`s) that you would typically encounter from your bad math. 
 - `s`ignaling `NaN`s (`sNaN`s) the ones bad math doesn’t produce and also the ones that scream at you by signaling an invalid operation exception whenever they appear as operands. Most people won’t encounter these. 
 
 So, what do I mean by *“`qNaN`s are used to indicate when the result of an arithmetic operation cannot be represented”*?  
    
 Here are a few examples for clarification : 
 
-- \(\sqrt(-1.0)\) results in an `qNaN` as \(\sqrt(-1.0) = i\), and \(i\) is an imaginary number that cannot be represented without the use of complex notation.   
+- \(\sqrt{-1.0}\) results in an `qNaN` as \(\sqrt{-1.0} = i\), and \(i\) is an imaginary number that cannot be represented without the use of complex notation.   
 - \(\frac{0.0}{0.0}\) would also result in a `qNaN` because: what are you doing ?   
 - \(+\infty - \infty\) would also result in a `qNaN` because \(\pm\infty\) are actually limits, not numbers. And subtracting a limit from another limit \(+\infty - \infty\) just doesn’t make sense. 
 
@@ -135,7 +135,7 @@ In memory `NaN`s are represented with all the exponent bits set to \(1\)  and wi
 
 ### Infinity**s**
 
-So we have already started introducing these with the `NaN`s, but the floating point representation has room for two infinity notations: one for \(+\infty\) and its mirror \(-\infty\). These are not numbers, infinity is not a number it’s a limit
+So we have already started introducing these with the `NaN`s, but the floating point representation has room for two infinity notations: one for \(+\infty\) and its mirror \(-\infty\). These are not numbers, infinity is not a number it’s a limit!
 
 In compliance with IEEE certain specific infinities can be used in arithmetic operations, be used as inputs for boolean operations and be produced as the result of a calculation. 
 
@@ -168,7 +168,7 @@ Now, the funny thing is our significant actually only has \(p-1\) bits, and \(d_
 
 Seems simple enough ? Could something finally be simple about floating point ?! 
 
-Don’t worry: floating point isn’t going to let you down like this, because we have another category of numbers 
+Don’t worry: floating point isn’t going to let you down like this, because we have another category of numbers! 
 
 They have an implicit hidden bit set to \(d_0 = 0\) and are called `subnormal numbers` (or `denormal numbers)`. Yay 🥳
 
@@ -218,7 +218,8 @@ if ( x != y ) z = 1.0 / ( x - y );
 
 The range of what can and cannot be represented is type specific, more bits equates to a larger space of representable values, conversely smaller types mean less possible values. 
 
-Let us consider the IEEE 16 bit half float `float16_t` , it has 5 exponent bits and 10 significant bits, and guess what : it can’t represent `15359`   
+Let us consider the IEEE 16 bit half float `float16_t` , it has 5 exponent bits and 10 significant bits, and guess what : it can’t represent `15359`!
+ 
 So what would happen when we try to set it to `15359` ?   
 ```C++   
 float16_t e = 15359.0;  
@@ -235,11 +236,11 @@ The IEEE spec defines 5 rounding modes that compliant hardware should support:
 - `RZ` round towards \(0.0\) in all cases  
 - `RN_even/RN_away`  round to nearest: the result is the nearest possible value, with a tie breaking rule if the number is exactly halfway between the two:   
   - `even` (round ties to even) chooses the number where the least significant bit of the significant ( mantissa) is 0.  
-  - `away` (round ties to away) chooses the next consecutive floating point number
+  - `away` (round ties to away) chooses the next consecutive floating point number.
 
 {{< figure
 	src="rounding.png"
-	caption="credit : Chapter 2 of Handbook of Floating-Point Arithmetic, Second Edition"
+	caption="Credit : Chapter 2 of Handbook of Floating-Point Arithmetic, Second Edition"
 	alt="Credit : Chapter 2 of Handbook of Floating-Point Arithmetic, Second Edition"
 >}}
 
@@ -282,7 +283,7 @@ fesetround(FE_DOWNWARD);
 z = x - y;  
 cout << x << " - " << y << " = " << z << endl;  
 ```  
-Would round down to \(-\intfy\) :   
+Would round down to \(-\infty\) :   
 ```  
 -65504 - 1 = -inf  
 ```
@@ -344,7 +345,7 @@ $$
 not( x < y ) ⇔ ( x >= y )  
 $$
 
-The laws of [trichotomy](https://en.wikipedia.org/wiki/Law_of_trichotomy) have broken down, we can never unsee this
+The laws of [trichotomy](https://en.wikipedia.org/wiki/Law_of_trichotomy) have broken down, we can never unsee this!
 
 {{< figure
 	src="ko.jpeg"
@@ -366,7 +367,7 @@ Here is an example in C of the steps involved in doing a floating point addition
 	caption="⚠ This code hasn't been thoughly tested, don't use this in prod!" 
 >}}
 
-# Chapter 2: 
+# Chapter 2 
 
 I know what you are thinking : So we have a C implementation, it works, why is this article still so long? Is there a prolific comment section?<br>Can I go home now? 
 
@@ -379,10 +380,10 @@ Code isn’t going to cut it, we need to go deeper!
 
 So what is more from scratch than C code ?
 
-We could code this in assembly and try to optimize it by using all the best assembly bit twiddling ticks in the book all while pretending we didn’t notice those [beautiful `fadd` instructions](https://developer.arm.com/documentation/ddi0602/2025-12/SIMD-FP-Instructions/FADD--scalar---Floating-point-add--scalar--?lang=en) staring back at us across the ISA.   
+We could code this in assembly and try to optimize it by using all the best assembly bit twiddling tricks in the book all while pretending we didn’t notice those [beautiful `fadd` instructions](https://developer.arm.com/documentation/ddi0602/2025-12/SIMD-FP-Instructions/FADD--scalar---Floating-point-add--scalar--?lang=en) staring back at us across the ISA.   
 And guess what: not only can we still go deeper, but sadly even with the most beautifully hand crafted assembly in the world its performance would still be orders of magnitude slower than a dedicated `floating point addition` instruction running on my grandmother's computer 
 
-No, we are going to build our own FPU hardware out of transistors, optimize the hell out of it, and then, we are going to put it on a chip and tape it out
+No, we are going to build our own FPU hardware out of transistors, optimize the hell out of it, and then, we are going to put it on a chip and tape it out!
 
 ## ASIC implementation rules 
 
@@ -466,7 +467,7 @@ So, once again, the answer is: it depends! Thank you for reading!
 
 More seriously, let’s clarify what we are actually building, because this floating point arithmetic is going to be part of a larger project, else this wouldn't be any fun. But to maximize the fun factor we need a project which requires a LOT of floating point math. 
 
-Luckily, it just so happens that I know just the accelerator architecture for the task: a matrix matrix multiplication systolic array These types of accelerators are widely found in machine learning accelerators targeting both training and inference tasks (when quantization degrades accuracy too much). Now, I am not setting out to build an AI accelerator, it just so happens to be a convenient excuse to put too much floating point arithmetic on my silicon. 
+Luckily, it just so happens that I know just the accelerator architecture for the task: a matrix matrix multiplication [systolic array](https://en.wikipedia.org/wiki/Systolic_array)! These types of accelerators are widely found in machine learning accelerators targeting both training and inference tasks (when quantization degrades accuracy too much). Now, I am not setting out to build an AI accelerator, it just so happens to be a convenient excuse to put too much floating point arithmetic on my silicon. 
 
 Splendid, now that we ~~have our excuse~~ know what application we are targeting, let us examine the constraints of this workload. 
 
@@ -481,7 +482,7 @@ Small significants are starting to sound very appealing.
 
 Back to what our application needs, AI workloads have the interesting characteristics of being relatively insensible to loss of precision, as illustrated by the fact that quantization is even possible. On the other hand, they benefit from having more range. 
 
-For all these reasons, I now crown the bfloat16 our winner. Congratulations, you are officially my favorite minifloat
+For all these reasons, I now crown the bfloat16 our winner. Congratulations, you are officially my favorite minifloat! 🏆
 
 Here is a recap on why `bfloat16` is the best format in the history of the universe : 
 
@@ -659,7 +660,7 @@ This is indicative that my current hardware either doesn't have hardware support
 ```  
 Based on this assembly, the expected behavior for the `bfloat16_t` would be   
 similar to a clamped down `float32_t`.  
-Which is totally legal, given the bfloat16 behavior is not fully outlined by any spec, making it implementation defined. :rainbow: 
+Which is totally legal, given the bfloat16 behavior is not fully outlined by any spec, making it implementation defined. 🌈 
 
 #### Probing the standard library soft `bfloat16_t’s` implementation
 
@@ -670,7 +671,7 @@ From this I learned that it:
 - has `NaN` support  
 - has inf support
 
-So naive me thought that, in order to use this as a golden model for the hardware, all I needed was to also manually clamp subnormals to 0 and not drive `NaN`s and $intfy$s. 
+So naive me thought that, in order to use this as a golden model for the hardware, all I needed was to also manually clamp subnormals to 0 and not drive `NaN`s and \(\infty\)s. 
 
 ```C
 #define IS_SUBNORMAL(x) ((isnormal(x) | isnan(x) | isinf(x) | (x == 0e0bf16)))  
@@ -704,9 +705,9 @@ Essentially, this means `bfloat16_t` is, exactly like our reading of the binary 
 - `float32_t` \(p = 24\)   
 - `bfloat16_t` \(p = 8\)
 
-In practice, this means that, if I want my hw to correctly match the golden model, as specified by the C++ standard library, I will need to support \(p = 24\), which directly translates to a much wider significant shift + adder path on the adder far path ... and that is in no universe the outcome I am interested in. 
+In practice, this means that, if I want my hardware to correctly match the golden model, as specified by the C++ standard library, I will need to support \(p = 24\), which directly translates to a much wider significant path everywhere ... and that is in no universe the outcome I am interested in. 
 
-##### Within 1 ulp 
+##### **Within 1 ulp**
 
 Given the C++ standard's library's implementation of `bfloat16_t` of using a `float32_t` under the hood I cannot cleanly match the results of my golden model to the expected RTL output. 
 
@@ -772,7 +773,7 @@ Thanks guys!
 
 The IHP 130nm cell library we are using this time is special: it is lightning fast compared to the other two open source PDKs allowing us to reach some truly impressive fmax’s. (As illustrated by our [fmax competition using the sister IHP `sg13cmos5l` node.](#combo))
 
-But once again, we have an IO problem: the maximum GPIO stable operating frequency is expected to be around 100MHz on input and 75MHz on the output path, meaning this systolic array is effectively bottlenecked at 75MHz. But, since the sg13g2 PDK is so fast, and closing timing at 75MHz was not challenging enough, I decided to challenge myself to target a normal frequency  of100MHz. Oh and I would also **do the entire bfloat16 addition and multiplication in a single cycle.** 
+But once again, we have an IO problem: the maximum GPIO stable operating frequency is expected to be around 100MHz on input and 75MHz on the output path, meaning this systolic array is effectively bottlenecked at 75MHz. But, since the sg13g2 PDK is so fast, and closing timing at 75MHz was not challenging enough, I decided to challenge myself to target a normal frequency of 100MHz. Oh and I would also **do the entire bfloat16 addition and multiplication in a single cycle.** 
 
 Sure, I could pipeline these operations, but that would be wasting an opportunity to force myself to improve the implementation’s performance.
 
@@ -782,13 +783,17 @@ Let me tell you about an interesting story that occurred during implementation.
 
 But before let us set the stage: the critical path cuts exactly where you would expect it: going through the multiplication’s mantissa multiplication and continuing through the adder's close path right through the LZC (leading zero count). 
 
-At this point in our story, I had already pulled a handful of the more classic RTL timing optimization tricks and was sitting comfortably at `+0.6ns` of slack on the slow corned and `+3.9ns` on the nominal. I thought my work here was done when a friend started questioning me about my LZC design choice. 
+At this point in our story, I had already pulled a handful of the more classic RTL timing optimization tricks and was sitting comfortably at `+0.6ns` of slack on the slow corner and `+3.9ns` on the nominal corner. I thought my work here was done when a friend started questioning me about my LZC design choice. 
 
-Note: These numbers were from the timing before redoing all the systolic array’s control logic and chaining together all the flops as part of the DFT scan chain.
+{{< alert icon="circle-info" >}} 
+These numbers were from the timing before redoing all the systolic array’s control logic and chaining together all the flops as part of the DFT scan chain.
+{{< /alert >}}
 
-I had chosen to implement a [tree based LZC](https://github.com/Essenceia/BFloat16/blob/main/src/lzc.v), the same one you find in the literature, and although the verilog code is so ~~unreadable~~ HDL code it warrants [it’s own testbench](https://github.com/Essenceia/BFloat16/blob/main/tb/lzc_tb.sv) its underlying concept was too elegant to pass up. 
+I had chosen to implement a [tree based LZC](https://github.com/Essenceia/BFloat16/blob/main/src/lzc.v), the same one you find in the literature, and although the verilog code is so ~~unreadable~~ RTL code it warrants [it’s own testbench](https://github.com/Essenceia/BFloat16/blob/main/tb/lzc_tb.sv) its underlying concept was too elegant to pass up. 
 
-Note: Since my timing was already sitting pretty I decided to keep my option of adding a more optimized leading zero anticipation as a backup option for later. 
+{{< alert icon="comment" >}} 
+Since my timing was already sitting pretty I decided to keep my option of adding a more optimized leading zero anticipation as a backup option for later. 
+{{< /alert >}}
 
 And so my friend comes along and suggests we do something *different.* Forget the tree based LZC, just write a priority mux and let the synthesizer deal with it. 
 
@@ -851,7 +856,7 @@ But wait! There was a second tapeout ?!
 
 When I started planning this article, my hope was to have the bfloat16 arithmetic be taped out as part of my second generation systolic array on IHP 130 nm. 
 
-But in the midst of writing this article the Tiny Tapeout community got the chance to do a second IHP 130 nm targeting IHP’s newer [sg13cmos5l](https://github.com/IHP-GmbH/ihp-sg13cmos5l) node.   
+But in the midst of writing this article the Tiny Tapeout community got the chance to do a second tapeout on IHP 130 nm targeting IHP’s newer [sg13cmos5l](https://github.com/IHP-GmbH/ihp-sg13cmos5l) node.   
 Just like how we got the chance to do the GF180 tapeout for the [first generation systolic array](https://essenceia.github.io/projects/two_weeks_until_tapeout/) this was a private experimental shuttle, making us come full circle. 
 
 {{< figure
@@ -875,7 +880,7 @@ In order to increase the frequency the bfloat16 multiplication was cut into 2 cy
 
 As the LZC experience has shown us, yosys is not a light weight when it comes to generating optimized logic. Unfortunately, we trade this for a loss of control on our netlist, and in this case the inability to choose exactly where we would split the multiplication.
 
-Thus, in order to help pipeline this path, I needed to re-implement a custom 8-bit unsigned Booth radix-4 multiplier from scratch. 
+Thus, in order to help pipeline this path, I needed to re-implement a [custom 8-bit unsigned Booth radix-4 multiplier from scratch.](https://github.com/Essenceia/BFloat16/blob/8f3722c266a4051b55c4a79481218bf00c1201aa/src/booth_unsigned_mul_pipelined.v) 
 
 > [!WARNING] Minor detail ...
 > Oh, also, I forgot to mention one small thing: this shuttle was officially announced, opened and closed within the span of **24 hours!** So now picture all of this happening at 3am. 🫠
@@ -889,7 +894,7 @@ Inside this custom multiplication stage, a flop is added after the encoding stag
 >}}
 
 
-A few additional such implementations were performed throughout the multiplier allowing this design to reach a maximum operating frequency of `454.545` MHz.
+A few additional such optimizations were performed throughout the multiplier allowing this design to reach a maximum operating frequency of `454.545` MHz.
 
 {{< figure 
 	src="fast_mul_floorplan.png"
@@ -900,7 +905,7 @@ A few additional such implementations were performed throughout the multiplier a
 
 ## Closing 
 
-After over half a decade, I have finally slayed my dragon and taken my revenge on floating point math
+After over half a decade, I have finally slayed my dragon and taken my revenge on floating point math!
 
 After having build my own floating point arithmetic from scratch I now believed the only people that truly understand floating point are : 
 
