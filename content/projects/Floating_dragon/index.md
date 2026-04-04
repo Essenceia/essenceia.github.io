@@ -1,5 +1,5 @@
 ---
-title: "Floating dragons: Floating point from scratch"
+title: "Floating point from scratch: Hard Mode"
 date: 2026-04-03
 description: "Actually building floating point from scratch!"
 summary: "Actually building floating point from scratch!"
