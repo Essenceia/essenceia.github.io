@@ -51,7 +51,7 @@ With the values of \(S\), \(E\) and \(T\) being the values stored in the floatin
 
 - \(S\) sign bit   
 - \(E\) biased exponent  
-- \(T\) trailing significant field
+- \(T\) trailing significand field
 
 {{< figure
 	src="ieee_layout.png"
@@ -76,10 +76,10 @@ In this discussion we will be calling :
 
 - sign, the \(S\) sign bit  
 - exponent, the value stored in the biased exponent field \(E\)  
-- significant/mantissa, the value stored in the \(T\) field
+- significand/mantissa, the value stored in the \(T\) field
 
-> [!TIP] Significant/Mantissa
-> The term mantissa isn’t pedantically correct since this isn't a logarithmic representation it should really be called a **significant.** But my fellow programmers in the audience will appreciate that since the sign has already used the \(s\) name for our single letter naming of our structure elements we have no choice but to yield and call this \(m\) for mantissa. I will be using the term mantissa and significant interchangeably in this article.
+> [!TIP] Significand/Mantissa
+> The term mantissa isn’t pedantically correct since this isn't a logarithmic representation it should really be called a **significand.** But my fellow programmers in the audience will appreciate that since the sign has already used the \(s\) name for our single letter naming of our structure elements we have no choice but to yield and call this \(m\) for mantissa. I will be using the term mantissa and significand interchangeably in this article.
 
 ## What you never wanted to know 
 
@@ -131,7 +131,7 @@ They are contagious.
 Arithmetic operations with a `qNaN` as an operand will result in a `qNaN`.  
 Think about it: what result should you give for an operation whose result can’t be represented ? 
 
-In memory `NaN`s are represented with all the exponent bits set to \(1\)  and with at least one of the significant bits set. You can then differentiate different `NaN`s based on which significant bit(s) are set, the encoding of which is left to the discretion of the implementer.  
+In memory `NaN`s are represented with all the exponent bits set to \(1\)  and with at least one of the significand bits set. You can then differentiate different `NaN`s based on which significand bit(s) are set, the encoding of which is left to the discretion of the implementer.  
 
 ### Infinity**s**
 
@@ -139,7 +139,7 @@ So we have already started introducing these with the `NaN`s, but the floating p
 
 In compliance with IEEE certain specific infinities can be used in arithmetic operations, be used as inputs for boolean operations and be produced as the result of a calculation. 
 
-In memory, infinities have their exponent bits set to all \(1\)s, and to differentiate them from `NaN`s their significant bits are all \(0\)s.
+In memory, infinities have their exponent bits set to all \(1\)s, and to differentiate them from `NaN`s their significand bits are all \(0\)s.
 
 ### Denormal
 
@@ -154,7 +154,7 @@ A more common way of writing this is:
 $$  
 (-1)^{S} × 2^{e} × m  
 $$  
-Where \(m\) is a number represented by a string of the form \(d_0 . d_1 d_2 ... d_{p-1}\), and is \(p\) long.(with \(p\) the precision, or number of bits in the significant + 1 ).   
+Where \(m\) is a number represented by a string of the form \(d_0 . d_1 d_2 ... d_{p-1}\), and is \(p\) long.(with \(p\) the precision, or number of bits in the significand + 1 ).   
 For example \(1.5\) would be written as :    
 $$  
 (-1)^0 × 2^{0} × 1.1000   
@@ -164,7 +164,7 @@ $$
 (-1)^0 × 2^{1} × 1.1000   
 $$  
 In our normal floating point representation, the \(1\) in \((1 + T · 2^{1−p})\) is our \(d_0\) and is always set to \(d_0 = 1\).   
-Now, the funny thing is our significant actually only has \(p-1\) bits, and \(d_0\) is actually an inferred bit, we call it the `hidden bit`. 
+Now, the funny thing is our significand actually only has \(p-1\) bits, and \(d_0\) is actually an inferred bit, we call it the `hidden bit`. 
 
 Seems simple enough ? Could something finally be simple about floating point ?! 
 
@@ -218,7 +218,7 @@ if ( x != y ) z = 1.0 / ( x - y );
 
 The range of what can and cannot be represented is type specific, more bits equates to a larger space of representable values, conversely smaller types mean less possible values. 
 
-Let us consider the IEEE 16 bit half float `float16_t` , it has 5 exponent bits and 10 significant bits, and guess what : it can’t represent `15359`!
+Let us consider the IEEE 16 bit half float `float16_t` , it has 5 exponent bits and 10 significand bits, and guess what : it can’t represent `15359`!
  
 So what would happen when we try to set it to `15359` ?   
 ```C++   
@@ -235,7 +235,7 @@ The IEEE spec defines 5 rounding modes that compliant hardware should support:
 - `RU` round towards \(+\infty\): the result is the smallest representable floating point greater or equal to the exact results  
 - `RZ` round towards \(0.0\) in all cases  
 - `RN_even/RN_away`  round to nearest: the result is the nearest possible value, with a tie breaking rule if the number is exactly halfway between the two:   
-  - `even` (round ties to even) chooses the number where the least significant bit of the significant ( mantissa) is 0.  
+  - `even` (round ties to even) chooses the number where the least significand bit of the significand ( mantissa) is 0.  
   - `away` (round ties to away) chooses the next consecutive floating point number.
 
 {{< figure
@@ -450,18 +450,18 @@ Beware this rabbit hole goes deep.
 
 On one hand we have the IEEE floats, these are your industry standard floats. Being compliant guarantees that the same floating point operation will have the same behavior regardless of the hardware it is run on, something your buyers really want. (Unless your hardware has a bug, in that case you made an attempt at being compliant. Hello intel 👋: the internet hasn’t forgotten yet). But compliance implies supporting subnormals, `NaN`s, \(\pm\infty\) and 5 different rounding modes. 
 
-Then you have the matter of size: how large is your memory footprint and then, how are you allocating your bits across your exponent and significant fields?  
+Then you have the matter of size: how large is your memory footprint and then, how are you allocating your bits across your exponent and significand fields?  
  
 Some options are : 
 
-- `float16`, IEEE 754 half-precision: 5 bits exponent, 10 bits significant  
-- `float32`, IEEE 754 single precision: 8 bits exponent, 23 bits significant  
-- `float64`, IEEE 754 double precision: 11 bits exponent, 52 bits significant  
-- Pixar's PXR24 format, 8 bits exponent, 15 bits significant  
-- `tf32`, Nvdia’s TensorFloat-32 which is a 19 bit format. I know right, why did they let the marketing department name this ? 8 bits exponent, 10 bits significant  
-- `bfloat16`, Google’s brain float format : 8 bits exponent, 7 bits significant
+- `float16`, IEEE 754 half-precision: 5 bits exponent, 10 bits significand  
+- `float32`, IEEE 754 single precision: 8 bits exponent, 23 bits significand  
+- `float64`, IEEE 754 double precision: 11 bits exponent, 52 bits significand  
+- Pixar's PXR24 format, 8 bits exponent, 15 bits significand  
+- `tf32`, Nvdia’s TensorFloat-32 which is a 19 bit format. I know right, why did they let the marketing department name this ? 8 bits exponent, 10 bits significand  
+- `bfloat16`, Google’s brain float format : 8 bits exponent, 7 bits significand
 
-What size we ultimately choose depends on our workload’s needs. Certain workloads need more precision which requires more significant bits, others benefit from smaller formats allowing them to workaround a memory bandwidth limitation. 
+What size we ultimately choose depends on our workload’s needs. Certain workloads need more precision which requires more significand bits, others benefit from smaller formats allowing them to workaround a memory bandwidth limitation. 
 
 So, once again, the answer is: it depends! Thank you for reading!  
 
@@ -475,10 +475,10 @@ Firstly, we are not building an FPU unit for a CPU with external clients. We can
 
 Secondly, my chip will be IO bottlenecked (for those that have been following this blog: yes, again 🔥) so my choice will be one of the [minifloats](https://en.wikipedia.org/wiki/Minifloat), this term refers to floats of less than 32 bits wide. See, I am not choosing this just because the name is cute, there are also technical reasons. 
 
-Because we are targeting a smaller format, we need to be even more deliberate about our split of exponent/significant. Sacrificing exponent bits will reduce the range of our format, but skimping on the significant will reduce our number’s representable precision. Now, we can also approach the question of this split from the hardware angle by considering how this will impact the multiplication and addition implementation.
+Because we are targeting a smaller format, we need to be even more deliberate about our split of exponent/significand. Sacrificing exponent bits will reduce the range of our format, but skimping on the significand will reduce our number’s representable precision. Now, we can also approach the question of this split from the hardware angle by considering how this will impact the multiplication and addition implementation.
 
-Let us consider the multiplication, the most expensive operation in a floating point multiplication is the multiplication of the significants. This involves an unsigned multiplication of `<significant bits> + 1` wide, and the hardware cost of a multiplication does everything but scale linearly: the hardwre cost of an 8 bit `bfloat16` significant multiplication is roughly half that of of an 11 bit `float16` significant multiplication.   
-Small significants are starting to sound very appealing.
+Let us consider the multiplication, the most expensive operation in a floating point multiplication is the multiplication of the significands. This involves an unsigned multiplication of `<significand bits> + 1` wide, and the hardware cost of a multiplication does everything but scale linearly: the hardwre cost of an 8 bit `bfloat16` significand multiplication is roughly half that of of an 11 bit `float16` significand multiplication.   
+Small significands are starting to sound very appealing.
 
 Back to what our application needs, AI workloads have the interesting characteristics of being relatively insensible to loss of precision, as illustrated by the fact that quantization is even possible. On the other hand, they benefit from having more range. 
 
@@ -514,7 +514,7 @@ But, it gets better: the only operations that organically produce a `NaN` in add
 Lastly we have the question of denormal support, probably the least debated question in `bfloat16` design: the 126 additional denormal values are just not worth their hardware hassle, dropped. 
 
 To recap, our ice cream order is 🍨:   
-- `bfloat16`: 1 bit sign, 8 bits exponent, 7 bits significant  
+- `bfloat16`: 1 bit sign, 8 bits exponent, 7 bits significand  
 - round toward zero rounding only  
 - no subnormal support, all subnormals will be clamped to \(\pm0.0\)  
 - no \(\pm\infty\) or `NaN` support
@@ -563,7 +563,7 @@ Next, since we are imposing no `NaN`s or \(\infty\) be used as an operand, we ha
 	alt="RIPing even more stuff out 🪓"
 >}}
 
-Now, this schematic doesn’t illustrate how subnormals are handled, but our implementation is also saving logic there. That said, we do still need some logic to detect when they occur and clamp them to \(0\). On the close path this functionality is rolled into a block that I will label as “normalize” that is on our critical path after the multibit significant shift and the exponent subtraction.
+Now, this schematic doesn’t illustrate how subnormals are handled, but our implementation is also saving logic there. That said, we do still need some logic to detect when they occur and clamp them to \(0\). On the close path this functionality is rolled into a block that I will label as “normalize” that is on our critical path after the multibit significand shift and the exponent subtraction.
 
 The final design looks something like this: 
 
@@ -705,7 +705,7 @@ Essentially, this means `bfloat16_t` is, exactly like our reading of the binary 
 - `float32_t` \(p = 24\)   
 - `bfloat16_t` \(p = 8\)
 
-In practice, this means that, if I want my hardware to correctly match the golden model, as specified by the C++ standard library, I will need to support \(p = 24\), which directly translates to a much wider significant path everywhere ... and that is in no universe the outcome I am interested in. 
+In practice, this means that, if I want my hardware to correctly match the golden model, as specified by the C++ standard library, I will need to support \(p = 24\), which directly translates to a much wider significand path everywhere ... and that is in no universe the outcome I am interested in. 
 
 ##### **Within 1 ulp**
 
