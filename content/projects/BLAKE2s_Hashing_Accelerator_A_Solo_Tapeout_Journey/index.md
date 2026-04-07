@@ -643,7 +643,7 @@ My previous RTL engineering experiences in CPU at ARM and on FPGAs at Optiver we
 
 We live in an interesting history period, where it is realistic for someone to fully design and tape out their own ASIC, as long as they have enough learning motivation and sanity to spare. It is rather unprecedented, and I am not sure if it will last, as the actual business model of such manufacturing processes is still to be established.
 
-But in the meantime, it represents a gigantic learning opportunity for designers, and I can’t stress that enough. For someone like me who hugely values technical skills, opensource PKDs are a gold mine. In a couple of months, armed with patience, a couple of all nighters, and a megaton of coffee, homemade tapeout went from an unrealistic dream to an actual reality.
+But in the meantime, it represents a gigantic learning opportunity for designers, and I can’t stress that enough. For someone like me who hugely values technical skills, opensource PDKs are a gold mine. In a couple of months, armed with patience, a couple of all nighters, and a megaton of coffee, homemade tapeout went from an unrealistic dream to an actual reality.
 
 Even if the accelerator itself was “relatively” simple (a sort of blinky project on steroids, one might say), the real difficulty was in correctly understanding the entire ASIC design flow, the many tools and steps involved, and the new constraints imposed by the fact that at the end, it had to run on actual silicon, and work on first try.
 

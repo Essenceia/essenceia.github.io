@@ -319,9 +319,9 @@ The clamping operation occurs after both the multiply and addition operations. A
 
 $$
 clamp_{i8}(x) = \begin{cases}
-\phantom{-}127,\\,\text{if}\\,x > 127, \\\\
-\phantom{-12}x,\\,\text{if}\\,x \in [-128,127], \\\\
--128,\\,\text{if}\\,x < -128
+127, \text{if }x > 127, \\\\
+x,\text{if } x \in [-128,127] \\\\
+-128,\text{if } x < -128
 \end{cases}
 $$
 
@@ -594,7 +594,9 @@ But if you do have the official spec here is my [email](mailto:julia.desmazes@gm
 
 In practice, whenever OpenOCD flagged my JTAG behavior as problematic, I assumed that my implementation was at fault. And trust me, there were issues. I called this
 
-$$Designed\\, By\\, Support\\,^{TM}$$
+$$
+Designed By Support^{TM}
+$$
 
 Then came the matter of supporting my custom TAP's unholy instructions. 
 
