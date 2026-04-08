@@ -172,7 +172,7 @@ Don’t worry: floating point isn’t going to let you down like this, because w
 
 They have an implicit hidden bit set to \(d_0 = 0\) and are called `subnormal numbers` (or `denormal numbers)`. Yay 🥳
 
-These are used to encode the smallest representable floating point numbers, and were the most controversial part of the IEEE 574 spec during its elaboration.  
+These are used to encode the smallest representable floating point numbers, and were [the most controversial part of the IEEE 574 spec during its elaboration](https://people.eecs.berkeley.edu/~wkahan/ieee754status/754story.html).  
 They are also a giant pain in the ass to implement, so much so that a lot of the early FPU’s would trap on subnormal numbers and handle them in software … very slowly …  
  
 So why are we putting up with them apart from not wanting to waste some bits ? 
@@ -326,7 +326,7 @@ Here is this relationship in effect:
 float16_t x, y;  
 x = NAN;  
 y = 1.0;  
-cout << "x =/= x:   " << ((x=x)  ? "true" : "false") << endl;  
+cout << "x =/= x:   " << ((x!=x)  ? "true" : "false") << endl;  
 cout << "x > x:     " << ((x>x)   ? "true" : "false") << endl;  
 cout << "x <= x:    " << ((x<=x)  ? "true" : "false") << endl;  
 cout << "x > y:     " << ((x>y)   ? "true" : "false") << endl;  
