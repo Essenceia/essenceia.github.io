@@ -696,9 +696,6 @@ We propose aliases for the following layouts:
 - bfloat16, which is binary32 with 16 bits of precision truncated; see [bfloat16]. <-- 
 {{< /quote >}}
 
-> [!NOTE] 
-> Let’s make a deal and collectively pretend we all agree we didn’t see that the spec is saying binary32 has 16 bits of precision instead of 24. This is just a typo, and I am unworthy of telling the guys literally designing the next C++ standard that they should fix their spec.
-
 Essentially, this means `bfloat16_t` is, exactly like our reading of the binary hinted at: a truncated down `float32_t` (referred to as binary32 in the IEEE spec).
 
 **The problem** with this approach is that, `float32_t` has a much larger internal precision \(p\) when compared with `bfloat16_t` :   
@@ -932,3 +929,4 @@ I highly recommend the excellent book *"Handbook of Floating-Point Arithmetic, S
 
 Special thanks to my best half, [yg](https://hackaday.io/whygee), [Prawnzz](https://www.prawns.dev/) and [Erstfeld](https://github.com/EzraWolf) for helping review this article. 
 
+For comments, complaints and grievances you can reach me at [julia.desmazes@gmail.com](mailto:julia.desmazes@gmail.com). We do not offer refunds. 
