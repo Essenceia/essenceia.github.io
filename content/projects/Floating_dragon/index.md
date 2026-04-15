@@ -157,11 +157,11 @@ $$
 Where \(m\) is a number represented by a string of the form \(d_0 . d_1 d_2 ... d_{p-1}\), and is \(p\) long.(with \(p\) the precision, or number of bits in the significand + 1 ).   
 For example \(1.5\) would be written as :    
 $$  
-(-1)^0 × 2^{0} × 1.1000   
+(-1)^0 × 2^{0} × {1.1000}_2   
 $$  
 and \(3\) as \(2 × 1.5\) :   
 $$  
-(-1)^0 × 2^{1} × 1.1000   
+(-1)^0 × 2^{1} × {1.1000}_2   
 $$  
 In our normal floating point representation, the \(1\) in \((1 + T · 2^{1−p})\) is our \(d_0\) and is always set to \(d_0 = 1\).   
 Now, the funny thing is our significand actually only has \(p-1\) bits, and \(d_0\) is actually an inferred bit, we call it the `hidden bit`. 
