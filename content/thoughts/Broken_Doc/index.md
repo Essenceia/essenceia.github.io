@@ -8,14 +8,14 @@ draft: false
 showTableOfContents: false
 ---
 
-Picture this: you have just submitted your latest change, the tapeout countdown has reached 0 and started going negative, and stairing you in the face, 
+Picture this: you have just submitted your latest change, the tapeout countdown has reached 0 and started going negative, and staring you in the face, 
 smack in the middle of your floorplan is a massive issue. 
 {{< figure
-	src="feature.png"
+	src="layout_render.png"
 	caption="Austin we have a problem !" 
 >}}
 
-If this was software you might be able to deploy a quick patch, maybe abort the deployment, hoping not too many machines where doing to melt down because of your stupidity. 
+If this was software you might be able to deploy a quick patch, maybe abort the deployment, hoping not too many machines where going to melt down because of your stupidity. 
 But this is cold hardware, and the shuttle run's policy is very clear: once the clock runs out you can shove your sobbing complaints down the `/dev/null` inbox. 
 
 So here we are, staring at an analog ring oscillator missing power.
@@ -26,7 +26,7 @@ So here we are, staring at an analog ring oscillator missing power.
 
 This is why you should run LVS kids. 
 
-At least I can find solace in the kawaii pixel art on metal4, and the fact that there were other analog design in this tapeout. 
+At least I can find solace in the kawaii pixel art on metal4, and the fact that there was other analog ring oscillator analog design in this tapeout. 
 But mostly in the fact that this is another analog design. 
 
 Now that the lamenting is over, the questions can transition from "How did I not see this ?" and "Is the second ring oscillator alright ?" to
@@ -34,13 +34,13 @@ Now that the lamenting is over, the questions can transition from "How did I not
 Luckily for me, the silicon industry has since long established a tradition for dealing with cases like these and it goes something like this : 
 > _The hardware isn't broken, the documentation is._™ \(^1\)
 
-Behind each of these "silicon errats" hides traced of a very nerve racking meeting where the cost of a chip 
-respins\(^2\) and or recall lie in the balance. Needless to say, erratums are a very appealing option. 
+Behind each of these "silicon erratas" hides traces of a very nerve racking meeting where the cost of a chip 
+respin\(^2\) and or recall lie in the balance. Needless to say, erratums are a very appealing option. 
 No wonder you can't read a doc without stepping on one.  
 
 {{< katex >}}
 And so, I now have the luxury of writing my very first silicon erratum\(^3\)!
-Behold doing to much hardware does to your brain: 
+Behold what doing too much hardware does to your brain: 
 
 {{< quote >}}
 
@@ -64,7 +64,7 @@ changed to match the device behavior.
 
 **Impacts**: No oscillating wave will be produced on analog pin 1. 
 
-**Workaround**: Use the oscillator connected to analog pin 0. Given both oscillators have the same target 33Mhz oscillating frequency, so this should not impact operations. 
+**Workaround**: Use the oscillator connected to analog pin 0. Given both oscillators have the same target 33Mhz oscillating frequency, this should not impact operations. 
 
 {{< /quote >}}
 
@@ -76,9 +76,9 @@ Moral of the story: there is none, but at least the bird is cute.
 	src="bird.png" 
 >}} 
 
-1: Surely someone has trademarked this invaluable and advanced technic of problem dodging? Sure hope they havn't patented it.  
+1: Surely someone has trademarked this invaluable and advanced technique of problem dodging? Sure hope they havn't patented it.  
 
 2: Maybe you can get away with doing only a partial respin, how lucky are you felling today? 
 
-3: Which after been in this industry since 2019 and this being my first purely analog tapeout is a fact I am very proud of. Which should not detur anyone from the fact that I didn't run LVS, thus I am an idiot and also this still doesn't work. 
+3: Which after being in this industry since 2019 and this being my first purely analog tapeout is a fact I am very proud of. Which should not deter anyone from the fact that I didn't run LVS, thus I am an idiot and also this still doesn't work. 
 
