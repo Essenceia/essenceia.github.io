@@ -1,8 +1,8 @@
 ---
-title: "The hardware is not broken, the documentation is !"
+title: "The hardware isn't broken, the documentation is !"
 date: 2026-05-12
-description: "Silicon errats or how my ASIC is broken."
-summary: "Silicon errats or how my ASIC is broken."
+description: "Silicon errats or how my first analog ASIC is dead before arrival."
+summary: "Silicon errats or how my first analog ASIC is dead before arrival."
 tags: ["ASIC", "analog", "bugs", "documentation", "humor"]
 draft: false
 showTableOfContents: false
