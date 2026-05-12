@@ -1,8 +1,8 @@
 ---
 title: "The hardware isn't broken, the documentation is !"
 date: 2026-05-12
-description: "Silicon errats or how my first analog ASIC is dead before arrival."
-summary: "Silicon errats or how my first analog ASIC is dead before arrival."
+description: "Silicon erratas or how my first analog ASIC is dead before arrival."
+summary: "Silicon erratas or how my first analog ASIC is dead before arrival."
 tags: ["ASIC", "analog", "bugs", "documentation", "humor"]
 draft: false
 showTableOfContents: false
