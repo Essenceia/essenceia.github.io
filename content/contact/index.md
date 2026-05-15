@@ -45,8 +45,8 @@ better from this point on.
 
 #### Julien Largetpiet
 
-Julien is an unreasonably skilled C++ developer with a genuine interest in data science understanding
-computer systems down to the lowest levels in service ofoptimizing the underlying algorithms.
+Julien is an unreasonably skilled C++ developer with a genuine interest in data science and understanding
+computer systems down to the lowest levels in service optimizing task execution.
 
 [{{< icon "envelope" >}} email: j.larget-piet@proton.me](mailto:j.larget-piet@proton.me)\
 [{{< icon "globe" >}} website: https://julienlargetpiet.tech/](https://julienlargetpiet.tech/)\
