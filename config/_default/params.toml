@@ -12,7 +12,7 @@ autoSwitchAppearance = true
 enableSearch = true
 enableCodeCopy = false
 
-mainSections = ["hft", "projects"]
+mainSections = ["hft", "projects", "thoughts"]
 # robots = ""
 
 disableImageOptimization = true
@@ -40,7 +40,7 @@ disableImageOptimization = true
   showRecent = true
   showRecentItems = 6
   showMoreLink = false
-  showMoreLinkDest = "/hft"
+  showMoreLinkDest = "/projects"
   cardView = false
   cardViewScreenWidth = false
   layoutBackgroundBlur = false # only used when layout equals background

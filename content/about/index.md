@@ -1,9 +1,9 @@
 ---
-title: "About me"
+title: "Hi, I'm Julia"
 date: 2023-08-02
 draft: false
 
-showAuthor : true
+showAuthor : false
 showDate : false
 showDateUpdated : false
 showPagination : false
@@ -16,7 +16,6 @@ sharingLinks : false
 showHeadingAnchors : true
 
 ---
-# Hi, I'm Julia 👋
 
 I'm a RTL designer and serial tinkerer.
 

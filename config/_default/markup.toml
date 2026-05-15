@@ -8,6 +8,7 @@
         [goldmark.extensions.passthrough.delimiters]
          	block = [['\[', '\]'], ['$$', '$$']]
          	inline = [['\(', '\)'], ['$', '$']]
+
 [goldmark.renderer]
   unsafe = true
 
