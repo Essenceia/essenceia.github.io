@@ -72,7 +72,7 @@ Judging by the traces on the PCB coming from the Ethernet connectors cages, the 
 the massive passive cooling block. 
 
 {{< figure
-    src="images/d2020/pcb1.jpg"
+    src="feature.jpg"
     alt="pcb art"
     caption="Switch PCS top face, we can see the PCB traces going from the Ethernet connector cages to bellow the big metal passive cooler"
     >}}

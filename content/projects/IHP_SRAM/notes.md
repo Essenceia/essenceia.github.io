@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 Power connection wasn't being made. 
 
 I am using the default hierarchical macro instegration. 

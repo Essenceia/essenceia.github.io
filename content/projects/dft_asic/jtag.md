@@ -1,3 +1,7 @@
+---
+draft: true
+---
+
 # DFT: Designed For Trouble 
 
 ## Mandatory JTAG instructions 

@@ -11,15 +11,17 @@ showWordCount: false
 showTaxonomies: true
 ---
 
-There has been an idea lingering in the back of my mind, slowly growing with each passing day. A disturbing sensation slowly entrenching itself page after page. The internet feels empty … 
+There has been an idea lingering in the back of my mind, slowly growing with each passing day. A disturbing sensation entrenching itself page after page. The internet feels empty … 
 
 I know this feeling isn’t just my own, talk of the “dead internet” indicates as much. Yet, it feels like the talk of bots taking over is actually distracting us from another culprit, very much human this time. 
 
-This really came to a boil when I stumbled onto this [discussion](https://news.ycombinator.com/item?id=47610191) where someone was talking about how they had just rebuilt their old website from 15 years ago with a sleek new design and incorporating all the best practices. 
+The idea emerged to the front of my mind when I stumbled onto this [discussion](https://news.ycombinator.com/item?id=47610191) where someone was talking about how they had just rebuilt their old website from 15 years ago with a sleek new design, incorporating all the best practices. 
 
 And it was through this side by side comparison that I finally understood something … this was done by design. 
 
-> What changed? The frontend simplified radically. The best websites of 2026 look like printed magazines, not sci-fi dashboards. Decoration left. Typography and space took center stage. We stopped showing off our tools and **started getting out of the content's way.**
+{{< quote source="https://bamwor.com/en/news/rebuilt-same-project-after-15-years" >}}
+What changed? The frontend simplified radically. The best websites of 2026 look like printed magazines, not sci-fi dashboards. Decoration left. Typography and space took center stage. We stopped showing off our tools and started getting out of the content's way.
+{{< /quote >}}
 
 {{< figure 
 	src="bamwor-2026-home.jpg"
@@ -36,15 +38,18 @@ This revived website is a fact book, it compiles geographic information like dem
 	caption="Bamwor 2011"
 >}}
 
- The old 2011 version feels different, it feels like a distinct place, behind its role as a factbook, it feels like somewhere you would spend time exploring. But its 2026 counterpart deliberately shed that skin, it’s goal is purely utilitarian. And behind the talk of SEO optimization, MCP servers, and structured geographic data APIs, lies a disturbing reality: humans exploring the web are not the target audience. 
+The old 2011 version was different, it feels like a distinct place, behind its role as a factbook, it's a virtual space you would spend time exploring. But its 2026 counterpart deliberately shed that skin, it’s goal is purely utilitarian. And behind the talk of SEO optimization, MCP servers, and structured geographic data APIs, lies a disturbing reality: humans exploring the web are not the target audience. 
 
-> That the market for structured geographic data APIs is still surprisingly underserved. RestCountries exists but only covers basics. GeoNames has raw data but a dated API. There's a real gap for a modern, developer-friendly service that combines both. 
+{{< quote source="https://bamwor.com/en/news/rebuilt-same-project-after-15-years" >}}
+That the market for structured geographic data APIs is still surprisingly underserved. RestCountries exists but only covers basics. GeoNames has raw data but a dated API. There's a real gap for a modern, developer-friendly service that combines both. 
+{{< /quote >}}
 
-## Decent into blandness 
+## Descent into blandness 
 
-Do you notice how everything feels the same? How most personal blogs feel like the same uninspired copy/paste loop of repetitive themes? 
+Do you also get the sense that everything feels the same? 
+How most personal blogs feel like the same uninspired copy/paste loop of repetitive themes? 
 
-And then there is the content, the 2 to 6 minute read blog posts that barely scratch the surface of a topic, written as if the author was afraid any more would aggress the poor reader’s attention span. With all the angles massaged into an inoffensive blob. The impersonal language of “we”, making you wonder if even small bulletins are written by committee now. 
+And then there is the content, the 2 to 6 minute long posts that barely scratch the surface of a topic, written as if the author was afraid any more would aggress the poor reader’s attention span. With all the angles massaged into an inoffensive blob. The impersonal language of “we”, making you wonder if even small bulletins are written by committee now. 
 
 Content produced in an attempt to please everyone but actually talks to no one. 
 
@@ -60,9 +65,9 @@ This was a premeditated murder.
 
 There is another corner of the internet, a small retreat intentionally built brimming with personality. It’s opinionated, doesn’t neatly scale to your window sizes, it hurts your eyes, and guess what: that is by design\! 
 
-Esthetic norms are binding, norms are binding. They don’t just constrain what people make, they constrain what people think about making. 
+Aesthetic norms are binding, norms are binding. They don’t just constrain what people make, they constrain what people think about making. 
 
-And so on some small ignored corner of the internet people are deliberately rejecting all the conversion that have sucked the life out of our modern web and creating their own small internet. These sites are designed by and for their creators, they are not meant to be monetized, most of them are never even meant to be linked back to their original authors. They are pure expressions of their creators' whims, subservient to no design convention. Between the gauhtly fuchsia pinks and animated favicon cats many would qualify as ugly.   
+And so on some small ignored corner of the internet people are deliberately rejecting all the convention that have sucked the life out of our modern web and creating their own small internet. These sites are designed by and for their creators, they are not meant to be monetized, most of them are never even meant to be linked back to their original authors. They are pure expressions of their creators' whims, subservient to no design convention. Between the gauhtly fuchsia pinks and animated favicon cats many would qualify as ugly.   
 And so be it. 
 
 The freedom that comes with being ugly is part of the message. 
@@ -81,7 +86,7 @@ Let's go for a ride, and if I do my job right, you will get lost on the way.
 
 ### The politically incorrect 
 
-Exibit A: [https://ludic.mataroa.blog/](https://ludic.mataroa.blog/) 
+Exhibit A: [https://ludic.mataroa.blog/](https://ludic.mataroa.blog/) 
 
 Their are the friends you invite to public evens and then there is Ludic Mataroa, the 
 friend you invite to sit down and chat over drinks at your place on Friday nights. 
@@ -96,32 +101,32 @@ whoes essays they have actually never read.
 >}} 
 
 On the surface this looks like a perfectly standard tech blog with it's black/blueish 
-banckground and its `DejaVu Sans` font (Yes, this is serisouly the fonts name, you can't make this up). 
+background and its `DejaVu Sans` font (Yes, this is seriously the fonts name, you can't make this up). 
 But that only adds to the pleasure knowing you could secretly be reading this 
 fountain of pure contempt for the *"tech industry"* and people passing behind your desk would 
 be none the wiser. 
 
 ### Gold in plain sight
 
-Exibit B: [https://dbushell.com/](https://dbushell.com/) 
+Exbibit B: [https://dbushell.com/](https://dbushell.com/) 
 
-And sometimes, you will stumble on a gold, in the midst of the mainstream a small handcrafted thing of beauty, 
-launced into the world by someone with enought skill and confidence to break free from the mold. 
+And sometimes, you will stumble on gold, in the midst of the mainstream a small handcrafted thing of beauty, 
+launched into the world by someone with enough skill and confidence to break free from the mold. 
 
-The authors behind these blogs nowingly turn there backs on part of their
-potenciel audiance, and in doing so, create an actual following. 
+The authors behind these blogs knowingly turn there backs on part of their
+potential audience, and in doing so, create an actual following. 
 
 {{< figure
 	src="david_bushell.png"
 >}}
 
-Sometimes this will come with buisness implications like the case of David Bushell, his 
-ashamdly anti AI stance is bound to make him lost a few contracts for his freelance web 
-developement buisness. 
+Sometimes this comes with business implications like the case of David Bushell, 
+who's unabashedly anti AI stance is bound to have lost him more than a few leads for his freelance web 
+development business. 
 
 But, the craft comes first and it shows. 
 
-There are beautifuly kept walled gardens, where each small blog post might open 
+These are beautifully kept walled gardens, where each small blog post might open 
 the door to a series of new ideas and small details are meticulously crafted. 
 
 {{< figure
@@ -135,31 +140,32 @@ is something to find.
 
 ### Hidden gems
 
-Exibit C: [https://blamensir.neocities.org/](https://blamensir.neocities.org/)
+Exhibit C: [https://blamensir.neocities.org/](https://blamensir.neocities.org/)
 
-Let us diverge off into the wilderness where rules of good web design starts breaking down. 
+Let us diverge off into the wilderness where the rules of what qualify as *"good web design"* have already started breaking down. 
 
-These are closer to internet hosted art instalations than websites, and the interactive
-nature is part of the exibit. 
+These are closer to internet hosted art installations than websites, and the interactive
+nature is part of the exhibit. 
 
 {{< figure
 	src="blamensir.png" 
 >}} 
 
-Are websites supposed to be medival expired assemblies of scanned paper cutouts ? 
+Are websites supposed to be medieval inspired assemblies of scanned paper cutouts ? 
 No ?
-Well that does matter, because it looks beautiful. 
+Well that doesn't matter, because it looks beautiful. 
 
 Wait, sorry, I lost myself there, gosh, there is more I need to show you. 
 
 ### What am I looking at? 
 
-Exibit D: [https://rusty-bytes.neocities.org/](https://rusty-bytes.neocities.org/) 
+Exhibit D: [https://rusty-bytes.neocities.org/](https://rusty-bytes.neocities.org/) 
 
-In a world of curated public personas there is something deply comforting 
+In a world of curated public personas there is something deeply comforting 
 in finding someones authentically personal blog. 
 
-Forget conventions: if people want it they will build it, it will be unique and it will be 
+Forget conventions: if people want it they will build it.
+It will be unique and it will be 
 great!
 
 {{< figure
@@ -172,13 +178,13 @@ Cursors shapped like diet coke cans and cat instagrams ? Check.
 	src="coke.gif"
 >}}
 
-But behind the questionable aestetic choices there is the delibrate act to 
-truly build for oneself. You and I dear reader are only marginaly the target
-audiance, these websites are build for there creators and there friends. 
+But behind the questionable aesthetic choices there is the deliberate act to 
+truly build for oneself. You and I dear reader are only accidentally the target
+audience, these websites are build for there creators and there friends. 
 
 ### Why ? 
 
-Exibit E: [https://fish2fish.neocities.org/mainpage/main](https://fish2fish.neocities.org/mainpage/main)
+Exhibit E: [https://fish2fish.neocities.org/mainpage/main](https://fish2fish.neocities.org/mainpage/main)
 
 I have so many questions ... where do I even start? 
 
@@ -186,11 +192,11 @@ I have so many questions ... where do I even start?
 	src="main.png"
 >}}
 
-Don't ask me, at this level in the iceberge I have no idea what I am looking at ether. 
+Don't ask me, at this level in the iceberg I have no idea what I am looking at ether. 
 
 > helloo! I am fish and this is my little monkey terrarium!!!!!!
 
-But between the broken javascript and the confession of chewing ice cubes I am facinated. 
+But between the broken javascript and the confession of chewing ice cubes I am fascinated. 
 
 {{< figure
 	src="bird.gif" 
@@ -198,7 +204,6 @@ But between the broken javascript and the confession of chewing ice cubes I am f
 
 And I know, I am still just scratching the surface. 
 
-### I give up
 
 
 

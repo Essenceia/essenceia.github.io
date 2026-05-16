@@ -24,7 +24,7 @@ for the rest of us who prefer a quieter environment, finding a way to reduce
 the fan noise is crucial for making the most out of this purchase.
 
 {{< figure
-    src="images/d2020/switch.jpg"
+    src="feature.jpg"
     alt="Switch"
     caption="Celestical Redstone D2020"
     >}}
