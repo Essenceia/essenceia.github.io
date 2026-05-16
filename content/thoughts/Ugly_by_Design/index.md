@@ -89,7 +89,7 @@ Let's go for a ride, and if I do my job right, you will get lost on the way.
 
 Exhibit A: [https://ludic.mataroa.blog/](https://ludic.mataroa.blog/) 
 
-Their are the friends you invite to public evens and then there is Ludic Mataroa, the 
+Their are the friends you invite to public events and then there is Ludic Mataroa, the 
 friend you invite to sit down and chat over drinks at your place on Friday nights. 
 
 Like a dirty little secret of the tech world people indulge in these long viciously 
@@ -237,7 +237,7 @@ But between the broken javascript and the confession of chewing ice cubes I am f
 	src="bird.gif" 
 >}}
 
-And even now, I know, I am have still just scratched the surface. 
+And even now, I am still just scratching the surface. 
 
 
 
