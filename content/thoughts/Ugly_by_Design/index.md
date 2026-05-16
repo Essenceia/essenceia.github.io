@@ -187,9 +187,39 @@ But behind the questionable aesthetic choices there is the deliberate act to
 truly build for oneself. You and I dear reader are only accidentally the target
 audience, these websites are build for there creators and there friends. 
 
+### I love garlic 
+
+Exhibit E: [https://joro.nu/garlic/](https://joro.nu/garlic/) 
+
+Who doesn't want a website dedicated to garlic ? 
+
+Have you been desperately looking for a personality quiz to help you decide what garlic subtype
+of Allium sativum matches you best, so you can start anthropomorphizing your pasta sauce ? 
+So has the creator of this site!
+
+Cherry on top: once you have finished taking the survey, you to, can proudly host your personality test
+results on your very own blog!
+
+{{< figure
+	src="joro.png"
+>}}
+
+Just look at how cute these little garlic gifs are ? How can anyone resist ? 
+
+{{< figure
+	src="garlic.gif" 
+	caption="The internet's cutest garlic: please don't eat me" 
+>}} 
+
+This website gets extra points for also throwing typography out the window and firmly commiting 
+to using only lowercase.
+{{< figure
+	src="adoptable.png"
+>}}
+
 ### Why ? 
 
-Exhibit E: [https://fish2fish.neocities.org/mainpage/main](https://fish2fish.neocities.org/mainpage/main)
+Exhibit F: [https://fish2fish.neocities.org/mainpage/main](https://fish2fish.neocities.org/mainpage/main)
 
 I have so many questions ... where do I even start? 
 
@@ -207,13 +237,7 @@ But between the broken javascript and the confession of chewing ice cubes I am f
 	src="bird.gif" 
 >}}
 
-And I know, I am still just scratching the surface. 
-
-
-
-
-
-
+And even now, I know, I am have still just scratched the surface. 
 
 
 
