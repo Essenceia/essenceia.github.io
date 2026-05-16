@@ -4,11 +4,12 @@ date: 2026-04-04
 description: "An odd to ugly web design."
 summary: "An odd to ugly web design."
 tags: ["writting experminent"]
-draft: true
+draft: false
 showTableOfContents: false
 showReadingTime: false
 showWordCount: false
 showTaxonomies: true
+showAuthor: false
 ---
 
 There has been an idea lingering in the back of my mind, slowly growing with each passing day. A disturbing sensation entrenching itself page after page. The internet feels empty … 
@@ -159,7 +160,11 @@ Wait, sorry, I lost myself there, gosh, there is more I need to show you.
 
 ### What am I looking at? 
 
-Exhibit D: [https://rusty-bytes.neocities.org/](https://rusty-bytes.neocities.org/) 
+{{< inline_figure 
+	text="Exhibit D "
+	src="rusty_bytes_button.png"
+	href="https://rusty-bytes.neocities.org/"
+>}}
 
 In a world of curated public personas there is something deeply comforting 
 in finding someones authentically personal blog. 

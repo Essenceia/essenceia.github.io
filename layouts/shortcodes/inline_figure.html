@@ -1,0 +1,13 @@
+  {{- $url := urls.Parse (.Get "src") }}
+  {{- $href := .Get "href" }}
+  {{- $text := .Get "text" }}
+
+  <p style="display: flex; align-items:center;">
+	{{- $text -}}:  
+  <a href="{{ $href }}">
+        <img
+          class="nozoom"
+          src="{{ $url }}"
+        />
+   </a>
+   </p>
