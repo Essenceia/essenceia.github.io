@@ -636,7 +636,7 @@ One of the big difficulties was to not get side-tracked. Even if it was frustrat
 And trust me, the temptation to add, just that one extra little teeny-tiny feature, either to the systolic array or the debug system,
 was excruciating.
 
-The good news is that, with this upcoming tapeout ([v2 has already started](https://github.com/Essenceia/DFT_FPGA_Emulation)), I can finally lash out !! 
+The good news is that, with this upcoming tapeout ([v2 has already started](https://github.com/Essenceia/Systolic_Array_with_DFT_v2)), I can finally lash out !! 
 My grand strategy is for the next project to be an improvement of both concepts. 
 
 Firstly, I'd like to finally have a rematch with an old adversary of mine: Floating Point arithmetics!
