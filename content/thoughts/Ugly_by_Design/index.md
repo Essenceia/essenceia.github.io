@@ -201,7 +201,7 @@ Cherry on top: once you have finished taking the survey, you to, can proudly hos
 results on your very own blog!
 
 {{< figure
-	src="joro.png"
+	src="feature.png"
 >}}
 
 Just look at how cute these little garlic gifs are ? How can anyone resist ? 
