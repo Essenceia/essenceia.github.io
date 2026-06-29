@@ -23,9 +23,9 @@ And so, we presently find ourselves in need of a tradition: a metaphorical door 
 For me, this door is located below the black and yellow neon yue of my local waffle house.
 
 {{< figure
-	src="sunset.jpeg"
+	src="feature_sunset.jpeg"
 	className="max-w-xs mx-auto"
-	caption="Credit for this picture belongs to [r/wafflehouse user lukestiltwalker.](https://www.reddit.com/r/wafflehouse/comments/1u2l2bw/yay_rwafflehouse_is_back_on_the_menu_boys_ive/)"
+	caption="Posted by an anonymous user on [r/wafflehouse.](https://www.reddit.com/r/wafflehouse/comments/1dvnhj1/waffle_house/)"
 >}}
 
 ## The Dress Code
@@ -79,6 +79,6 @@ As your plate of warm waffles is served you may take a bite and slowly sink into
 The deadline has been met, the chip has been sent off to the fab, and as the exhilaration that was keeping you pushing ahead washes away it is time for a silent celebration.
 
 {{< figure
-	src="feature.jpg"
+	src="celebration.jpg"
 	caption=""
 >}}
