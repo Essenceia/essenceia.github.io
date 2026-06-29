@@ -1,8 +1,8 @@
 ---
-title: "Tapeout Tradition"
+title: "The door out of Tapeout Hell"
 date: 2026-06-29
-description: "The Waffle House tapeout tradition."
-summary: "The Waffle House tapeout tradition."
+description: "The Waffle House Tapeout Tradition."
+summary: "The Waffle House Tapeout Tradition."
 tags: [""]
 draft: false
 showTableOfContents: false
@@ -10,8 +10,6 @@ showReadingTime: false
 showWordCount: false
 showTaxonomies: true
 ---
-## The door out of Tapeout Hell
-
 Tapeouts are gruelling. 
 
 Any mistakes that are not caught and fixed before tapeout means an expensive, in both time and money, silicon respin. There is no room for mistakes. Every tapeout must aim for perfection. And as the deadline approaches, so does the pressure: welcome to tapeout hell. 
