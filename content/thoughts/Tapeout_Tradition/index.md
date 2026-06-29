@@ -16,7 +16,8 @@ Tapeouts are gruelling.
 
 Any mistakes that are not caught and fixed before tapeout means an expensive, in both time and money, silicon respin. There is no room for mistakes. Every tapeout must aim for perfection. And as the deadline approaches, so does the pressure: welcome to tapeout hell. 
 
-Once the clock has run out, the deadline has been met, and the last revision taped-in we are in need of a way to tell our body and mind that it is over. Simply proclaiming it is finished and moving along, leaving behind the tapeout as a finished task is simply blinding oneself to the gravity of the situation and the weight of the effort. Although doing so might be tolerable for sparse tapeout schedules, few will last under heavy load. (Take this as coming for someone that has done over 5 tapeouts in under 12 months.)  
+Once the clock has run out, the deadline has been met, and the last revision taped-in we are in need of a way to tell our body and mind that it is over. Simply proclaiming it is finished and moving along, leaving behind the tapeout as a checked task is simply blinding oneself to the gravity of the situation and the weight of the effort. Although doing so might be tolerable for sparse tapeout schedules, few will last under heavy load. 
+(This is a well meaning recommendation from someone that has done over 5 tapeouts in the last 12 months.)  
 
 And so, we presently find ourselves in need of a tradition: a metaphorical door symbolizing we have escaped tapeout hell, and are now free. 
 
