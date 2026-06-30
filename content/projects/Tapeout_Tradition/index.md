@@ -6,9 +6,6 @@ summary: "The Waffle House Tapeout Tradition."
 tags: [""]
 draft: false
 showTableOfContents: false
-showReadingTime: false
-showWordCount: false
-showTaxonomies: true
 ---
 Tapeouts are gruelling. 
 
