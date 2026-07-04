@@ -6,7 +6,7 @@ summary: "Broadcasting over Ethernet until the heat death of the universe with a
 tags: ["asic", "gf180", "180nm", "rtl", "verilog", "Ethernet", "100Mbps", "reddit"]
 draft: true
 showTableOfContents: true
-—
+---
 
 AI disclosure: All bugs are 100% human made. 
 
@@ -17,8 +17,8 @@ So I did the next worst thing I could think of and asked reddit for advice.
 
 And, the r/chipdesign community delivered: there was quite a turnout with a wide mix of horrendous suggestions. Some honorable mentions were to “actually purposefully build an antenna this time” or a “CPU with no cache, no ram and only disk “. But by far my favorite idea came courtesy of [“thegreatpotatogod”](https://www.reddit.com/r/chipdesign/comments/1uk54wj/comment/ouubmks/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button) and was : 
 {{< figure 
-src=”reddit.png”
-desc=”A counter that has enough bits to count from now until the heat death of the universe, and is determined to do so.”
+src="reddit.png"
+description="A counter that has enough bits to count from now until the heat death of the universe, and is determined to do so."
 >}}
 
 And I am going to build just that! Also, I only have a little over 48 hours to build this, but since building a counter by itself isn’t ambitious enough I am going to bolt on an 100Mbps Ethernet interface, because I do have at least 48 hours to build this!
@@ -147,8 +147,8 @@ Now as an astute reader you are certainly wondering just how I am getting this o
 Born from the same instinct as the suspicion placed upon any testbench that passes on the first run, call it having been burned enough time to know you most certainly forgot something experience. 
 
 {{< figure
-src=”fpga.png”
-caption=”FPGA emulation connected to my local network. Using the widely available [basys3 from Digilent](https://digilent.com/shop/basys-3-amd-artix-7-fpga-trainer-board-recommended-for-introductory-users/)  as my emulator of choice these days thanks to its abundance of easily accessible GPIO, making it perfect for my prototyping needs.”
+src="fpga.png"
+caption="FPGA emulation connected to my local network. Using the widely available [basys3 from Digilent](https://digilent.com/shop/basys-3-amd-artix-7-fpga-trainer-board-recommended-for-introductory-users/) as my emulator of choice these days thanks to its abundance of easily accessible GPIO, making it perfect for my prototyping needs."
 >}}
 
 But most importantly: thanks to this setup I can get a 6 months head start !
@@ -162,9 +162,9 @@ Maybe I should have done the CPU ?
 
 
 {{< figure
-src=”wafflehouse.jpg”
-caption=”[Traditional post tapeout celebratory waffles! Help me spread this tradition.](https://talesonthewire.com/projects/tapeout_tradition/)”
->>}
+src="wafflehouse.jpg"
+caption="[Traditional post tapeout celebratory waffles! Help me spread this tradition.](https://talesonthewire.com/projects/tapeout_tradition/)"
+>}}
 
 
 
