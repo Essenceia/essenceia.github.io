@@ -4,7 +4,7 @@ date: 2026-07-04
 description: "Broadcasting over Ethernet until the heat death of the universe with a custom ASIC, or yet another terrible idea, this time inspired by reddit."
 summary: "Broadcasting over Ethernet until the heat death of the universe with a custom ASIC, or yet another terrible idea, this time inspired by reddit."
 tags: ["asic", "gf180", "180nm", "rtl", "verilog", "Ethernet", "100Mbps", "reddit"]
-draft: true
+draft: false
 showTableOfContents: true
 ---
 
