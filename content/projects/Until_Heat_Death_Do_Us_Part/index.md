@@ -173,7 +173,7 @@ But most importantly: thanks to this setup I can get a 6 months head start !
 
 ## Waffle time 
 
-Well this went more smoothly than expected. The emulated counter has just passed `7047549681761` ticks, the design has been submitted to the shuttle and I didn’t even need to pull a single all right this time. 
+Well this went more smoothly than expected. The emulated counter has just passed `7047549681761` ticks, the design has been submitted to the shuttle and I didn’t even need to pull a single all nighter this time. 
 
 Maybe I should have done the CPU ?
 
