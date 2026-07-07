@@ -381,7 +381,7 @@ Code isn’t going to cut it, we need to go deeper!
 So what is more from scratch than C code ?
 
 We could code this in assembly and try to optimize it by using all the best assembly bit twiddling tricks in the book all while pretending we didn’t notice those [beautiful `fadd` instructions](https://developer.arm.com/documentation/ddi0602/2025-12/SIMD-FP-Instructions/FADD--scalar---Floating-point-add--scalar--?lang=en) staring back at us across the ISA.   
-And guess what: not only can we still go deeper, but sadly even with the most beautifully hand crafted assembly in the world its performance would still be orders of magnitude slower than a dedicated `floating point addition` instruction running on my grandmother's computer 
+And guess what: not only can we still go deeper, but sadly even with the most beautifully hand crafted assembly in the world its performance would still be orders of magnitude slower than a dedicated `floating point addition` instruction running on my grandmother's computer! 
 
 No, we are going to build our own FPU hardware out of transistors, optimize the hell out of it, and then, we are going to put it on a chip and tape it out!
 
@@ -411,7 +411,7 @@ Since these gates are built out of transistors they are specific to a fabricatio
 
 {{< figure
 	src="sky130_fd_sc_hd__o21a_1.svg"
-	caption="[sky130_fd_sc_hd__o21a_1](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html)  cell floorplan, with each color corresponds to a specific layer of the chip sandwich."
+	caption="[sky130_fd_sc_hd__o21a_1](https://skywater-pdk.readthedocs.io/en/main/contents/libraries/sky130_fd_sc_hd/cells/o21a/README.html)  cell floorplan, were each color corresponds to a specific layer of the chip sandwich."
 	alt="sky130_fd_sc_hd__o21a cell floorplan"
 >}}
 
@@ -457,7 +457,7 @@ Some options are :
 - `float16`, IEEE 754 half-precision: 5 bits exponent, 10 bits significand  
 - `float32`, IEEE 754 single precision: 8 bits exponent, 23 bits significand  
 - `float64`, IEEE 754 double precision: 11 bits exponent, 52 bits significand  
-- Pixar's PXR24 format, 8 bits exponent, 15 bits significand  
+- Pixar's `PXR24` format, 8 bits exponent, 15 bits significand  
 - `tf32`, Nvdia’s TensorFloat-32 which is a 19 bit format. I know right, why did they let the marketing department name this ? 8 bits exponent, 10 bits significand  
 - `bfloat16`, Google’s brain float format : 8 bits exponent, 7 bits significand
 
