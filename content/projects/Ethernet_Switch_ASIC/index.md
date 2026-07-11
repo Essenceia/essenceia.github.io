@@ -123,6 +123,12 @@ In total this will afford me 8 input, 8 output, and 8 bi-drectional gpio pins,  
 
 The absence of any analog front end makes building anything IEEE-physical-layer-compliant directly a challenge, but there's a way around this: using an external PHY (physical layer) chip and interfacing with it over the standardized RMII bus. Though this consumes 7 bits per Ethernet interface it makes my 50Mbps pins capable of sending and receiving over 100Mbps Ethernet. 
 
+{{< figure 
+src="chip.svg"
+caption="Tiny Tapeout shuttle chip"
+extrastyle="filter: invert(100%) sepia(93%) hue-rotate(87deg) brightness(119%) contrast(119%);"
+>}} 
+
 | Index | Input | Output | Bidirectional |
 |-------|------------|-------------|----------------------| 
 | 0 | ui[0]| uo[0] | uio[0] |
@@ -141,7 +147,7 @@ I will be targeting the widely available microchip LAN8720 PHY chip for this int
 My second major constraint is my limited die area. I am paying for all this afterall, more area means higher manufacturing cost. I am not trying to accumulate a pool of gold or anything, it’s just that, in compliance with Maslow's hierarchy of needs, waffles rank higher than area, and higher manufacturing cost means less waffles. So just like any semi-conductor company, I am incentivised to keep my area budget under control. 
 
 {{< figure 
-src="needs.png"
+src="needs.svg"
 caption="Maslow’s hierarchy of needs, distorted ASIC edition. "
 >}}
 
@@ -286,8 +292,11 @@ At its heart, a switch is actually a conceptually simple piece of equipment who�
 Matching incoming packet’s destination MAC addresses to the correct port is accomplished by an internal structure called an address table. 
 
 Like a software dictionary construct it maps a destination MAC address to a switch port index. 
+
 In order to build this correspondence, the switch analyzes incoming traffic's source MACs, keeping track of which port each source MAC was seen on, in order to forward future traffic to the correct port.
+
 Putting it together: when an incoming Ethernet frame arrives, the switch first reads the destination MAC and checks the address table for a matching entry. If there's a hit, it forwards the packet to the specified port. And in cases where there is no hit, in a best effort to minimize packet drops, it broadcasts the frame on all ports except the one it came from.
+
 At least that is the high level overview, in practice, this is hardware, so things get a bit more hard (pun intended … no, I am not sorry). 
 
 ### Filling the table
@@ -301,13 +310,13 @@ The requirement that all entries in the table be unique is not only a correctnes
 ```verilog
 always @(*) begin
     /* verilator lint_off CASEOVERLAP */
-    (* parallel_case *) ← telling synthesizer it can optimize this from a priority mux to a parallel case
+    (* parallel_case *) // telling synthesizer it can optimize this from a priority mux to a parallel case
     casez(mac_hit) <- onehot0 entry hit vector
         4'b???1: port_hit = mem_port_q[0];
         4'b??1?: port_hit = mem_port_q[1];
         4'b?1??: port_hit = mem_port_q[2];
         4'b1???: port_hit = mem_port_q[3];
-        default: port_hit = {PORT_IDX_W{1'bX}}; <- port hit will only be used if we have at least one valid entry hit
+        default: port_hit = {PORT_IDX_W{1'bX}}; // port hit will only be used if we have at least one valid entry hit
     endcase
     /* verilator lint_on CASEOVERLAP */
 end
