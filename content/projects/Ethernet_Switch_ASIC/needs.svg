@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="304" height="272" class="svgbob"><style>.svgbob line, .svgbob path, .svgbob circle, .svgbob rect, .svgbob polygon {
+    stroke: black;
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    stroke-linecap: round;
+    stroke-linejoin: miter;
+}
+.svgbob text {
+    white-space: pre;
+    fill: black;
+    font-family: Iosevka Fixed, monospace;
+    font-size: 14px;
+}
+.svgbob rect.backdrop {
+    stroke: none;
+    fill: white;
+}
+.svgbob .broken {
+    stroke-dasharray: 8;
+}
+.svgbob .filled {
+    fill: black;
+}
+.svgbob .bg_filled {
+    fill: white;
+    stroke-width: 1;
+}
+.svgbob .nofill {
+    fill: white;
+}
+.svgbob .end_marked_arrow {
+    marker-end: url(#arrow);
+}
+.svgbob .start_marked_arrow {
+    marker-start: url(#arrow);
+}
+.svgbob .end_marked_diamond {
+    marker-end: url(#diamond);
+}
+.svgbob .start_marked_diamond {
+    marker-start: url(#diamond);
+}
+.svgbob .end_marked_circle {
+    marker-end: url(#circle);
+}
+.svgbob .start_marked_circle {
+    marker-start: url(#circle);
+}
+.svgbob .end_marked_open_circle {
+    marker-end: url(#open_circle);
+}
+.svgbob .start_marked_open_circle {
+    marker-start: url(#open_circle);
+}
+.svgbob .end_marked_big_open_circle {
+    marker-end: url(#big_open_circle);
+}
+.svgbob .start_marked_big_open_circle {
+    marker-start: url(#big_open_circle);
+}<!--separator--></style><defs><marker id="arrow" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 0,4 4,2 0,0"/></marker><marker id="diamond" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,2 2,0 4,2 2,4 0,2"/></marker><marker id="circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="2" class="filled"/></marker><marker id="open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="2" class="bg_filled"/></marker><marker id="big_open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="3" class="bg_filled"/></marker></defs><rect class="backdrop" x="0" y="0" width="304" height="272"/><text x="154" y="44">I</text><line x1="168" y1="32" x2="160" y2="48" class="solid"/><text x="170" y="44">O</text><text x="138" y="76">working</text><text x="162" y="92">A0</text><text x="138" y="124">lots</text><text x="178" y="124">of</text><text x="122" y="140">silicon</text><text x="186" y="140">area</text><text x="122" y="172">some</text><text x="162" y="172">amount</text><text x="138" y="188">of</text><text x="162" y="188">sleep</text><text x="106" y="220">Waffles,</text><text x="178" y="220">coffee</text><text x="90" y="236">and</text><text x="122" y="236">HEB</text><text x="154" y="236">smoked</text><text x="210" y="236">ham</text><g><line x1="168" y1="0" x2="40" y2="256" class="solid"/><line x1="168" y1="0" x2="296" y2="256" class="solid"/><line x1="140" y1="56" x2="196" y2="56" class="solid"/><line x1="116" y1="104" x2="220" y2="104" class="solid"/><line x1="92" y1="152" x2="244" y2="152" class="solid"/><line x1="68" y1="200" x2="268" y2="200" class="solid"/><line x1="40" y1="256" x2="296" y2="256" class="solid"/></g></svg>

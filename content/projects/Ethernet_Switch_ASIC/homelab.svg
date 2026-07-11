@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="712" height="416" class="svgbob"><style>.svgbob line, .svgbob path, .svgbob circle, .svgbob rect, .svgbob polygon {
+    stroke: black;
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 1;
+    stroke-linecap: round;
+    stroke-linejoin: miter;
+}
+.svgbob text {
+    white-space: pre;
+    fill: black;
+    font-family: Iosevka Fixed, monospace;
+    font-size: 14px;
+}
+.svgbob rect.backdrop {
+    stroke: none;
+    fill: white;
+}
+.svgbob .broken {
+    stroke-dasharray: 8;
+}
+.svgbob .filled {
+    fill: black;
+}
+.svgbob .bg_filled {
+    fill: white;
+    stroke-width: 1;
+}
+.svgbob .nofill {
+    fill: white;
+}
+.svgbob .end_marked_arrow {
+    marker-end: url(#arrow);
+}
+.svgbob .start_marked_arrow {
+    marker-start: url(#arrow);
+}
+.svgbob .end_marked_diamond {
+    marker-end: url(#diamond);
+}
+.svgbob .start_marked_diamond {
+    marker-start: url(#diamond);
+}
+.svgbob .end_marked_circle {
+    marker-end: url(#circle);
+}
+.svgbob .start_marked_circle {
+    marker-start: url(#circle);
+}
+.svgbob .end_marked_open_circle {
+    marker-end: url(#open_circle);
+}
+.svgbob .start_marked_open_circle {
+    marker-start: url(#open_circle);
+}
+.svgbob .end_marked_big_open_circle {
+    marker-end: url(#big_open_circle);
+}
+.svgbob .start_marked_big_open_circle {
+    marker-start: url(#big_open_circle);
+}<!--separator--></style><defs><marker id="arrow" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,0 0,4 4,2 0,0"/></marker><marker id="diamond" viewBox="-2 -2 8 8" refX="4" refY="2" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><polygon points="0,2 2,0 4,2 2,4 0,2"/></marker><marker id="circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="2" class="filled"/></marker><marker id="open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="2" class="bg_filled"/></marker><marker id="big_open_circle" viewBox="0 0 8 8" refX="4" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><circle cx="4" cy="4" r="3" class="bg_filled"/></marker></defs><rect class="backdrop" x="0" y="0" width="712" height="416"/><rect x="620" y="104" width="80" height="144" class="solid nofill" rx="0"/><line x1="632" y1="134" x2="688" y2="134" class="solid"/><line x1="632" y1="138" x2="688" y2="138" class="solid"/><line x1="632" y1="150" x2="688" y2="150" class="solid"/><line x1="632" y1="154" x2="688" y2="154" class="solid"/><rect x="212" y="216" width="80" height="64" class="solid nofill" rx="0"/><rect x="68" y="312" width="64" height="32" class="solid nofill" rx="0"/><line x1="36" y1="80" x2="36" y2="112" class="broken"/><line x1="44" y1="80" x2="44" y2="112" class="broken"/><line x1="52" y1="80" x2="52" y2="112" class="broken"/><line x1="60" y1="80" x2="60" y2="112" class="broken"/><line x1="68" y1="80" x2="68" y2="112" class="broken"/><line x1="76" y1="80" x2="76" y2="112" class="broken"/><line x1="84" y1="80" x2="84" y2="112" class="broken"/><line x1="92" y1="80" x2="92" y2="112" class="broken"/><line x1="100" y1="80" x2="100" y2="112" class="broken"/><line x1="108" y1="80" x2="108" y2="112" class="broken"/><line x1="136" y1="86" x2="144" y2="86" class="solid"/><line x1="136" y1="90" x2="144" y2="90" class="solid"/><text x="42" y="140">laptop</text><text x="162" y="172">.</text><text x="178" y="172">.</text><line x1="200" y1="230" x2="208" y2="230" class="solid"/><line x1="200" y1="234" x2="208" y2="234" class="solid"/><text x="322" y="172">.</text><text x="322" y="188">.</text><line x1="404" y1="188" x2="404" y2="184" class="solid end_marked_open_circle"/><text x="322" y="204">.</text><text x="322" y="220">.</text><line x1="296" y1="230" x2="304" y2="230" class="solid"/><line x1="296" y1="234" x2="304" y2="234" class="solid"/><line x1="304" y1="232" x2="376" y2="232" class="solid"/><line x1="376" y1="230" x2="384" y2="230" class="solid"/><line x1="376" y1="234" x2="384" y2="234" class="solid"/><text x="450" y="236">°</text><line x1="472" y1="230" x2="480" y2="230" class="solid"/><line x1="472" y1="234" x2="480" y2="234" class="solid"/><line x1="480" y1="232" x2="608" y2="232" class="solid"/><line x1="608" y1="230" x2="616" y2="230" class="solid"/><line x1="608" y1="234" x2="616" y2="234" class="solid"/><text x="322" y="252">.</text><text x="322" y="268">.</text><text x="322" y="284">.</text><text x="322" y="300">.</text><text x="322" y="316">.</text><text x="322" y="332">.</text><text x="322" y="348">.</text><text x="322" y="364">.</text><text x="322" y="380">.</text><text x="322" y="396">.</text><line x1="200" y1="262" x2="208" y2="262" class="solid"/><line x1="200" y1="266" x2="208" y2="266" class="solid"/><line x1="136" y1="326" x2="144" y2="326" class="solid"/><line x1="136" y1="330" x2="144" y2="330" class="solid"/><text x="234" y="300">switch</text><text x="66" y="364">end</text><text x="98" y="364">of</text><text x="122" y="364">the</text><text x="50" y="380">universe</text><text x="122" y="380">counter</text><text x="50" y="396">.</text><text x="66" y="396">.</text><text x="82" y="396">.</text><text x="98" y="396">.</text><text x="114" y="396">.</text><text x="130" y="396">.</text><text x="146" y="396">.</text><text x="162" y="396">.</text><text x="178" y="396">.</text><text x="2" y="172">.</text><text x="2" y="188">.</text><text x="2" y="204">.</text><text x="2" y="220">.</text><text x="2" y="236">.</text><text x="2" y="252">.</text><text x="2" y="268">.</text><text x="2" y="284">.</text><text x="2" y="300">.</text><text x="2" y="316">.</text><text x="2" y="332">.</text><text x="2" y="348">.</text><text x="2" y="364">.</text><text x="2" y="380">.</text><text x="2" y="396">.</text><text x="18" y="172">.</text><text x="34" y="172">.</text><text x="50" y="172">.</text><text x="66" y="172">.</text><text x="82" y="172">.</text><text x="98" y="172">.</text><text x="114" y="172">.</text><text x="130" y="172">.</text><text x="146" y="172">.</text><text x="194" y="172">.</text><text x="210" y="172">.</text><text x="226" y="172">.</text><text x="242" y="172">.</text><text x="258" y="172">.</text><text x="274" y="172">.</text><text x="290" y="172">.</text><text x="306" y="172">.</text><path d="M 376,176 A 16,16 0,0,0 376,192" class="nofill"/><path d="M 392,176 A 16,16 0,0,0 392,192" class="nofill"/><text x="42" y="204">homelab</text><text x="410" y="284">router</text><text x="618" y="284">workstation</text><text x="18" y="396">.</text><text x="34" y="396">.</text><text x="194" y="396">.</text><text x="210" y="396">.</text><text x="226" y="396">.</text><text x="242" y="396">.</text><text x="258" y="396">.</text><text x="274" y="396">.</text><text x="290" y="396">.</text><text x="306" y="396">.</text><g><line x1="28" y1="8" x2="140" y2="8" class="solid"/><line x1="28" y1="8" x2="28" y2="72" class="solid"/><line x1="140" y1="8" x2="140" y2="72" class="solid"/><line x1="28" y1="72" x2="140" y2="72" class="solid"/><line x1="28" y1="72" x2="4" y2="120" class="solid"/><line x1="140" y1="72" x2="116" y2="120" class="solid"/><line x1="4" y1="120" x2="116" y2="120" class="solid"/></g><g><line x1="144" y1="88" x2="172" y2="88" class="solid"/><line x1="172" y1="88" x2="172" y2="232" class="solid"/><line x1="172" y1="232" x2="200" y2="232" class="solid"/></g><g><line x1="404" y1="192" x2="404" y2="216" class="solid"/><line x1="388" y1="216" x2="468" y2="216" class="solid"/><line x1="388" y1="216" x2="388" y2="248" class="solid"/><line x1="468" y1="216" x2="468" y2="248" class="solid"/><line x1="388" y1="248" x2="468" y2="248" class="solid"/></g><g><line x1="172" y1="264" x2="200" y2="264" class="solid"/><line x1="172" y1="264" x2="172" y2="328" class="solid"/><line x1="144" y1="328" x2="172" y2="328" class="solid"/></g></svg>
