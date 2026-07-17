@@ -477,4 +477,28 @@ src="coffee.jpg"
 caption="Waffle House, but the waffles have already vanished. 🧇"
 >}}
 
+At least that is where this story was supposed to end. 
+
+## Round 2 
+
+[wafer.space]() was started by Tim Ansell, also know as `mithro` online. 
+Open source hardware design is a comparitvely tiny comunity, and we where aquiainted. 
+So while I was wrapping up this article, amused with my own typos, I had him a small message. 
+
+And that is where he dropped the bombshell: 
+
+{{< figure 
+	src="discord0.png" 
+	caption="So you are telling me there is a chance ?"
+>}}
+
+Rember Maslow's pyramid from a few paragraphs back? Well scrap that, it's not applicable when we are talking
+about the possibility of **FREE AREA**. 
+
+Now there is just one problem: we are not talking about just a single macro but doing a full chip here.
+Plus, I need to scale things up to actually make good use of the aditional silicon and pins and I have nothing ready to that effect. 
+
+Also, tapeout is in 4 days ... 
+
+Welcome to round 2!
 
