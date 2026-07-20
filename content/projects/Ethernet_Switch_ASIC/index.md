@@ -1,8 +1,8 @@
 ---
 title: "Designing an Ethernet Switch ASIC"
 date: 2026-07-20
-description: ""
-summary: ""
+description: "Designing the world's first open source Ethernet switch ASIC. An unmanaged cut-through 3-port 100Mbps switch fabbed on Global Foundries 180 nm. "
+summary: "Designing the world's first open source Ethernet switch ASIC. An unmanaged cut-through 3-port 100Mbps switch fabbed on Global Foundries 180 nm. "
 tags: ["asic", "switch", "ethernet", "gf180mcuD", "180nm", "rtl", "verilog", "100Mbps", "coffeepot", "coffeeshop"]
 draft: false
 showTableOfContents: true
