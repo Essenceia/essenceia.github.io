@@ -1,8 +1,8 @@
 ---
-title: "FCC has sudo rights: new regulations on consumer routers"
+title: "FCC has sudo rights: new regulation on consumer grade routers."
 date: 2026-07-20
-description: ""
-summary: ""
+description: "New regulations on consumer grade routers."
+summary: "Discussion on the new regulations imposed by the FCC on consumer grade routers"
 tags: ["fcc", "asic", "ethernet", "routers"]
 draft: false
 showTableOfContents: false
