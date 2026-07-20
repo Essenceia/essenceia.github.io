@@ -27,13 +27,13 @@ Buckle up and welcome to the tale of more madness.
 
 ## Where are the open source networking ASICs?
 
-Recent [FCC decisions]() have put the central importance of networking equipment top of mind, and in doing so, have also put the total absence of any entirely open source networking equipment hardware at the top of my mind. 
+Recent [FCC decisions](/thoughts/fcc_has_sudo_rights/) have put the central importance of networking equipment top of mind, and in doing so, have also put the total absence of any entirely open source networking equipment hardware at the top of my mind. 
  
-Although Open Source Silicon is in its infancy we are currently seeing a number of projects being designed, tested, and for the most ambitious ones, even tapedout with some proven silicon already in the wild. 
+Although Open Source Silicon is in its infancy we are currently seeing a number of projects being designed, tested, and for the most ambitious ones, even taped-out with some proven silicon already in the wild. 
 
 {{< figure
     src="silicon_proven.jpg"
-    caption="Silicon proven RISC-V SoC made as part of wafer.space run 1. Yes, it runs Linux."
+    caption="[Awesome Kian-V project, a silicon proven RISC-V SoC](https://github.com/splinedrive/kianRiscV/tree/master/linux_socs/LinuxSoC_v2) fabbed on wafer.space run 1. And yes, it runs Linux. [Link to the original post.](https://x.com/splinedrive/status/2078548839326445672?s=20)"
 >}}
 
 That said, the vast majority of the most ambitious projects are predominantly [RISC-V SoCs](https://www.crowdsupply.com/baochip/dabao). 
@@ -60,11 +60,11 @@ Before we start figuring out what kind of switch we want to build, let me give y
 
 Ethernet supports multiple physical layers, outlined in the 802.3 IEEE spec. Each clause in the spec defines the underlying medium characteristics for carrying the Ethernet protocol over the medium at a given bandwidth. 
 
-Both a 10 Gb fiber Ethernet link and a 10 Mb coaxial cable can carry Ethernet packets and, to the layers above the physical layer the packets will look exactly the same. 
+Both a 10 Gb fiber Ethernet link and a 10 Mb coaxial cable can carry Ethernet packets and, to the layers above the physical layer, the packets will look exactly the same. 
 
 Where they will differ is at the physical layer and, outlined in the spec is precisely how, with which timing and with what encoding data will be transmitted over the medium. 
 
-This ensures that devices made by different manufacturers agree on what "talking Ethernet" looks like. making them interoperable. 
+This ensures that devices made by different manufacturers agree on what "talking Ethernet" looks like, making them interoperable. 
 
 So one of the first questions I must answer is which physical layer my switch should support. This will define how much traffic I must route, how fast I should do so and how much bandwidth I can carry.
 
@@ -80,7 +80,7 @@ While unmanaged switches are essentially unconfigurable pieces of networking equ
 
 The last switch characteristic is cut-through versus store-and-forward. 
 
-Cut-through switches start forwarding a packet while the packet is still arriving, leading to much lower networking latency. Whereas store-and-forward switches wait for the entire packet to arrive before checking that no corruption has occurred, and then only forward the packet if that check passes. 
+Cut-through switches start forwarding a packet while the packet is still arriving, leading to much lower networking latency, whereas store-and-forward switches wait for the entire packet to arrive before checking that no corruption has occurred, and then only forward the packet if that check passes. 
 
 Where issues arise is when a packet is corrupted, a cut-through switch might still forward it, propagating corrupted packets through the network since forwarding began before the FCS (frame check sequence) could be checked.
 
@@ -92,7 +92,7 @@ As usual with my ASIC design work, what I build is shaped as much by what I want
 
 My first major constraint is the pins: not only in their amount but also in their maximum bandwidth. 
 
-Since I will be taping this first generation chip out over the [Tiny Tapeout shuttle chip](https://tinytapeout.com/chips/ttgf26b/), using purely digital tiles, I'm constrained by the limit of these pins. 
+Since I will be taping this first generation chip out over the [Tiny Tapeout shuttle chip](https://tinytapeout.com/chips/ttgf26b/), using purely digital tiles, I'm constrained by the limits of these pins. 
 
 In total this will afford me 8 input, 8 output, and 8 bi-directional GPIO pins,  rated to run reliably at 50 MHz on both inbound and outbound data. 
 
@@ -433,7 +433,7 @@ It includes:
 - [`teapot` Ethernet wrapper for building network connected accelerators.](https://github.com/Essenceia/Teapot)
 - [`coldbrew` Ethernet connected beacon for broadcasting an ethernet frame with an uptime count until the heat death of the universe.](https://github.com/Essenceia/Until_Heat_Death_Do_Us_Part)
 
-And,since all of the ASICs mentioned above are already tapedout, in mid November when the silicon comes back I can start building my first fully custom homelab! 
+And,since all of the ASICs mentioned above are already taped-out, in mid November when the silicon comes back I can start building my first fully custom homelab! 
  
 {{< figure
 src="homelab.svg"
@@ -476,6 +476,8 @@ caption="Waffle House, but the waffles have already vanished. 🧇"
 
 At least that is where this story was supposed to end ... 
 
+
+{{< hidden >}} 
 ## Round 2 
 
 [wafer.space](https://wafer.space/) was started by Tim Ansell, also known as `mithro` online. 
@@ -500,8 +502,7 @@ Also, tapeout is in 4 days ...
 
 Welcome to round 2!
 
-
-
+{{< /hidden >}} 
 
 
 
