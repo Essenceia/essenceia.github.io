@@ -1,5 +1,5 @@
 ---
-title: "Designing an Ethernet Switch ASIC - Part 1"
+title: "Designing an Ethernet Switch ASIC"
 date: 2026-07-20
 description: ""
 summary: ""
