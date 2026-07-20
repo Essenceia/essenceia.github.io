@@ -11,7 +11,7 @@ showTableOfContents: true
 AI disclosure: All bugs are 100% human made. 
 {{< /alert >}}
 
-It seems I built the first open source switch ASIC and I am getting it back from the fab mid november. 
+It seems I have just built the world’s first open source switch ASIC and I am getting it back from the fab mid november. 
 {{< figure 
 src="feature_floorplan.png"
 caption="Switch floorplan render with area density view enabled, occupying `711.2 x 325`um  of area. The first version of this chip is currently tapped out on the [Tiny Tapeout gf26b shuttle chip](https://tinytapeout.com/chips/ttgf26b/), part of the second [wafer.space](https://wafer.space/) run. Silicon bring-up is expected to start `2026-11-15`."
@@ -21,6 +21,9 @@ Here is its repository :
 {{< github repo="Essenceia/ethernet_switch_asic" showThumbnail=false >}} 
 
 Buckle up and welcome to the tale of more madness. 
+
+> [!TIP] Recommended soundtrack for reading: [TODO]()
+
 
 ## Intro
 
@@ -51,7 +54,7 @@ And when the answer to these seemed to be "not really" my questions then evolved
 
 _What would it take to build such a chip entirely in the United States?_
 
-At least there that I have more concrete answers having personally tapped out twice on SkyWater 130nm ([digital hashing accelerator](https://talesonthewire.com/projects/blake2s_hashing_accelerator_a_solo_tapeout_journey/) and [analog design](https://talesonthewire.com/thoughts/broken_doc/)), which is a US based fab. Also, since SkyWater features on the US Department of War list of ["accredited suppliers"](https://www.acq.osd.mil/asds/dmea/tapo/docs/tp/Accredited-Supplier-List-29Jun2026.pdf) for its [Trusted Foundry Program](https://www.acq.osd.mil/asds/dmea/tapo/trusted-supplier-programs.html  ) it's unlikely to end up on the entity list any time soon. If it’s good enough for trusted military applications it's good enough for consumer grade routers. 
+At least there I can provide more concrete answers having personally tapped out twice on SkyWater 130nm ([digital hashing accelerator](https://talesonthewire.com/projects/blake2s_hashing_accelerator_a_solo_tapeout_journey/) and [analog design](https://talesonthewire.com/thoughts/broken_doc/)), which is a US based fab. Also, since SkyWater features on the US Department of War list of ["accredited suppliers"](https://www.acq.osd.mil/asds/dmea/tapo/docs/tp/Accredited-Supplier-List-29Jun2026.pdf) for its [Trusted Foundry Program](https://www.acq.osd.mil/asds/dmea/tapo/trusted-supplier-programs.html  ) it's unlikely to end up on the entity list any time soon. If it’s good enough for trusted military applications it's good enough for consumer grade routers. 
 
 Then there is the question of tooling, and although the open source silicon implementation tools are maintained by a worldwide community, OpenROAD was initially [funded by DARPA](https://openroad.readthedocs.io/en/latest/).
 
@@ -67,17 +70,22 @@ And it is this very question  that opened up **the giant can of worms we will no
 
 Although Open Source Silicon is in its infancy we are currently seeing a number of projects being designed, tested, and for the most ambitious ones, even taped out with some proven silicon already in the wild. 
 
+{{< figure
+	src="silicon_proven.jpg"
+	caption="Silicon proven RISC-V SoC made as part of wafer.space run 1. Yes, it runs Linux."
+>}}
+
 That said, the vast majority of the most ambitious projects are predominantly [RISC-V SoCs](https://www.crowdsupply.com/baochip/dabao). 
 
 Surprisingly, there has been much less interest in building open hardware for networking equipment. 
 
 Well .. unsurprisingly actually … networking equipment is far less "sexy" than CPUs and has thus received much less attention from the open source community. On the other hand, this means there's a huge untapped boulevard of projects open to anyone with more time than common sense to build open source networking equipment chips!
 
-Because, on the other side of the great silicon divide, the world of open source networking equipment is actually quite rich, both in terms of its flourishing software ecosystem and the open PCB/electronics ecosystem, with a flurry of [fully featured open source routers available](https://openwrt.org/toh/openwrt/one). Yet, due to the current ecosystem's limitations, under the hood, these are all still forced to rely on proprietary chips for the compute and routing tasks.
+Because, on the other side of the great silicon divide, the world of open source networking equipment is actually quite rich, both in terms of its flourishing software ecosystem and the open PCB/electronics ecosystem, with a flurry of [fully featured open source routers available](https://openwrt.org/toh/openwrt/one). Yet, due to the current ecosystem's limitations, under the hood, these are all still all running closed-sourced, blackbox proprietary chips for the central compute and routing tasks.
 
 _So what would it take to build a router chip?_
 
-It's a very ambitious project, since a router involves a complex SoC needing both a powerful enough CPU to run the networking stack alongside specialized networking hardware, and analog frontend for the wired and wireless connections. Since building a full router outright is much too ambitious of a greenfield project to start with, let's begin with a more approachable first step: building a switch. After all, although most people only have one router, you can have a number of smaller switches, and we also don’t have any open source chips for those either. 
+It's a very ambitious project, since a router involves a complex SoC needing both a powerful enough CPU to run the networking stack alongside specialized networking hardware, and analog frontends for the wired and wireless connections. Since building a full router outright is much too ambitious of a greenfield project for a single person to ever hope to pull off, let's begin with a more approachable first step: building a switch. After all, although most people only have one router, you can have a number of smaller switches, and we also don’t have any open source chips for those. 
 
 Oh and, I am not talking about building an FPGA switch, oh no, I am talking about building a switch ASIC, taping it out and then proving the silicon works. 
 
@@ -93,9 +101,9 @@ Ethernet supports multiple physical layers, outlined in the 802.3 IEEE spec. Eac
 
 Both a 10 Gb fiber Ethernet link and a 10 Mb coaxial cable can carry Ethernet packets and, to the layers above the physical layer the packets will look exactly the same. 
 
-Where they will differ is at the physical layer and, outlined in the spec is precisely how: with which timing and with what encoding data will be transmitted over the medium. 
+Where they will differ is at the physical layer and, outlined in the spec is precisely how, with which timing and with what encoding data will be transmitted over the medium. 
 
-This ensures that devices made by different manufacturers agree on what "talking Ethernet" looks like and are interoperable. 
+This ensures that devices made by different manufacturers agree on what "talking Ethernet" looks like making them interoperable. 
 
 So one of the first questions I must answer is which physical layer my switch should support. This will define how much traffic I must route, how fast I should do so and how much bandwidth I can carry.
 
@@ -105,13 +113,13 @@ The second question is: what type of switch do I want to build?
 
 There are two big families of switches: managed and unmanaged. As the name implies, managed switches can be configured and managed from the outside. This allows for much smarter routing, such as supporting different VLANs. 
 
-While unmanaged switches are essentially unconfigurable pieces of networking equipment that you just plug into your network and forget (until power surge do you part).
+While unmanaged switches are essentially unconfigurable pieces of networking equipment that you just plug into your network and just work (until power surge do you part).
 
 #### Cut-through vs Store-and-Forward
 
 The last switch characteristic is cut-through versus store-and-forward. 
 
-Cut-through switches start forwarding a packet while the packet is still arriving. Whereas store-and-forward switches wait for the entire packet to arrive before checking that no corruption has occurred, and then only forward the packet if that check passes. 
+Cut-through switches start forwarding a packet while the packet is still arriving, leading to much lower networking latency. Whereas store-and-forward switches wait for the entire packet to arrive before checking that no corruption has occurred, and then only forward the packet if that check passes. 
 
 Where issues arise is when a packet is corrupted, a cut-through switch might still forward it, propagating corrupted packets through the network since forwarding began before the FCS (frame check sequence) could be checked.
 
@@ -146,11 +154,13 @@ extrastyle="filter: invert(100%) sepia(93%) hue-rotate(87deg) brightness(119%) c
 | 6 | ui[6] | uo[6] | uio[6] | 
 | 7 | ui[7] | uo[7] | uio[7] |
 
-I will be targeting the widely available microchip LAN8720 PHY chip for this interface and will be going more in-depth as to how this ASIC will be interfacing with this PHY later in the article. 
+I will be targeting the widely available microchip LAN8720 PHY chip for this interface. I will be going more in-depth as to how this ASIC will be interfacing with this PHY later in the article.
 
 #### Area
 
-My second major constraint is my limited die area. I am paying for all this afterall, more area means higher manufacturing cost. Now I am not trying to accumulate a pool of gold or anything, it’s just that, in compliance with Maslow's hierarchy of needs, waffles rank higher than area, and higher manufacturing cost means less waffles. So just like any semi-conductor company, I am incentivised to keep my area budget under control. 
+My second major constraint is my limited die area. 
+
+I am paying for all this out of pocket afterall, and more area means a higher manufacturing cost. Now I am not trying to accumulate a pool of gold or anything, it’s just that, in compliance with Maslow's hierarchy of needs, waffles rank higher than area, and higher manufacturing cost means less waffles. So just like any semi-conductor company, I am incentivised to keep my area budget under control. 
 
 {{< figure 
 src="needs.svg"
@@ -165,8 +175,10 @@ Now if we were talking of a few bytes this could be negotiable, but for multiple
 
 {{< figure 
 src="sram_scale.webp"
-caption="Very very high resolution render of the switch ASIC floorplan using [Tim Edward’s excellent OCD 256x8 SRAM IP](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram), for scale. A single 256 Byte SRAM occupies 301.3 x 224.93 um (using `W` orientation in this implementation) and consumes just by itself 1/3 of the floorplan. If we want to store even a single full packet we would need 6 of  such instances, and since we have 3 ports, we would then need to replicate that 3 times, so 18 instances in total. Now, we have a larger [1028 Byte version of this SRAM](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram/blob/main/cells/gf180mcu_ocd_ip_sram__sram1024x8m8wm1/gf180mcu_ocd_ip_sram__sram1024x8m8wm1.lef) that is 301.3 x 515.81 um which nicely increases our storage area density. But again, if where were to instantiate six such macros this would occupy x3 the area than we currently have to spare. Now, the Tiny Tapeout shuttle chip does support me scaling up this design up at most another two factors of two, or 4x. But the cost would also scale by a factor of 4, at which point we are getting into full chip orders of magnitude of cost. And if I were to go down the full chip route, since I then have the possibility of having a lot more pins to play with, this re-unlocks the possibility of interfacing with much larger external memories, thus changing the landscape of what the correct technical tradeoff would be again."
+caption="Very very high resolution render of the switch ASIC floorplan using [Tim Edward’s excellent OCD 256x8 SRAM IP](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram), for scale. Using `W` orientation."
 >}} 
+
+Assuming I was using [Tim Edward’s excellent OCD 256x8 SRAM IP](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram), a single 256 Byte SRAM occupies 301.3 x 224.93 um (using `W` orientation in this implementation) and consumes just by itself 1/3 of the floorplan. If we want to store even a single full packet we would need 6 of  such instances, and since we have 3 ports, we would then need to replicate that 3 times, so 18 instances in total. Now, we have a larger [1028 Byte version of this SRAM](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram/blob/main/cells/gf180mcu_ocd_ip_sram__sram1024x8m8wm1/gf180mcu_ocd_ip_sram__sram1024x8m8wm1.lef) that is 301.3 x 515.81 um which nicely increases our storage area density. But again, if where were to instantiate six such macros this would occupy x3 the area than we currently have to spare. Now, the Tiny Tapeout shuttle chip does support me scaling up this design up at most another two factors of two, or 4x. But the cost would also scale by a factor of 4, at which point we are getting into full chip orders of magnitude of cost. And if I were to go down the full chip route, since I then have the possibility of having a lot more pins to play with, this re-unlocks the possibility of interfacing with much larger external memories, thus changing the landscape of what the correct technical tradeoff would be again.
 
 {{< github repo="RTimothyEdwards/gf180mcu_ocd_ip_sram" showThumbnail=false >}} 
 
@@ -174,11 +186,11 @@ caption="Very very high resolution render of the switch ASIC floorplan using [Ti
 
 Lastly, I want something that doesn’t require external software or configuration. 
 
-Firstly because I would like external third party users in the community to be able to easily pick this ASIC up and start using it. But that becomes increasingly more difficult once I start involving custom software. So I am aiming for something that is as close to plug and play as possible with ease of use being a measure of success. 
+Firstly because I would like external third party users in the community to be able to easily pick this ASIC up and start using it. And that becomes increasingly difficult as soon as I start involving custom software. I am aiming for something that is as close to plug and play as possible with ease of use being a measure of success. 
 
 Not to say that the community won’t be unable to compile and flash my custom embedded abominations, just that their willingness to do decreases exponentially with each extra step. 
 
-Secondly because I am once again working on a very tight schedule and that custom software support adds significant amounts of time to both the pre-tapeout and bringup workloads. This would be especially true for this ethernet switch project since I would aim to be compatible with a widely adopted open source switch management software and protocol like [SNMP](https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol) for monitoring or SSH for monitoring and configuration.
+Secondly because I am once again working on a very tight schedule and that custom software support adds significant amounts of time to both the pre-tapeout and bringup workloads. (And, let not forget we are still talking about a single person's project here.) This would be especially true for this ethernet switch project since I would aim to be compatible with a widely adopted open source switch management software and protocol like [SNMP](https://en.wikipedia.org/wiki/Simple_Network_Management_Protocol) for monitoring or SSH for monitoring and configuration.
 
 Support for these protocols are not at the level of something I can trivially implement in hardware, especially for SSH, and the best design decision would be to offload to a CPU. So either integrate an on chip CPU on the ASIC or, build a custom interface to an external MCU and offload all these requests to it. Both options involve a significant software effort and with the on chip CPU also promising a huge design effort and even more area usage. At which point, I am approaching the planned architecture of the router rather than the first generation of the switch. 
 
@@ -225,7 +237,7 @@ caption="Raw packet overview"
 >}}
 
 
-And since, once they have been evaluated by the networking interface, both the Premable+SFD and FCS serve no further relevant purpose, they are stripped out before the remaining packet bits are forwarded up the networking stack. 
+And since, once they have been evaluated by the networking interface, both the Preamable+SFD and FCS serve no further relevant purpose, they are stripped out before the remaining packet bits are forwarded up the networking stack. 
 
 Now, since we're going through the Microchip PHY, we won't actually be interfacing directly with the Ethernet physical layer, as it will be abstracting away the precise 100BASE-TX PHY behavior, though the full ethernet frame will remain intact (including Preamble+SFD+FCS)
 
@@ -241,15 +253,23 @@ caption="LAN8720 to application device interface diagram taken directly from the
 
 #### RX 
 
+- `rxv` valid signal (`crs_dv` in the diagram above ) 
+- `rxer` error signal
+- `rxd[1:0]` two data signals
+
 On the `RX` (reception) side of RMII, we have four pins: two for data, one for data validity, and one to signal that an error has occurred on the line. 
 Interestingly, this valid signal isn't a pure data-valid signal but an early data-valid signal, and it's up to our ASIC to read the incoming data and correctly identify when the Ethernet frame data actually starts using the preamble and SFD. The valid signal actually asserts asynchronously a few cycles before the start of the preamble but, deasserts synchronously with the end of the Ethernet frame.
 
 #### TX 
-On the `TX` (transmit) side, we only have three signals: two for data and one for valid, with no error signal. This makes sense, since the error signal is there to  indicate issues on the medium, and so there is no need for it on the TX side.
+
+- `txv` valid signal (`txen` in the diagram above )
+- `txd[1:0]` two data signals 
+
+On the `TX` (transmit) side, we only have three signals: two for data and one for valid, with no error signal. This makes sense, since the error signal is there to  indicate issues on the medium, and since there is no medium between the ASIC and the PHY there is no need for it on the TX side.
 
 #### Timing 
 
-Lastly the RMII spec outlines the expected timings for interfacing with the PHY chip. 
+Lastly the PHY chip's datasheet outlines the expected timings for the interface signals. 
 
 Unlike what my high level overview might have suggested, new data isn’t immediately available at the start of the clock cycle. Like in all real hardware there is an internal propagation delay. The same goes for how fast the data is allowed to transition after the start of a cycle. Because the PHY chip also contains flip-flops and is thus also subject to hold constraints, the previous cycle’s data must remain stable for a certain period of time after the clock edge before the new value can be propagated. 
 
@@ -262,9 +282,12 @@ So, implementing correct signaling alone isn't enough to properly interface with
 
 Now by designing around the constraints of the LAN8720 chip readers might be concerned that I am locking myself into a dependency on a single external chip. 
 
-And actually that is kind of the case here, I am not proud of this but I caught this discrepancy too late, and not mentioning it in this article is simply not the type of write-up I am looking to do here.  
+And actually that is kind of the case here, I am not proud of this but I caught this discrepancy too late, and not mentioning it in this article simply doesn't align with the technically honest recollections I am looking to do here.  
 
-Although the RMII is regented by the RMII Concorcium, and even though within the RMII specification they AC specify characteristics, the LAN8720 isn’t actually compliant. Although in many cases the LAN8720’s timings are actually more constraining than the official spec, when it comes to the hold constraints on the RX pins it is less at 1.4ns vs 2.0ns. 
+Since RMII is regented by the RMII consortium, and since in the RMII specification they include the AC characteristics
+I blindly assumed the LAN8720 would be compliant.
+
+Turns out the LAN8720 isn’t actually compliant. And, although in many cases the LAN8720’s timings are actually more constraining than the official spec, when it comes to the hold constraints on the RX pins it is actually much loser at 1.4ns less than the RMII's concorcium's 2.0ns. 
 
 Although this might still work in practice, **it would be by pure luck and I only believe in engineered luck!**
 
@@ -296,12 +319,12 @@ Putting it together, here is what the final pinout of our ASIC will look like co
  
 ## Address Resolution
 
-At its heart, a switch is actually, conceptually, a simple piece of equipment who’s role is to read and forward incoming Ethernet frames to the correct ports. 
+At its heart, a switch is actually, a conceptually simple piece of networking equipment who’s role is to read and forward incoming Ethernet frames to the correct ports. 
 Matching incoming packet’s destination MAC addresses to the correct port is accomplished by an internal structure called an address table. 
 
 Like a software `dictionary` construct it maps a destination MAC address to a switch port index. 
 
-In order to build this correspondence, the switch analyzes incoming traffic's source MACs, keeping track of which port each source MAC was seen on, in order to forward future traffic to the correct port.
+In order to build this correspondence, the switch read's incoming traffic's source MACs, keeping track of which port each source MAC was seen on, in order to forward future traffic to the correct port.
 
 Putting it together: when an incoming Ethernet frame arrives, the switch first reads the destination MAC and checks the address table for a matching entry. If there's a hit, it forwards the packet to the specified port. And in cases where there is no hit, in a best effort to minimize packet drops, it broadcasts the frame on all ports except the one it came from.
 
@@ -353,7 +376,7 @@ a device is connected to our switch on port 0, but then it's disconnected from p
 
 Because of this, all switches, let they be managed (and unmanaged) implement such an ageing mechanism, where entries are regularly purged from the table. In our switch, this TTL counter also indicates whether an entry is valid (TTL != 0).
 
-Then, at a regular interval, an hardware internal event is triggered and all the entires TTL values in the table are decremented by 1. 
+Then, at a regular interval, an hardware internal event is triggered and all the table's TTL values in the table are decremented by 1. 
 
 This TTL is a hard-set 300 second (5 minute) invalidation cycle. All entries, if not refreshed within this five-minute window, will ultimately be invalidated.
 
@@ -388,11 +411,11 @@ This last step is particularly important for devices such as these that are expe
 
 And, let me, dear reader, tell you a funny story that happened while I was running this emulation. 
 
-Picture this: it was an early 3am, I had finished bringing up the switch and everything was working as expected. At this point my mind was fixated on actively debating whether I should head off to bed and get a wink of sleep or toughen it out until sunrise and go directly [celebrate at waffle house.](https://talesonthewire.com/projects/tapeout_tradition/) For those wondering why I didn’t just head off to waffle house then and there: I am happily married an intend to keep it that way.
+Picture this: it was an early 3am, I had finished bringing up the switch and everything was working as expected. At this point my mind was fixated on actively debating whether I should head off to bed and get a wink of sleep or toughen it out until sunrise and go directly [celebrate at waffle house.](https://talesonthewire.com/projects/tapeout_tradition/) For those wondering why I didn’t just head off to waffle house then and there: I am happily married, and intend to keep it that way.
 
 {{< figure
 src="ssh.svg"
-caption="2am emulation setup"
+caption="3:00 am emulation setup."
 >}}
 
 At that point my main work computer was connected via wired Ethernet to my switch, my switch to my router, and through there to my workstation.
@@ -429,7 +452,7 @@ Homelab [hom-læb]: a laboratory of (usually slightly outdated) awesome in the d
 
 But one humble switch doesn’t qualify as a homelab, no, there must be more, and it just so happens that there is. 
 
-This is actually part of a larger family of open source networking ASICs that I have dubbed the **"Coffee Shop"** family. 
+This is actually part of a larger family of open source networking hardware IP that I have dubbed the **"Coffee Shop"** family. 
 
 It includes:
 - [`coffeepot` first generation switch.](https://github.com/Essenceia/ethernet_switch_asic)
@@ -445,7 +468,7 @@ caption="First generation custom home lab schematic, or how to take the term \"c
 
 ### What is next ? 
 
-Obviously, the long-term plan is to replace my router and switch,but before that, I first need to get this switch silicon proven, and then expand it with both more entries for the address resolution table and more ports. Right now, because of the Tiny Tapeout shuttle's limitations, I can only fit three ports max. 
+Obviously, the long-term plan is to replace my router and switch, but before that, I first need to get this switch silicon proven, and then expand it with both more entries for the address resolution table and more ports. Right now, because of the Tiny Tapeout shuttle's limitations, I can only fit three ports max. 
 But if I move to a full chip, then I control all the pins! 🔥 w 🔥 
 
 A full chip would allow me to greatly bump my pin could to between 56 and 122 pins,  giving me enough precious pins to make a much more respectable 8 ports switch chip.
@@ -455,7 +478,7 @@ src="waffer.space.png"
 caption="I have been eyeing the [wafer.space](https://wafer.space/) 0.5×1 slot so hard these days I might be starting to burn a hole through it. But alas, regrettably good practice requires to have something silicon proven before blowing up the area budget."
 >}}
 
-At which point, my measly four entries for the address resolution table just isn’t going to cut it. To address that, I can either scale the number of entries up with more pure digital logic as I am doing now, or change paradigms entirely and move to the analog realm. Because in this beautiful land  lives the mystical creature known for its low lookup latency and its far superior scaling prowess that is the [content-addressable memory, or CAM](https://en.wikipedia.org/wiki/Content-addressable_memory) for short. 🌈 
+At which point, my measly four entries for the address resolution table just are not going to cut it. To address that, I can either scale the number of entries up with more pure digital logic as I am doing now, or change paradigms entirely and move to the analog realm. Because in this beautiful land  lives the mystical creature known for its low lookup latency and its far superior scaling prowess that is the [content-addressable memory, or CAM](https://en.wikipedia.org/wiki/Content-addressable_memory) for short. 🌈 
 
 Although realistically I could maybe scale up the number of entries with a pure digital approach a few more orders of two’s, this would require significant additional logic complexity and would stretch my tight timing even more. But if I wanted say 64 entries or more, a CAM would be the way to go. 
 
@@ -477,28 +500,32 @@ src="coffee.jpg"
 caption="Waffle House, but the waffles have already vanished. 🧇"
 >}}
 
-At least that is where this story was supposed to end. 
+At least that is where this story was supposed to end ... 
 
 ## Round 2 
 
-[wafer.space]() was started by Tim Ansell, also know as `mithro` online. 
-Open source hardware design is a comparitvely tiny comunity, and we where aquiainted. 
-So while I was wrapping up this article, amused with my own typos, I had him a small message. 
+[wafer.space](https://wafer.space/) was started by Tim Ansell, also know as `mithro` online. 
+The open source silicon community is actually an tiny community, so we where acquainted. 
+
+So, while I was wrapping up this article, amused with my own typos, I had him a small message. 
 
 And that is where he dropped the bombshell: 
 
 {{< figure 
-	src="discord0.png" 
-	caption="So you are telling me there is a chance ?"
+    src="discord0.png" 
+    caption="So you are telling me there is a chance ?"
 >}}
 
-Rember Maslow's pyramid from a few paragraphs back? Well scrap that, it's not applicable when we are talking
+Recall Maslow's pyramid from a few paragraphs back? Well scrap that, it's not applicable when we are talking
 about the possibility of **FREE AREA**. 
 
 Now there is just one problem: we are not talking about just a single macro but doing a full chip here.
-Plus, I need to scale things up to actually make good use of the aditional silicon and pins and I have nothing ready to that effect. 
+Plus, I need to scale things up to actually make good use of the additional silicon and pins and I have nothing started to that effect. 
 
 Also, tapeout is in 4 days ... 
 
 Welcome to round 2!
+
+
+
 
