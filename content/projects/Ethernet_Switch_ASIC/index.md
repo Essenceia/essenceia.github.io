@@ -1,6 +1,6 @@
 ---
 title: "Designing an Ethernet Switch ASIC"
-date: 2026-07-20
+date: 2026-07-23
 description: "Designing the world's first open source Ethernet switch ASIC. An unmanaged cut-through 3-port 100Mbps switch fabbed on Global Foundries 180 nm. "
 summary: "Designing the world's first open source Ethernet switch ASIC. An unmanaged cut-through 3-port 100Mbps switch fabbed on Global Foundries 180 nm. "
 tags: ["asic", "switch", "ethernet", "gf180mcuD", "180nm", "rtl", "verilog", "100Mbps", "coffeepot", "coffeeshop"]
@@ -94,9 +94,9 @@ My first major constraint is the pins: not only in their amount but also in thei
 
 Since I will be taping this first generation chip out over the [Tiny Tapeout shuttle chip](https://tinytapeout.com/chips/ttgf26b/), using purely digital tiles, I'm constrained by the limits of these pins. 
 
-In total this will afford me 8 input, 8 output, and 8 bi-directional GPIO pins,  rated to run reliably at 50 MHz on both inbound and outbound data. 
+In total this will afford me 24 pins: 8 input, 8 output, and 8 bi-directional (configurable to be either inputs or output pins) GPIO pins,  rated to run reliably at 50 MHz on both inbound and outbound data. 
 
-The absence of any analog front end makes building anything IEEE-physical-layer-compliant directly a challenge, but there's a way around this: using an external PHY (physical layer) chip and interfacing with it over the standardized RMII bus. Though this consumes 7 bits per Ethernet interface it makes my 50Mbps pins capable of sending and receiving over **100Mbps Ethernet** (100BASE-TX). 
+The absence of any analog front end makes building anything IEEE-physical-layer-compliant directly a challenge, but there's a way around this: using an external PHY (physical layer) chip and interfacing with it over the standardized [RMII bus](https://en.wikipedia.org/wiki/Media-independent_interface#Reduced_media-independent_interface). Though this consumes 7 bits per Ethernet interface it makes my 50Mbps pins capable of sending and receiving over **100Mbps Ethernet** ([100BASE-TX](https://en.wikipedia.org/wiki/Fast_Ethernet)). 
 
 {{< figure 
 src="chip.svg"
@@ -115,7 +115,7 @@ extrastyle="filter: invert(100%) sepia(93%) hue-rotate(87deg) brightness(119%) c
 | 6 | ui[6] | uo[6] | uio[6] | 
 | 7 | ui[7] | uo[7] | uio[7] |
 
-I will be targeting the widely available Microchip LAN8720A/LAN8720AI (which will be the only mention of AI in this article)  PHY chip for this interface. I will be going more in-depth as to how this ASIC will be interfacing with this PHY later.
+I will be targeting the widely available [Microchip LAN8720A/LAN8720AI (which will be the only mention of AI in this article)  PHY chip](https://github.com/Essenceia/ethernet_switch_asic/blob/main/docs/LAN8720A-LAN8720Ai-Data-Sheet-DS00002165.pdf) for this interface. I will be going more in-depth as to how this ASIC will be interfacing with this PHY later.
 
 #### Area
 
@@ -136,7 +136,7 @@ Now if we were talking of a few bytes this could be negotiable, but for multiple
 
 {{< figure 
 src="sram_scale.webp"
-caption="Very very high resolution render of the switch ASIC floorplan using [Tim Edward’s excellent OCD 256x8 SRAM IP](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram), for scale. Using `W` orientation."
+caption="Very very high resolution render of the switch ASIC floorplan using [Tim Edward’s excellent OCD 256x8 SRAM IP](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram), for scale. The SRAM macro features two banks and is on the right of the floor plan placed in the `W` (west) orientation."
 >}} 
 
 Assuming I was using [Tim Edward’s excellent OCD 256x8 SRAM IP](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram), a single 256 Byte SRAM occupies 301.3 x 224.93 um (using `W` orientation in this implementation) and consumes just by itself 1/3 of the floorplan. If we want to store even a single full packet we would need 6 of  such instances, and since we have 3 ports, we would then need to replicate that 3 times, so 18 instances in total. Now, we have a larger [1028 Byte version of this SRAM](https://github.com/RTimothyEdwards/gf180mcu_ocd_ip_sram/blob/main/cells/gf180mcu_ocd_ip_sram__sram1024x8m8wm1/gf180mcu_ocd_ip_sram__sram1024x8m8wm1.lef) that is 301.3 x 515.81 um which nicely increases our storage area density. But again, if we were to instantiate six such macros this would occupy x3 the area than we currently have to spare. 
@@ -212,7 +212,7 @@ All our data transmission and reception will actually be done through the RMII b
 
 {{< figure 
 src="lan8720_conn.png"
-caption="LAN8720A  to application device interface diagram taken directly from the LAN8720A/LAN8720AI datasheet. For our application the MAC and RMII block are going to be part of our ASIC and we will have 3 such interfaces in parallel. Like in this example, both the ASIC and all the 3 LAN8720A  chips will be driven by the same external 50MHz reference clock signal."
+caption="LAN8720A  to application device interface diagram taken directly from the [LAN8720A/LAN8720AI datasheet](https://github.com/Essenceia/ethernet_switch_asic/blob/main/docs/LAN8720A-LAN8720Ai-Data-Sheet-DS00002165.pdf). For our application the MAC and RMII block are going to be part of our ASIC and we will have 3 such interfaces in parallel. Like in this example, both the ASIC and all the 3 LAN8720A  chips will be driven by the same external 50MHz reference clock signal."
 >}} 
 
 #### RX 
@@ -248,7 +248,7 @@ Now by designing around the constraints of the LAN8720A chip readers might be co
 
 And actually that is kind of the case here, I am not proud of this but I caught this discrepancy too late, and not mentioning it in this article simply doesn't align with the technically honest recollections I am looking to do here.  
 
-Since RMII is regented by the RMII consortium, and since in the RMII specification they include the AC characteristics
+Since RMII is regented by the [RMII consortium](https://github.com/Essenceia/ethernet_switch_asic/blob/main/docs/RMII.pdf), and since in the RMII specification they include the AC characteristics
 I blindly assumed the LAN8720A  would be compliant.
 
 Turns out the LAN8720A  isn’t actually compliant. 
@@ -266,7 +266,7 @@ So note to self for future versions: I should set this to 2.0ns to guarantee tha
 Apart from that, the LAN8720A  is widely available, easy to get dev boards for, well documented, and at 103 cents a piece, worth every penny.
 {{< figure
 src="kawaii.webp"
-caption="[The official Microchip LAN8720A  developpement daughterboard](https://www.Microchip.com/en-us/development-tool/ac320004-3#Overview) not only came with a real paper datasheet but it was the most precious tiny datasheet I have ever seen."
+caption="[The official Microchip LAN8720A  development daughterboard](https://www.Microchip.com/en-us/development-tool/ac320004-3#Overview) not only came with a real paper datasheet but it was the most precious tiny datasheet I have ever seen."
 >}}
 
 #### ASIC pinout 
@@ -284,6 +284,8 @@ Putting it together, here is what the final pinout of our ASIC will look like co
 | 6 | phy1_rx_v | phy1_tx_data[1] | phy2_tx_data[1] |
 | 7 | phy1_rx_err | phy1_tx_v | phy2_tx_v |
  
+Note: As a reminder, there are a total of 24 pins: 8 inputs, 8 outputs and 8 bidirectional pins. 
+
 ## Address Resolution
 
 At its heart, a switch is actually a conceptually simple piece of networking equipment whose role is to read and forward incoming Ethernet frames to the correct ports. 
@@ -374,7 +376,7 @@ And with this we have ourselves an address table for our switch. 🎉
 
 ## War stories
 
-For this ASIC design I stuck to my [classic project roadmap](https://talesonthewire.com/projects/two_weeks_until_tapeout/#project-roadmap) so after having finished writing the design and it having survived ~torture testing~ simulation I moved to the last validation step which was FPGA emulation. 
+For this ASIC design I stuck to my [classic project roadmap](https://talesonthewire.com/projects/two_weeks_until_tapeout/#project-roadmap) so after having finished writing the design and it having survived ~torture testing~ [simulation](https://github.com/Essenceia/ethernet_switch_asic/tree/main/test) I moved to the last validation step which was [FPGA emulation](https://github.com/Essenceia/ethernet_switch_asic/tree/main/fpga). 
 
 This last step is particularly important for devices such as these that are expected to correctly interface with third party equipment and for which the testbench might not do a proper job at capturing all the corner cases. 
 
@@ -407,7 +409,7 @@ It turns out 100Mbps is enough for browsing ~reddit~ "the web" and [Australia](h
 
 At least we know one thing: it works! (Or at least, I think it works. )
 
-The moment of truth will be around the 15th of November 2026 when I get the chips back from the fab: let’s see if it stands up to being silicon proven. 
+The moment of truth will be around November 2026 when I get the chips back from the fab: let’s see if it stands up to being silicon proven. 
 
 ### The Coffee Shop family 
 
@@ -476,8 +478,6 @@ caption="Waffle House, but the waffles have already vanished. 🧇"
 
 At least that is where this story was supposed to end ... 
 
-
-{{< hidden >}} 
 ## Round 2 
 
 [wafer.space](https://wafer.space/) was started by Tim Ansell, also known as `mithro` online. 
@@ -501,8 +501,4 @@ Plus, I need to scale things up to actually make good use of the additional sili
 Also, tapeout is in 4 days ... 
 
 Welcome to round 2!
-
-{{< /hidden >}} 
-
-
 
