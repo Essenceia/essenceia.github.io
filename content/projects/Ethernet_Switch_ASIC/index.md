@@ -128,7 +128,7 @@ src="needs.svg"
 caption="Maslow’s hierarchy of needs, distorted ASIC edition. "
 >}}
 
-Because store-and-forward requires the switch to store the entire packet before forwarding it, and because ethernet frames can reach upwards of +1.5k Bytes (and +9k for jumbo frames), they require massive amounts of storage. A workaround for that would be to store the packet to some off-chip memory but I don’t have the pin budget to afford that right now, so on-chip memory is my only option. 
+Because store-and-forward requires the switch to store the entire packet before forwarding it, and because ethernet frames can reach upwards of 1.5k Bytes (and 9k+ for jumbo frames), they require massive amounts of storage. A workaround for that would be to store the packet to some off-chip memory but I don’t have the pin budget to afford that right now, so on-chip memory is my only option. 
 
 The problem is, on-chip memory consumes a lot of area given the large area footprint of SRAM and the even larger area per stored bit footprint of flip-flops. 
 
