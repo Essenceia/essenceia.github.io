@@ -33,7 +33,7 @@ Although Open Source Silicon is in its infancy we are currently seeing a number 
 
 {{< figure
     src="silicon_proven.jpg"
-    caption="[Awesome Kian-V project, a silicon proven RISC-V SoC](https://github.com/splinedrive/kianRiscV/tree/master/linux_socs/LinuxSoC_v2) fabbed on wafer.space run 1. And yes, it runs Linux. [Link to the original post.](https://x.com/splinedrive/status/2078548839326445672?s=20)"
+    caption="[Awesome Kian-V project, a silicon proven RISC-V SoC](https://github.com/splinedrive/kianRiscV/tree/master/linux_socs/LinuxSoC_v2) fabbed on wafer.space run 1. And yes, it runs Linux. [Link to the original post](https://x.com/splinedrive/status/2078548839326445672?s=20). Running on the custom [Topaz devboard](https://github.com/machdyne/topaz) built by [Machdyne UG](https://machdyne.com/product/topaz-computer/).  "
 >}}
 
 That said, the vast majority of the most ambitious projects are predominantly [RISC-V SoCs](https://www.crowdsupply.com/baochip/dabao). 
