@@ -1454,10 +1454,30 @@ If you have gotten yourself this board and have any personal experiences you wou
 willing to share please feel free to [shot me an email.](mailto:julia.desmazes@gmail.com)
 
 **TL;DR:** 
+- we can have Pmod's
 - your SFP might be faulty
 - there are hidden extra GPIOs 
 - most of the `LVCMOS18` are actually `LVCMOS33` 
 - this board is supported by [Corundum](https://github.com/fpganinja/taxi/tree/master), an high-performance FPGA-based NIC using the taxi open-source transport library
+
+### Pmod adatper 
+
+**Credit: Michał Hęćka** 
+
+Michał has designed a custom Pmod adapter for this board over the SFP ports.
+This requires additional modifications to the PCB but all the steps are explained in 
+detail with pictures on his github. 
+
+For anyone wanting two sets of accessible Pmods and willing to trade Ethernet in exchange, this is truly a great project.
+
+{{< figure
+	src="pmod.png" 
+	caption="Adapter for general purpose I/O from dual SFP to PMOD, credit Michał Hęćka"
+>}}
+
+{{< github repo="Miqeo/sfp_pmod_alibaba" showThumbnail=false >}}
+
+This project is underrated, help me get it more stars!
 
 ### Broken SFP
 
@@ -1541,6 +1561,5 @@ Planned features include a DPDK driver, SR-IOV, AF_XDP, white rabbit/IEEE 1588 H
 Note that Corundum is still under active development and may not ready for production use; additional functionality and improvements to performance and flexibility will be made over time.
 
 {{< /quote >}}
-
 
  
