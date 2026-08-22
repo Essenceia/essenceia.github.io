@@ -11,19 +11,19 @@
 # ordered by weight from lowest to highest.
 
 [[main]]
-  name = "Contact"
-  pageRef = "contact" 
-  weight = 30
-
-[[main]]
   name = "About"
   pageRef = "about"
-  weight = 29
+  weight = 30
 
 [[main]]
   name = "Blog"
   pageRef = "thoughts"
-  weight = 21
+  weight = 22
+
+[[main]]
+	name = "Gallery"
+	pageRef = "hardware_gallery"
+	weight = 21
 
 [[main]]
   name = "Projects"
