@@ -51,7 +51,7 @@ section > .max-w-fit {
 >}}
 {{< figure
 	src="expresso.png"
-	caption="Full ASIC chip featuring a 4-port 100Mbps Ethernet switch and a beacon broadcasting over the local network. Tape-out number 10, targetting the gf180mcuD node." 
+	caption="Full ASIC chip featuring a 4-port 100Mbps Ethernet switch and a beacon broadcasting over the local network. Tape-out number 10, targetting the gf180mcuD node, 1.94mm×2.53mm die area, 56 pins." 
 >}}
 {{< figure
 	src="beacon.png"
