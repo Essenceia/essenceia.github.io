@@ -30,6 +30,10 @@ section > .max-w-fit {
 
 {{< gallery >}}
 {{< figure
+	src="pcb_cob_76_56_1.jpg"
+	caption="Chip-on-Board test PCBs for 56 and 76 pin parts with coin for scale." 
+>}}
+{{< figure
 	src="tap/tap_v1.png"
 	caption="Flex PCB for an \"Taped-Automatic Assembly\" like ASIC packaging. Targetting the 56 pin ASIC switch chip."
 	figureClass="grid-w100 xl:grid-w50"

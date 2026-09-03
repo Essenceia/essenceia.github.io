@@ -12,7 +12,7 @@ showTableOfContents: true
 This article was originally published on the 2nd of September 2025 and is regularly kept up to date
 to include the most recent developements around using the Alibaba `AS02MC04` board as a dev board.
  
-The [Before you buy](#before-you-buy) section wasn't part of the original article and 
+The [Before you buy](projects/alibaba_cloud_fpga/#before-you-buy) section wasn't part of the original article and 
 features the most recent updates.
 {{< /alert >}}
 
