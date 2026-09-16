@@ -1,5 +1,5 @@
 ---
-title: "Thoughts"
+title: "Blog"
 description: "Repository of personal thoughts"
 cascade:
 showReadingTime: false
