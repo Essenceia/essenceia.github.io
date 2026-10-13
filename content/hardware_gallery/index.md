@@ -30,6 +30,14 @@ section > .max-w-fit {
 
 {{< gallery >}}
 {{< figure
+	src="expresso_switch_dieshot_on_waffer.png"
+	caption="Die shot of my Expresso chip featuring the 4-port 100Mbps Ethernet switch and the 100Mbps network connected broadcasting beacon." 
+>}}
+{{< figure
+	src="ws_run2_waffer_1.webp"
+	caption="[wafer.space](wafer.space) second shuttle diced wafer, my chip is one of the small ones on the top right." 
+>}}
+{{< figure
 	src="pcb_cob_76_56_1.jpg"
 	caption="Chip-on-Board test PCBs for 56 and 76 pin parts with coin for scale." 
 >}}
