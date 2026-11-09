@@ -609,7 +609,7 @@ And within this list there is one 16 bit architecture that caught my eye, at the
 
 What better choice than a PDP-11?  
 
-## Conclusion
+## Closing 
 
 A year ago, I started on a journey to go from being solely a hardware designer to building an entire ASIC from scratch without any institutional backing.
 
@@ -626,14 +626,14 @@ caption="Tradional celebratory Waffle House."
 
 **Current life goals**
 - Have kids
-- Enjoy time with loved ones
+- Spend time with loved ones
 - Make chips
 - Eat waffles 
 - Get a wire bonder
-- Not getting a job
-- Not start a fabless semiconductor company 🆕
+- Not get a job
+- Not startting a fabless semiconductor company 🆕
 
 Thanks again to wafer.space for giving me this opportunity to join the shuttle, Tiny Tapeout for making the 9 previous tapeouts possible and the open source silicon community for building the tools making all of this possible. 
 
-If you enjoyed this, I will be sipping coffee at a Silicon Valley neighborhood cafe between the 10th and 12th of November, so if you feel like nerding out over caffeine shoot me an email. 
+If you enjoyed this, I will be sipping coffee at a Silicon Valley neighborhood cafe between the 10th and 12th of November, so if you feel like nerding out over caffeine shoot me an [email](mailto:julia.desmazes@gmail.com). 
 
