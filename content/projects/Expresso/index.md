@@ -74,8 +74,6 @@ Manufacturing defects that occur during semiconductor device fabrication can be 
  
 This doesn’t impact the price which I pay to the chip area per-se, but it affects the average net price that I will pay per functional chip.
 
-TODO img graph 
-
 This is the double reason why area optimization is such a concern when designing chips.
 
 Now GlobaFoundaries 180nm (gf180) is not a young node, and the polite way of calling something old is *“matrue”*. With node maturity comes increased expertise of the process by the foundry leading to better yields over time. So gf180 is a node with excellent yields for which area related defects are not a concern especially compared to younger leading edge nodes. 
