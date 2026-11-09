@@ -4,7 +4,7 @@ date: 2026-11-09
 description: ""
 summary: ""
 tags: ["asic", "gf180", "180nm", "rtl", "verilog", "Ethernet", "100Mbps", "wafer.space"]
-draft: true
+draft: false
 showTableOfContents: true
 ---
 {{< alert icon="heart-empty" >}} 
@@ -13,15 +13,16 @@ AI disclosure: All bugs are 100% human made.
 
 Well that was a ride, where do I start ? 
 
-{{< figure
-src="feature.gif"
->}} 
-
 I am currently on a quest to build some open source networking equipment with the final boss being a full router.  
 
 There are a lot of very valuable and less complex pieces of hardware on the way that also need building, one of them being the common networking switch. 
 
 Previously I was building the infrastructure to handle ethernet packets and worked my way up to a simple three-port switch that I had taped it out via Tiny Tapeout. But a few days after that tapeout, as I was still reeling from the adrenaline of rushing to meet the deadline, an unexpected opportunity presented itself: the possibility of taping out my own full chip, free of charge!
+
+{{< figure
+src="feature.gif"
+caption="Full chip inital global placement in action, performed by the OpenROAD placement tool."
+>}} 
 
 But there was one slight problem, I only had four days to design the entire thing, also known as 96 hours ( putting it in hours definitely does not make it sound less terrifying ). 
 
@@ -31,6 +32,8 @@ Well since then I have discovered a new circle of hell: designing a full ASIC so
 It’s caffeinated down here. 
 
 But now that I have gazed upon these new depths of hell, let me tell you about the journey of building full ASICs! 
+
+{{< github repo="Essenceia/Expresso_ASIC_Chip" showThumbnail=false >}} 
 
 > [!TIP] Recommended soundtrack for reading: [electronic music to put on loop during a 96 hour crunch](https://youtu.be/fdixQDPA2h0?si=RAKHUwSBOi8KBkkP)
 
@@ -451,36 +454,70 @@ I have a full write-up about this ASIC’s here for those interested in getting 
 
 ## Full chip
 
-Putting it all together, this chip features two designs, the 4 port 100Mbps networking switch and the ethernet broadcast beacon. The networking switch is the denser design on the right hand side of the floorplan with the beacon being the on the left side. 
+{{< figure
+src="full_floorplan_pretty.png"
+caption="Full chip floorplan render."
+>}} 
 
-placement gif 
+Putting it all together: this chip features two designs, the 4 port 100Mbps networking switch and the ethernet broadcast beacon. The networking switch is the denser design on the right hand side of the floorplan with the beacon being the on the left side, each designed placed next to there respective port pins.  
 
-Full chip global placement performed by OpenROAD in action. 
-What comes next?
+
+## What comes next?
+
 It's already been a few months since the chip has been sent to the fab. Since then the first batch of produced wafers have exited the fab and been received by the wafer.space. 
-Andrew Wingate shared with us some absolutely gorgeous pictures of the diced wafers. 
-And there is my little chip in the flesh sitting on the top right corner of the reticle. 
-The dies are then picked off the diced wafer using a custom built robot and sorted per chip type into a tape reel. From there the chips will be either sent to the bond house for packaging or directly sent to the customer. 
-video
-If you don’t have it just build it. 
-So now I am like a child waiting for Christmas, expecting to receive the most awaited package of my life, inside the first batch of my own full custom ASIC chips.
+
+Andrew Wingate shared with us some absolutely gorgeous pictures of the diced wafers, and there is my little chip in the flesh sitting on the top right corner of the reticle:
+
+{{< figure
+src="expresso_switch_dieshot_on_waffer.png"
+caption="Networking chip die shot taken on the wafer"
+>}} 
+
+The dies are then picked off the diced wafer using a custom built robot and sorted per chip type into a tape reel. From there the chips will be either sent to the bond house for packaging or directly sent to the customer.
+
+{{< video
+src="sort.mp4"
+caption="Andrew Wingate's custom die sorting robot. Sometimes if you don’t have it just build it. On that note Andrew runs [evezor](https://evezor.com/) a small robotic company where you can find the base kit for this robot" 
+>}}
+
+And now I am like a child waiting for Christmas, impaciently awaiting a package, inside the first batch of my own full custom ASIC chips.
+
 Now, the chip doesn't make a full networking equipment on its own, which is why I am also prototyping a PCB for the switch. Hopefully someday I can plug the chip in to get a fully functional switch. 
-kitchen madness 
-From the perspective of my husband coming back home, or what “I spent the day in the kitchen” actually means. 
+
+{{< figure
+src="kitchen.jpg"
+caption="From the perspective of my husband coming back home, or what 'I spent the day in the kitchen' actually looks like."
+>}} 
+ 
 Here is to hoping the first iteration of the silicon just works !
 
 .. which anyone working in the industry can attest to, A0s are rare enough to be legendary. 
->  Manufacturing revisions of a chip are identified by a letter followed by a number. A0 is the first iteration, minor revision such as changing some of the higher metalization layer layout will increment the number and major revisions requiring a new mask set for the bottom layers, where the transistors are built, increment the letter. The higher metalization layer masks So revisions might go: A0, A1, A2, B0, B1, B2, B3, C0, etc…
-Meanwhile the networking equipment project continues, chasing after building increasingly complex systems. Without going too deep into which next networking features I want to add, it is becoming quickly apparent that I will need to integrate some form of a CPU. 
-This is because as I target more advanced networking applications the tasks my silicon needs to accomplish become increasingly varied and start featuring a large array of tasks that occur rarely enough, and have sufficiently lax performance requirements to be better suited for software than hardware. As for the matter of which  CPU architecture to choose, although RISC-V is in vogue I find that, as a result of RISC-V’s architectural choices, it is just too expensive to implement in terms of area for systems like mine. 
-hazard3.jpg
-Floorplan of a RSIC-V Hazard3 core with JTAG accessible debug infrastructure occupying 700x700 um of area on gf180 implemented during the elaboration of the next chip’s architecture. It is worth noting that since we do not have any silicon proven macros for a 16x32 or 32x32 register file I am implementing it using scan dff gates, resulting in an even worse area. Credit goes to Luke Wren for the idea of using the scan flops to make up for the absence of an flop with enables in the gf180 standard cell library. 
-Frankly, my needs when selecting with CPU architecture to use, my needs are that it needs :
-- be cheap to implement in hardware;
-- have a pre-existing software ecosystem, this means having C compiler and debugger support;
-- not getting me sued.
-If only gcc were to maintain something like the “Status of Supported Architectures from Maintainers' Point of View” at  https://gcc.gnu.org/backends.html then maybe I could know my options. 
 
+{{< alert icon="circle-info" >}} 
+Manufacturing revisions of a chip are identified by a letter followed by a number. 
+
+A0 is the first iteration, minor revision such as changing some of the higher metalization layers will increment the number and major revisions requiring a new mask set for the bottom layers, where the transistors are built, increment the letter and reset the number. So revisions might go: A0, A1, A2, B0, B1, B2, B3, C0, etc…
+{{< /alert >}} 
+
+Meanwhile the networking equipment project continues, chasing after building increasingly complex systems. Without going too deep into which next networking features I want to add, it is becoming quickly apparent that I will need to integrate some form of a CPU. 
+
+This is because as I target more advanced networking applications the tasks my silicon needs to accomplish become increasingly varied and start featuring a large array of tasks that occur rarely enough, and have sufficiently lax performance requirements to be better suited for software than hardware. 
+
+As for the matter of which  CPU architecture to choose, although RISC-V is in vogue I find that, as a result of RISC-V’s architectural choices, it is just too expensive to implement in terms of area for systems like mine. 
+
+{{< figure
+src="hazard3.jpg"
+caption="Floorplan of a RSIC-V Hazard3 core with JTAG accessible debug infrastructure occupying 700x700 um of area on gf180 implemented during my planning of the next chip’s architecture. It is worth noting that since we do not have any silicon proven macros for a 16x32 or 32x32 register file I am implementing it using scan dff gates, resulting in an even worse area. Credit goes to Luke Wren for the idea of using the scan flops to make up for the absence of an flop with enables in the gf180 standard cell library."
+>}} 
+ 
+My needs when selecting witch CPU architecture to use are:
+- be cheap to implement in hardware
+- have a pre-existing software ecosystem, meaning having C compiler and debugger support
+- not get me sued
+
+If only gcc were to maintain something like the “Status of Supported Architectures from Maintainers' Point of View” at  [https://gcc.gnu.org/backends.html](https://gcc.gnu.org/backends.html) then maybe I could know what my options where. 
+
+```
 Architecture characteristic key
 -----------------------------------------------------------------------
 H       A hardware implementation does not exist.
@@ -564,22 +601,38 @@ v850       |                    g a  s
 vax        |  M     I        b   i  e
 visium     |          B         g  t s
 xtensa     |         C
+```
 
-So many beautiful options supported that most people have never even heard of!  
-And within this there is one 16 bit architecture that caught my eye, at the heart of one of the longest produced systems and deeply intertwined with computer history as it saw the first version of Unix written in C. What better choice than the PDP-11 ?  
-Conclusion
+Behold: so many beautiful options supported that most people have never even heard of!  
+
+And within this list there is one 16 bit architecture that caught my eye, at the heart of one of the longest produced systems and deeply intertwined with computer history as it saw the first version of Unix written in C. 
+
+What better choice than a PDP-11?  
+
+## Conclusion
+
 A year ago, I started on a journey to go from being solely a hardware designer to building an entire ASIC from scratch without any institutional backing.
+
 It's been a long road, passing though multiple smaller macro tapeouts, each allowing me to delve deeper into what it takes to make ASICs. This chip is my 10th solo tapeout, a fitting number to finally graduate into building full chips.
+
 Standing upon this mountain I can tell you the road ahead is still very long.
-And with my first batch of full custom ASICs landing into my mailbox in a few weeks a new risk has emerged in my life, leading me to proclaim a new goal : not starting a fabless semiconductor company. 
-Current life goals
-Have kids
-Enjoy time with loved ones
-Make chips
-Eat waffles 
-Get a wire bonder
-Not getting a job
-Not start a fabless semiconductor company
+
+And with my first batch of full custom ASICs landing into my mailbox in a few weeks a new risk has emergeded, leading me to proclaim a new goal: not starting a fabless semiconductor company. 
+
+{{< figure
+src="waffle.jpg"
+caption="Tradional celebratory Waffle House." 
+>}} 
+
+**Current life goals**
+- Have kids
+- Enjoy time with loved ones
+- Make chips
+- Eat waffles 
+- Get a wire bonder
+- Not getting a job
+- Not start a fabless semiconductor company 🆕
+
 Thanks again to wafer.space for giving me this opportunity to join the shuttle, Tiny Tapeout for making the 9 previous tapeouts possible and the open source silicon community for building the tools making all of this possible. 
 
 If you enjoyed this, I will be sipping coffee at a Silicon Valley neighborhood cafe between the 10th and 12th of November, so if you feel like nerding out over caffeine shoot me an email. 
