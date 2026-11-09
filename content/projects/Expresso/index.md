@@ -376,40 +376,85 @@ module add#(
 	assign {carry_o, res_o} = a_i + b_i; 
 endmodule
 ```
-These generic values can then be inherited down the design hierarchy allowing dependent modules to be resized accordingly. 
+These generic values can then be inherited down the design hierarchy allowing dependent modules to be resized accordingly.
+ 
 ### Complexity
+
 The original switch implementation was partially generic : it contained quite a few generic values, but these were mostly added out of habit to help clean up the design and keep things more readable, rather than truly making the design dimensions fully configurable.  
+
 The reason for not making the design fully generic was out of a calculated decision to shy away from as much unnecessary complexity as possible. The original design was facing the hard physical constraints of Tiny Tapeout pin count, so making it fully generic to support an arbitrary amount of ports would have been an unnecessary premature optimization, and most importantly cost complexity. 
+
 My grief against complexity comes from two calculated trade-offs. 
+
 First, I find it is orders of magnitude cheaper to add complexity than to remove it.
-Secondly, complexity is especially expensive for hardware design because of the necessity to not have no bugs in the hardware. The only way of reaching this bug free state is through thought verification of operation under all possible scenarios. As we add complexity, we add hardware states such that the size of the space of states we need to explore grows exponentially. Now I know exponential growth might sound like an exaggeration, after all exponential growth is so fast that it is hard for our brains to conceive, but I assure you I am not. 
-exponential_growth.jpg
+
+Secondly, complexity is especially expensive for hardware design because of the necessity to not have no have any bugs in the hardware. The only way of reaching this bug free state is through thought verification of operation under all possible scenarios. As we add complexity, we add hardware states such that the size of the space of states we need to explore grows exponentially. 
+
+Now I know exponential growth might sound like an exaggeration, after all exponential growth is so fast that it is hard for our brains to conceive, but I assure you I am not. 
+
+{{< figure
+src="exponential_growth.jpg"
+caption="Illustration of exponential growth using the [rice and the chessboard problem](https://en.wikipedia.org/wiki/Wheat_and_chessboard_problem). If you double the quantity of grains of rice placed upon each square by the last square you would need \(2^{64}-1\) also known as \(18,446,744,073,709,551,615\) grains of rice."
+>}}
+
 This problem is more formally called the “state explosion problem”.   
-### Scale Up 
-So a big change in the switch was to move the number of supported ports from a static three to a generic number. 
+
+### Scale Up
+ 
+So the biggest change in the switch was to move the number of supported ports from a static three to a generic number. 
+
 Even if the RTL scales, and I could theoretically run a simulation with 48 ports,  the logic itself still has scaling limits. After all, behind the abstraction of the code we are designing hardware logic for which physical constraints still apply.
-So even though the RTL is generic and can technically support as many ports as we want, the physical constraints underneath mean scaling isn't infinite or free. As the structures get wider, the paths get physically longer and the timing degrades. 
-And with 1.73mm² of core area available, timing is the wall I hit first. 
-The switch was already quite tight on timing, so scaling it too far would push it beyond the limits of the current design requiring a rethink of the architecture. Rethink that I cannot afford to execute in so little time. 
-Lastly, I said I was scaling the number of ports, but because of how tight the timings are on the switch lookup table already was, it is not getting scaled up. And because it still only has four entries, and scaling beyond four ports would result in too much contention on the table and not enough hits, it would not make any sense to go beyond 4 ports for now. Thus, I settled on four ports for the switch.
+
+As the structures get wider, the number of logic elements on a path increases, the paths get physically longer and the timing degrades. And so, with \(1.73mm^2\) of core area available, timing is the wall I hit first. 
+
+Given the switch was already quite tight on timing, scaling it too far would push it beyond the limits of the current design requiring a rethink of the architecture. Rethink that I cannot afford to execute in so little time.
+ 
+Lastly, I said I was scaling the number of ports, but because of how tight the timings are on the switch lookup table already was, it is not getting scaled up. And because it still only has four entries, and scaling beyond four ports would result in too much contention on the table and not enough hits, it would not make any sense to go beyond 4 ports for now. 
+
+Thus, I settled on four ports for the switch.
+
 ### Pin correspondance
-Since I now control the full ASICs layout I can also control exactly which signal maps to which pin on the padring. 
-Since the switch was intended to work with a specific Microchip family of external physical-layer, and that these chips had a known pinout, I decided to choose the pin order based on how directly I could draw the connecting wire onto the PCB.
-Beacon
+
+Given I now control the full ASICs layout I can also control exactly which signal maps to which pin on the padring. 
+
+{{< figure
+src="pin_mapping.svg" 
+caption="Pin mapping of the first generation networking chip."
+>}} 
+
+Since the switch was intended to work with a specific Microchip family of external physical-layer chips, and that these chips had a known pinout, I decided to choose the pin order based on how directly I could draw the connecting wire onto the PCB.
+
+{{< figure
+src="LAN8720A_pinout.png"
+caption="Pin layout of the LAN8720A(i) the external PHY chip containing the analog frontend for 100Mbps Ethernet"
+>}} 
+
+## Beacon
+
 One of the best drawbacks of the switch scaling limit was that I was left with a few pins and lots of area to play with. 
+
 And unlike with Tiny Tapeout where multiple projects share that same common infrastructure allowing only one project to be enabled at a time, this time I could have multiple designs working in parallel. 
 And I had just the perfect project to include in parallel. 
+
 A few months back I did the two things the entire Internet knows not to do: firstly I asked Reddit for advice, secondly I followed it.
-reddit.png
-A very serious request for reddit’s worst ASIC design ideas. Reddit did not disappoint. 
-https://www.reddit.com/r/chipdesign/comments/1uk54wj/my_brain_is_fried_give_me_your_worst_48_hours/
-This project is called “Until Heat Death Do Us Part” and is a very serious implementation of an ethernet connected beacon that broadcasts its current time over 100 Mbit Ethernet with the ability to do so without overflow for the next 10^10 years. Also believed to be roughly the estimated heat death of the universe, give or take a few powers of 10 years. 
-github 
-https://github.com/Essenceia/Until_Heat_Death_Do_Us_Part
-I have a full write-up about this ASIC’s here for those interested in reading more. https://talesonthewire.com/projects/until_heat_death_do_us_part/
+
+{{< figure
+src="reddit.png"
+caption="[A very serious request for reddit’s worst ASIC design ideas.](https://www.reddit.com/r/chipdesign/comments/1uk54wj/my_brain_is_fried_give_me_your_worst_48_hours/) Reddit did not disappoint."
+>}} 
+
+This project is called *“Until Heat Death Do Us Part"* and is a very serious implementation of an ethernet connected beacon that broadcasts its current time over 100 Mbit Ethernet with the ability to do so without overflow for the next \(10^{100}\) years. Also believed to be roughly the estimated heat death of the universe, give or take a few powers of 10 years.
+ 
+{{< github repo="Essenceia/Until_Heat_Death_Do_Us_Part" showThumbnail=false >}} 
+
+I have a full write-up about this ASIC’s here for those interested in getting the full story: [Until Heat Death Do Us Part.](https://talesonthewire.com/projects/until_heat_death_do_us_part/)
+
 ## Full chip
+
 Putting it all together, this chip features two designs, the 4 port 100Mbps networking switch and the ethernet broadcast beacon. The networking switch is the denser design on the right hand side of the floorplan with the beacon being the on the left side. 
+
 placement gif 
+
 Full chip global placement performed by OpenROAD in action. 
 What comes next?
 It's already been a few months since the chip has been sent to the fab. Since then the first batch of produced wafers have exited the fab and been received by the wafer.space. 
