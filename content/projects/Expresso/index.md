@@ -210,22 +210,78 @@ And finally, Tiny Tapeout only gives you one chip per dev board, whereas with wa
 
 For the purposes of the networking chip project, the real game changer is having control over the pin architecture, meaning I can now decide both the number and the type of the pins.
 
-And, I care very much about pins as I am using an RMII interface that requires 7 pins for each of my Ethernet ports. This was also the reason why the initial version of the networking switch had only 3 ports: I only had 24 pins. You can refer to the previous article for an explanation on why each port needs 7 pins. So now that I have a whopping 46 pins maximum to play with, we can get cooking. 
-Anatomically pins are analog blocks with a landing pad for the fly wire on one end. These are included as part of the GlobalFoundries open source foundry provided IO cell library, and although all the pins share the same height, width and landing pad sizes, each features different analog layouts according to their functionality. The most important types of pins for this design are the input pins, the bidirectional pins and the power delivery pins. 
-pin floorplan
+Because I am comunicating with the PHY chip using an RMII interface, I care very much about pins as each Ethernet port interface requires 7 pins. This was also the reason why the initial version of the networking switch had only 3 ports: I only had 24 pins. 
+
+You can refer to the previous article [Designing an Ethernet Switch ASIC](https://talesonthewire.com/projects/ethernet_switch_asic/) for an explanation on why each port needs 7 pins and each pin is used for.
+
+So now that I have a whopping 46 pins maximum to play with, we can get cooking!
+ 
+Anatomically pins are analog blocks with a landing pad for the wire bonded wire on one end. These are included as part of the GlobalFoundries open source foundry provided IO cell library, and although all the pins share the same height, width and landing pad sizes, each features different analog layouts according to its functionality. 
+
+The most important types of pins for this design are the input pins, the bidirectional pins and the power delivery pins. Have fun playing spot the difference.  
+
+{{< gallery >}} 
+{{< figure
+	src="io/io_in.png"
+	caption="Input IO pin"
+	figureClass="grid-w25 xl:grid-w25"
+>}} 
+{{< figure
+	src="io/io_bidir.png"
+	caption="Bidirectional IO pin"
+	figureClass="grid-w25 xl:grid-w25"
+>}} 
+{{< figure
+	src="io/io_dvdd.png"
+	caption="VDD IO power pin"
+	figureClass="grid-w25 xl:grid-w25"
+>}} 
+
+{{< figure
+	src="io/io_dvss.png"
+	caption="VSS IO power pin"
+	figureClass="grid-w25 xl:grid-w25"
+>}} 
+
+
+
+{{< /gallery >}} 
+
+
 Interestingly, the standard library does not offer any pure output pins, so outputs are handled by bidirectional pins statically configured in output mode. 
-Looking at the floorplans provided above you might notice that these pins have no analog components directly under the landing pad, known as a “circuit under pad” design, making them a little less compact but more structurally resilient. This is because these pins were originally designed to be compatible with a version of the GlobalFoundary 180nm process with only 3 metalization layers, but multiple levels of a metal structure must be present between the top metal layer where the pad is and the analog circuit beneath in order to help isolate it from the force applied to the pad of wedge bonding. During wedge bonding the bond is physically pressed in place requiring applying a lot of force to the silicon and potentially leading to breakages in the circuits underneath if sufficient structural support pillars aren’t present . 
+
+Looking at the floorplans provided above you might notice that these pins have no analog components directly under the landing pad, known as a “circuit under pad” design, making them a little less compact but more structurally resilient. 
+
+This is because these pins were originally designed to be compatible with a version of the GlobalFoundary 180nm process with only 3 metalization layers, but multiple levels of a metal structure must be present between the top metal layer where the pad is and the analog circuit beneath in order to help isolate it from the force applied to the pad of wedge bonding. During wedge bonding the bond is physically pressed in place requiring applying a lot of force to the silicon and potentially leading to breakages in the circuits underneath if sufficient structural support pillars aren’t present.
+ 
 ### Padring
-As discussed earlier, there are different families of packaging for chips resulting in different types of I/O design: flip-chips and wire bonding. Wire bonded chips such as mine have their pins facing the exterior of the chip organized in a structure called a pad ring. This is a ring surrounding the core area of the chip, connecting all the different I/O pads together. This ring is used both for noise isolation and to share power between all the different pins. Because the padring is an uninterrupted crown of pins the space between the pins is filled by very simple structures called filler cells used to close the power connections within the ring. 
-padring img 
-The IO also plays a crucial role in dealing with electrostatic discharge. (To whom many electronics have perished, including my little sister's laptop that I may or may not have murdered while upgrading her ram when I was 15.) Each pin contains structures that will act as forward biased diodes in the event of an electrostatic discharge steering the charge though the power rails and protecting the sensitive core logic. 
+
+As discussed earlier, there are different families of packaging for chips resulting in different types of I/O design: flip-chips and wire bonding. Wire bonded chips such as mine have their pins facing the exterior of the chip organized in a structure called a pad ring. 
+This is a ring surrounding the core area of the chip, connecting all the different I/O pads together. This ring is used both for noise isolation and to share power between all the different pins. Because the padring is an uninterrupted crown of pins the space between the pins is filled by very simple structures called filler cells used to close the power connections within the ring. 
+
+{{< figure
+	src="io/io_padring.png"
+	caption="Render of the chip's parding" 
+>}}
+
+The IO also plays a crucial role in dealing with electrostatic discharge. (To whom many electronics have perished, including my little sister's laptop that I may or may not have murdered while upgrading her ram when I was 15. 🪦 ) 
+
+Each pin contains structures that will act as forward biased diodes in the event of an electrostatic discharge steering the charge though the power rails and protecting the sensitive core logic. 
+
 ### Power delivery 
-We have four types of power delivery pins : two for ground and two for power. The difference between the two groups is that one is used to provide power to the IO itself and the other is used to power the chip’s core logic. 
-Thus, it is possible to run the I/O and the internal design at different voltages. The areas for which a different power source is used is called a power domain. For example, the I/O could run at 5 V, accepting 5V input signals and driving 5V outputs while internally the chip core runs the logic at 3.3V. 
+
+So we actually have four types of power delivery pins : two for ground and two for power. 
+
+The difference between the two groups is that one is used to provide power to the IO itself and the other is used to power the chip’s core logic. 
+
+Thus, it is possible to run the I/O and the internal design at different voltages. The areas for which a different power source is used is called a power domain. For example, the I/O could run at 5V, accepting 5V input signals and driving 5V outputs while internally the chip core runs the logic at 3.3V. 
 In this case, we would have different pins for powering the I/O and for powering the internal core. But, in the case of this networking chip, core power is shorted to IO power and both are in the same power domains. 
 
-Such a setup is only made possible because the foundry provided 7 track standard cell library is, to put it mildly: rugged. The cell target operating range is between 1.62 and 5.5V voltage and -40 to 125 degrees C. So shorting the IO and core voltage and deciding to run the entire thing at 5V is just an average Tuesday. 
+Such a setup is only made possible because the foundry provided 7 track standard cell library is, to put it mildly: rugged. The cell target operating range is between 1.62 and 5.5V voltage and -40 to 125C. 
 
+So shorting the IO and core voltage and deciding to run the entire thing at 5V is just an average Tuesday. 
+
+```
 ┏━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┓
 ┃                      ┃ Hold     ┃ Reg to   ┃          ┃          ┃ of which ┃ Setup     ┃ Reg to   ┃           ┃ Setup    ┃ of which  ┃          ┃           ┃
 ┃                      ┃ Worst    ┃ Reg      ┃          ┃ Hold Vio ┃ reg to   ┃ Worst     ┃ Reg      ┃           ┃ Vio      ┃ reg to    ┃ Max Cap  ┃ Max Slew  ┃
@@ -251,47 +307,73 @@ Such a setup is only made possible because the foundry provided 7 track standard
 │ max_ss_125C_4v50     │ 1.1382   │ 1.4034   │ 0.0000   │ 0        │ 0        │ 3.5178    │ 3.8667   │ 0.0000    │ 0        │ 0         │ 145      │ 1518      │
 │ max_ff_n40C_5v50     │ 0.2026   │ 0.3003   │ 0.0000   │ 0        │ 0        │ 5.0257    │ 14.3356  │ 0.0000    │ 0        │ 0         │ 143      │ 449       │
 └──────────────────────┴──────────┴──────────┴──────────┴──────────┴──────────┴───────────┴──────────┴───────────┴──────────┴───────────┴──────────┴───────────┘
+```
+Example of a random timing report from another chip I am working on, with corners ranging from 3 to 5.5V and -40 to 125C. And again, this is still just a subset of all the corners there are: there are even more where this came from! 
 
-Example of a random timing report from another chip I am working on, with corners ranging from 3 to 5.5V and -40 to 125. And again, this is still just a subset of all the corners there are: there are even more where this came from! 
 For reference, this is just a tiny bit unusual. 
-Most designs have separate power domains as modern nodes have cell libraries designed for much lower operating voltages in order to help reduce the area power density making cooling easier and to help optimize power consumption. In the case of leading edge nodes, internal logic targets operating voltages as low as 0.7 to 0.8 V. This forces having at least separate IO and core power domains, since your IO typically starts at 1.8V and above. 
-Yet, you sometimes need separate power domains even if they operate at the same voltage, such as cases where you want to isolate a sensitive analog block from the power supply noise caused by a quickly toggling digital part. You might even prolong this separation of an analog and digital power domains to the IO, in which case rather than having a fully connected padring working within the same power domain you would be splitting the padding into analog IO power and digital IO power. Remember the filler cells I talked about earlier ? Well there exists a special type of filler cell called a splitter used specially to split the pad ring in such cases. But, because of ESD concerns this splitter is not as simple as breaking the power line, but that is a discussion for another day. 
-### Clock and reset
-The clock for this chip is supplied though a Schmitt trigger input pin and is strategically logged in the corner of the chip right next to the reset signal, and isolated from the rest of the pins by two power pins. This is done to limit the clock signal’s impact onto the neighboring pins given its toggle frequency, as well as to prevent the neighboring pins from being impacted by the clock’s cross talk. The reset signal by comparison is a very stable signal producing little crosstalk of its own. 
 
-Such “shielding” is even more important in our case since we are doing wire bonding and we can also have cross talk between pins occurring between the fly wires, this would be less of a problem for a flip-chip package. 
+Most designs have separate power domains as modern nodes have cell libraries designed for much lower operating voltages in order to help reduce the area power density making cooling easier and to help optimize power consumption. In the case of leading edge nodes, internal logic targets operating voltages as low as 0.7 to 0.8 V. This forces having at least separate IO and core power domains, since your IO typically starts at 1.8V and above. 
+
+Yet, you sometimes need separate power domains even if they operate at the same voltage, such as cases where you want to isolate a sensitive analog block from the power supply noise caused by a quickly toggling digital part. You might even prolong this separation of an analog and digital power domains to the IO, in which case rather than having a fully connected padring working within the same power domain you would be splitting the padding into analog IO power and digital IO power. 
+
+Remember the filler cells I talked about earlier? Well there exists a special type of filler cell called a splitter used specially to split the pad ring in such cases. But, because of ESD concerns this splitter is not as simple as breaking the power line, but that is a discussion for another day. 
+
+### Clock and reset
+
+The clock for this chip is supplied though a Schmitt trigger input pin and is strategically logged in the corner of the chip right next to the reset signal, and isolated from the rest of the pins by two power pins. This is done to limit the clock signal’s impact onto the neighboring pins given its toggle frequency, as well as to prevent the clock signal for the neighboring pins cross talk. The reset signal by comparison is a very stable signal producing little crosstalk of its own. 
+
 From this point on the clock signal is pulled into the center of the floorplan and then distributed through a balanced clock tree throughout the chip. 
-clk_floorplan_signal.png
-Zhe switch
+
+{{< figure
+	src="clk_floorplan_signal.png"
+	caption="Render of the first level of the clock tree. The origin clock signal is colored in purpel and is feed from the bottom left pin"
+>}}
+
+
+Such "shielding" is even more important in our case since we are doing wire bonding and we can also have cross talk between signals occurring between the fly wires, this would be less of a problem for a flip-chip package. 
+
+## Zhe switch
+
 This is a different challenge compared to what I was doing with Tiny Tapeout as I now have access to two great resources: firstly, a lot more pins to play with, and secondly, a lot more space. 
-Even if I target the smallest possible chip, I am still blessed with more area than I know what to do with. 
-Even before being invited to contribute I was already eyeing the wafer.space slots so selecting the switch at the crown project of the ASIC was the easy choice. The problem was that the switch was initially designed for the constraints of Tiny Tapeout. As such, not only does it have an odd architecture with only three ports, but it was designed to be as space efficient as possible. Here, space is something I have, but with only 96 hours ahead of me I have no time to redesign an entirely new switch from scratch. So the plan is to re-adapt the existing switch to make the best use of being its own chip. 
-The first and the most important change was to be able to make use of these abundant pins and have the switch to support MORE PORTS! 
-( No longer shall I be constrained by my pin count! Until I need more than 8 ports that is. )
+Even if I target the smallest possible chip, I am still blessed with more area than I know what to do with.
+ 
+Even before being invited to contribute I was already eyeing the wafer.space slots, so selecting the switch at the crown project of the ASIC was the easy choice. 
+
+The problem is that the switch was initially designed for the constraints of Tiny Tapeout. As such, not only does it have an odd architecture with only three ports, but it was designed to be as space efficient as possible. Here, space is something I am swimming in, but with only 96 hours ahead of me I have no time to redesign an entirely new switch from scratch. 
+So the plan is to re-adapt the existing switch to make the best use of being its own chip. 
+
+The first and the most important change was to be able to make use of these abundant pins and have the switch to support more ports.
+ 
+No longer shall I be constrained by my pin count! 🔥 w 🔥
+
+... (Until I need more than 7 ports that is.)
+
 ### Parameters 
 Most of the verilog code you will see online tends to use hard coded widths like so : 
 ```verilog 
 module add(
-input wire [7:0] a_i, 
-input wire [7:0] b_i,
-output wire [7:0] res_o,
-output wire carry_o
+	input wire [7:0] a_i, 
+	input wire [7:0] b_i,
+	output wire [7:0] res_o,
+	output wire carry_o
 );
-assign {carry_o, res_o} = a_i + b_i; 
+	assign {carry_o, res_o} = a_i + b_i; 
 endmodule
 ```
-What this code gains in ease of writing it loses in flexibility. 
-In RTL, we have a concept called parameters, which exist for an instance of a module and allow you to define, at instantiation, certain values. These values can then be used to size up buses or are macro like conditions to define which sections of the code should be included in the final hardware. 
-``````verilog 
+What this code gains in ease of writing it loses in flexibility.
+ 
+In RTL, we have a concept called parameters, which exist for an instance of a module and allow you to define, at instantiation, certain values. These values can then be used to size up buses or are macro like conditions to define which sections of the code should be included in the final hardware.
+ 
+```verilog 
 module add#(
-parameter W = 8
+	parameter W = 8
 )(
-input wire [W-1:0] a_i, 
-input wire [W-1:0] b_i,
-output wire [W-1:0] res_o,
-output wire carry_o
+	input wire [W-1:0] a_i, 
+	input wire [W-1:0] b_i,
+	output wire [W-1:0] res_o,
+	output wire carry_o
 );
-assign {carry_o, res_o} = a_i + b_i; 
+	assign {carry_o, res_o} = a_i + b_i; 
 endmodule
 ```
 These generic values can then be inherited down the design hierarchy allowing dependent modules to be resized accordingly. 
