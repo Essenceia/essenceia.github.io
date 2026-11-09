@@ -1,5 +1,5 @@
 ---
-title: "Building a networking ASIC chip"
+title: "Building a networking switch ASIC chip"
 date: 2026-11-09
 description: ""
 summary: ""
