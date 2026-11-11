@@ -53,7 +53,8 @@ I do take on custom ASIC project development on as an hourly consultant.
 
 #### Pranav M
 
-Very promising young hardware designer with an interest in CPU and accelerator design. He has already
+Very promising young hardware designer with an interest in processing-near-memory and memory systems research. 
+He has already
 independently taped out his own [digital signal processor accelerator](https://www.prawns.dev/blogs/herald/), owning the entire flow from architecture to gdsii though
 design and verification. His eagerness in putting in the effort will guarantee he will only get
 better from this point on.
